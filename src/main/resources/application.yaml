@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: smartbarber
+  r2dbc:
+    url: r2dbc:postgresql://dpg-da58ccjtqb8s739ojra0-a.virginia-postgres.render.com:5432/smartbarber_10jc?sslMode=require
+    username: root
+    password: AmaBNfLai9PZut5n628ZDDVfJ50VwdFG
+    pool:
+      enabled: true
+      initial-size: 5
+      max-size: 20
+logging:
+  level:
+    org.springframework.data.r2dbc: DEBUG
+    org.springframework.r2dbc: DEBUG
