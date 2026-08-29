@@ -1,5 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.barberia;
 
+import com.smartbarber.application.usecase.ActualizarBarberiaUC;
 import com.smartbarber.application.usecase.BuscarBarberiaUC;
 import com.smartbarber.application.usecase.CrearBarberiaUC;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.barberia.BarberiaRqDto;
@@ -10,8 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.UUID;
 
 @Component
 @AllArgsConstructor
@@ -21,6 +23,7 @@ public class BarberiaHandler {
     private final CrearBarberiaUC crearBarberiaUC;
     private final ValidacionRequest validacionRequest;
     private final BuscarBarberiaUC buscarBarberiaUC;
+    private final ActualizarBarberiaUC actualizarBarberiaUC;
 
     public Mono<ServerResponse> crearBarberia(ServerRequest request){
         return request.bodyToMono(BarberiaRqDto.class)
@@ -28,7 +31,7 @@ public class BarberiaHandler {
                 .map(mapper::toDomain)
                 .flatMap(crearBarberiaUC::crearBarberia)
                 .map(mapper::toResponse)
-                .flatMap(response -> ServerResponse.ok().bodyValue(response));
+                .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response));
     }
 
     public Mono<ServerResponse> buscarBarberiaPorNombre(ServerRequest request){
@@ -51,5 +54,22 @@ public class BarberiaHandler {
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> buscarBarberiaPorId(ServerRequest request){
+        return buscarBarberiaUC.buscarPorId(request.pathVariable("id"))
+                .map(mapper::toResponse)
+                .flatMap(response -> ServerResponse.ok().bodyValue(response))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> actualizarBarberia(ServerRequest request){
+        return request.bodyToMono(BarberiaRqDto.class)
+                .doOnNext(validacionRequest::validar)
+                .map(mapper::toDomain)
+                .flatMap(barberia -> actualizarBarberiaUC
+                        .actualizarBarberia(request.pathVariable("id"), barberia))
+                .map(mapper::toResponse)
+                .flatMap(response -> ServerResponse.accepted().bodyValue(response));
     }
 }

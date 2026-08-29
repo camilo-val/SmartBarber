@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Component
 @AllArgsConstructor
 @Slf4j
@@ -30,6 +32,12 @@ public class BuscarBarberiaUC {
 
     public Mono<Barberia> bucarPorDocumento(String documento) {
         return barberiaPort.buscarPorDocumento(documento)
+                .doOnNext(barberia -> log.info("Datos encontrados {}",  barberia))
+                .switchIfEmpty(Mono.error(new BarberiaExcepciones(MensajesExcepcionBarberia.BARBERIA_NO_EXISTE)));
+    }
+
+    public Mono<Barberia> buscarPorId(String id) {
+        return barberiaPort.buscarBarberiaPorId(UUID.fromString(id))
                 .doOnNext(barberia -> log.info("Datos encontrados {}",  barberia))
                 .switchIfEmpty(Mono.error(new BarberiaExcepciones(MensajesExcepcionBarberia.BARBERIA_NO_EXISTE)));
     }

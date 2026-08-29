@@ -18,6 +18,8 @@ public class BarberiaRuta {
         return RouterFunctions.route(RequestPredicates.POST(BARBERIA_SERVICE + "/crear-barberia"),barberiaHandler::crearBarberia)
                 .andRoute(RequestPredicates.GET(BARBERIA_SERVICE + "/nombre/{nombre}"),barberiaHandler::buscarBarberiaPorNombre)
                 .andRoute(RequestPredicates.GET(BARBERIA_SERVICE + "/razon-social/{razonSocial}"),barberiaHandler::buscarBarberiaPorRazonSocial)
-                .andRoute(RequestPredicates.GET(BARBERIA_SERVICE + "/documento/{documento}"),barberiaHandler::buscarBarberiaPorDocumento);
+                .andRoute(RequestPredicates.GET(BARBERIA_SERVICE + "/documento/{documento}"),barberiaHandler::buscarBarberiaPorDocumento)
+                .andRoute(RequestPredicates.GET(BARBERIA_SERVICE + "/id/{id}"),barberiaHandler::buscarBarberiaPorId)
+                .andRoute(RequestPredicates.PUT(BARBERIA_SERVICE + "/actualizar-barberia/{id}"),barberiaHandler::actualizarBarberia);
     }
 }
