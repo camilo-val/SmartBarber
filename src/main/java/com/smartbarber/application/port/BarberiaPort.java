@@ -12,7 +12,7 @@ public interface BarberiaPort {
     Flux<Barberia> buscarBarberiaPorRazonSocial(String razonSocial);
     Mono<Barberia> buscarPorDocumento(String document);
     Mono<Barberia> crearBarberia(Barberia barberia);
-    Mono<Barberia> actualizarBarberia(Barberia barberia);
+    Mono<Barberia> actualizarBarberia(UUID id, Barberia barberia);
     Mono<Void> eliminarBarberia(UUID id);
     Mono<Boolean> existeBarberiaPorNombre(String nombreBarberia);
 }

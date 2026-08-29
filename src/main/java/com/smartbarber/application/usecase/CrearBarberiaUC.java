@@ -16,13 +16,11 @@ public class CrearBarberiaUC {
     public Mono<Barberia> crearBarberia(Barberia barberia) {
         return barberiaPort.existeBarberiaPorNombre(barberia.getNombre())
                 .flatMap(exist -> {
-                    if(exist){
-                        throw new BarberiaExcepciones(MensajesExcepcionBarberia.BARBERIA_EXISTENTE);
+                    if(Boolean.TRUE.equals(exist)){
+                        Mono.error(new BarberiaExcepciones(MensajesExcepcionBarberia.BARBERIA_EXISTENTE));
                     }
                     return Mono.just(barberia);
-                }).map(newBarberia -> Barberia.crear(null,newBarberia.getNombre(),newBarberia.getDescripcion()
-                        , newBarberia.getUbicacion(), newBarberia.getCelular(),newBarberia.getDocumento(),newBarberia.getTipoDocumento()
-                ,newBarberia.getRazonSocial()))
+                })
                 .flatMap(barberiaPort::crearBarberia);
     }
 }

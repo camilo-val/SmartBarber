@@ -40,9 +40,7 @@ public class Barberia {
 
     public static Barberia crear(UUID id, String nombre, String descripcion, String ubicacion,
                                  String celular, String documento, TipoDocumento tipoDocumento,
-                                 String razonSocial) {
-        validarCampos(nombre, descripcion, ubicacion, celular, documento, tipoDocumento, razonSocial);
-
+                                 String razonSocial){
         return new Barberia(
                 id,
                 nombre,
@@ -57,6 +55,35 @@ public class Barberia {
                 null
         );
     }
+
+
+
+    public static Barberia actualizar(UUID id, String nombre, String descripcion, String ubicacion, String celular, String documento,
+                                          TipoDocumento tipoDocumento, String razonSocial, String estado, LocalDate fechaCreacion,
+                                          LocalDate fechaModificacion) {
+        if (id == null) {
+            throw new BarberiaExcepciones(
+                    MensajesExcepcionBarberia.DATOS_INVALIDOS
+            );
+        }
+
+        validarCampos(nombre, descripcion, ubicacion, celular, documento, tipoDocumento, razonSocial);
+
+        return new Barberia(
+                id,
+                nombre,
+                descripcion,
+                ubicacion,
+                celular,
+                documento,
+                tipoDocumento,
+                razonSocial,
+                estado,
+                fechaCreacion,
+                fechaModificacion
+        );
+    }
+
 
     public static Barberia reconstruir(UUID id, String nombre, String descripcion, String ubicacion,
                                        String celular, String documento, TipoDocumento tipoDocumento,

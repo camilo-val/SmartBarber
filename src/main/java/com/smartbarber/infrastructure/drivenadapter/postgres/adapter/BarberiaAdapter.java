@@ -54,7 +54,7 @@ public class BarberiaAdapter implements BarberiaPort {
     }
 
     @Override
-    public Mono<Barberia> actualizarBarberia(Barberia barberia) {
+    public Mono<Barberia> actualizarBarberia(UUID id, Barberia barberia) {
         return barberiaData.save(mapper.toEntity(barberia))
                 .map(mapper::toDomain);    }
 
