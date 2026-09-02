@@ -4,6 +4,8 @@ import com.smartbarber.application.usecase.ActualizarBarberiaUC;
 import com.smartbarber.application.usecase.BuscarBarberiaUC;
 import com.smartbarber.application.usecase.CrearBarberiaUC;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.barberia.BarberiaRqDto;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.ExcepcionesTecnicas;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.MensajesExcepcionesTecnicas;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.barberia.BarberiaEntryMapper;
 import com.smartbarber.infrastructure.entrypoint.utils.ValidacionRequest;
 import lombok.AllArgsConstructor;
@@ -31,7 +33,8 @@ public class BarberiaHandler {
                 .map(mapper::toDomain)
                 .flatMap(crearBarberiaUC::crearBarberia)
                 .map(mapper::toResponse)
-                .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response));
+                .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response))
+                .switchIfEmpty(Mono.error(new ExcepcionesTecnicas(MensajesExcepcionesTecnicas.BAD_REQUEST)) );
     }
 
     public Mono<ServerResponse> buscarBarberiaPorNombre(ServerRequest request){
