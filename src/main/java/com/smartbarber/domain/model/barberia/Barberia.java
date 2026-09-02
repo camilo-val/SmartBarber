@@ -5,7 +5,6 @@ import com.smartbarber.domain.exceptions.BarberiaExcepciones;
 import com.smartbarber.domain.exceptions.MensajesExcepcionBarberia;
 
 import java.time.LocalDate;
-import java.util.Random;
 import java.util.UUID;
 
 public class Barberia {
@@ -41,6 +40,7 @@ public class Barberia {
     public static Barberia crear(UUID id, String nombre, String descripcion, String ubicacion,
                                  String celular, String documento, TipoDocumento tipoDocumento,
                                  String razonSocial){
+        validarCampos(nombre, descripcion, ubicacion, celular, documento, tipoDocumento, razonSocial);
         return new Barberia(
                 id,
                 nombre,
