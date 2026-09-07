@@ -1,4 +1,4 @@
-package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.barberia;
+package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler;
 
 import com.smartbarber.domain.exceptions.BarberiaExcepciones;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.error.ErrorRsDto;
@@ -17,13 +17,12 @@ import reactor.core.publisher.Mono;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Map;
 
 import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.UNEXPECTED;
 
-@Component
-@Order(-2)
+//@Component
+//@Order(-2)
 @AllArgsConstructor
 public class GlobalHandlerError implements ErrorWebExceptionHandler {
 
