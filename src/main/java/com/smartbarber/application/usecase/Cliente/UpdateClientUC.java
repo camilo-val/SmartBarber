@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase;
+package com.smartbarber.application.usecase.Cliente;
 
 import com.smartbarber.application.port.ClientPort;
 import com.smartbarber.domain.model.client.Client;
@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Component

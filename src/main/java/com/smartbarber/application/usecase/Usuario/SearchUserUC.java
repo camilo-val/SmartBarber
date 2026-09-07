@@ -1,14 +1,12 @@
-package com.smartbarber.application.usecase;
+package com.smartbarber.application.usecase.Usuario;
 
 import com.smartbarber.application.port.UserPort;
-import com.smartbarber.domain.exceptions.BarberiaExcepciones;
 import com.smartbarber.domain.exceptions.UserExceptions;
 import com.smartbarber.domain.exceptions.MessageExceptionUser;
 import com.smartbarber.domain.model.user.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;

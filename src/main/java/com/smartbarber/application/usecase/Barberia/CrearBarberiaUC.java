@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase;
+package com.smartbarber.application.usecase.Barberia;
 
 import com.smartbarber.application.port.BarberiaPort;
 import com.smartbarber.domain.exceptions.BarberiaExcepciones;

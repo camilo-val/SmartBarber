@@ -1,8 +1,8 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.user;
 
-import com.smartbarber.application.usecase.UpdateUserUC;
-import com.smartbarber.application.usecase.SearchUserUC;
-import com.smartbarber.application.usecase.CreateUserUC;
+import com.smartbarber.application.usecase.Usuario.UpdateUserUC;
+import com.smartbarber.application.usecase.Usuario.SearchUserUC;
+import com.smartbarber.application.usecase.Usuario.CreateUserUC;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.User.UserRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.ExcepcionesTecnicas;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.MensajesExcepcionesTecnicas;

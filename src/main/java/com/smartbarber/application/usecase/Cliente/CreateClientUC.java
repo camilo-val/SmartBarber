@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase;
+package com.smartbarber.application.usecase.Cliente;
 
 import com.smartbarber.application.port.ClientPort;
 import com.smartbarber.domain.exceptions.MessageExceptionsClient;

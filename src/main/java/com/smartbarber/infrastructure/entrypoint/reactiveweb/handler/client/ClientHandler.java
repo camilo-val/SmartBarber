@@ -1,8 +1,8 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.client;
 
-import com.smartbarber.application.usecase.UpdateClientUC;
-import com.smartbarber.application.usecase.CreateClientUC;
-import com.smartbarber.application.usecase.SearchClientUC;
+import com.smartbarber.application.usecase.Cliente.UpdateClientUC;
+import com.smartbarber.application.usecase.Cliente.CreateClientUC;
+import com.smartbarber.application.usecase.Cliente.SearchClientUC;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.client.ClientRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.ExcepcionesTecnicas;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.MensajesExcepcionesTecnicas;
