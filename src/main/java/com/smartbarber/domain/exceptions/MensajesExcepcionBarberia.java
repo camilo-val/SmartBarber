@@ -13,10 +13,6 @@ public enum MensajesExcepcionBarberia {
         this.codigo = codigo;
         this.mensaje = mensaje;
     }
-    public String getCodigo() {
-        return codigo;
-    }
-    public String getMensaje() {
-        return mensaje;
-    }
+    public String getCodigo() { return codigo; }
+    public String getMensaje() { return mensaje; }
 }

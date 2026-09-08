@@ -1,8 +1,8 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.barberia;
 
-import com.smartbarber.application.usecase.ActualizarBarberiaUC;
-import com.smartbarber.application.usecase.BuscarBarberiaUC;
-import com.smartbarber.application.usecase.CrearBarberiaUC;
+import com.smartbarber.application.usecase.Barberia.ActualizarBarberiaUC;
+import com.smartbarber.application.usecase.Barberia.BuscarBarberiaUC;
+import com.smartbarber.application.usecase.Barberia.CrearBarberiaUC;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.barberia.BarberiaRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.ExcepcionesTecnicas;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.MensajesExcepcionesTecnicas;
@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-
-import java.util.UUID;
 
 @Component
 @AllArgsConstructor

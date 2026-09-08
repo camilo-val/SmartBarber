@@ -117,9 +117,7 @@ public class Barberia {
         return texto == null || texto.isBlank();
     }
 
-    public UUID getId() {
-        return id;
-    }
+    public UUID getId() { return id; }
 
     public String getNombre() {
         return nombre;
