@@ -1,8 +1,8 @@
 package com.smartbarber.domain.model.client;
 
-import com.smartbarber.domain.enums.TipoDocumento;
-import com.smartbarber.domain.exceptions.ClientExceptions;
-import com.smartbarber.domain.exceptions.MessageExceptionsClient;
+import com.smartbarber.domain.enums.DocumentType;
+import com.smartbarber.domain.exceptions.BusinessExceptions;
+import com.smartbarber.domain.exceptions.client.ClientMessageExceptions;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -12,14 +12,14 @@ public class Client {
     private final UUID id;
     private final UUID userId;
     private final String documento;
-    private final TipoDocumento tipoDocumento;
+    private final DocumentType tipoDocumento;
     private final String nombre;
     private final String celular;
     private final String correo;
     private final LocalDate fechaCreacion;
     private final LocalDate fechaModificacion;
 
-    private Client(UUID id, UUID userId, String documento, TipoDocumento tipoDocumento,
+    private Client(UUID id, UUID userId, String documento, DocumentType tipoDocumento,
                    String nombre, String celular, String correo, LocalDate fechaCreacion,
                    LocalDate fechaModificacion){
 
@@ -34,7 +34,7 @@ public class Client {
         this.fechaModificacion = fechaModificacion;
     }
 
-    public static Client crear(UUID id, UUID userId, String documento, TipoDocumento tipoDocumento,
+    public static Client crear(UUID id, UUID userId, String documento, DocumentType tipoDocumento,
                                String nombre, String celular, String correo){
         validarCampos(documento, tipoDocumento, nombre, celular, correo);
         return new Client(
@@ -50,12 +50,12 @@ public class Client {
         );
     }
 
-    public static Client actualizar(UUID id, UUID userId, String documento, TipoDocumento tipoDocumento,
+    public static Client actualizar(UUID id, UUID userId, String documento, DocumentType tipoDocumento,
                                     String nombre, String celular, String correo, LocalDate fechaCreacion) {
 
         if (id == null) {
-            throw new ClientExceptions(
-                    MessageExceptionsClient.DATOS_INVALIDOS
+            throw new BusinessExceptions(
+                    ClientMessageExceptions.DATOS_INVALIDOS
             );
         }
 
@@ -73,12 +73,12 @@ public class Client {
         );
     }
 
-    public static Client reconstruir(UUID id, UUID userId, String documento, TipoDocumento tipoDocumento,
+    public static Client reconstruir(UUID id, UUID userId, String documento, DocumentType tipoDocumento,
                                      String nombre, String celular, String correo, LocalDate fechaCreacion,
                                      LocalDate fechaModificacion){
 
         if (id == null){
-            throw new ClientExceptions(MessageExceptionsClient.DATOS_INVALIDOS);
+            throw new BusinessExceptions(ClientMessageExceptions.DATOS_INVALIDOS);
         }
         validarCampos(documento, tipoDocumento, nombre, celular, correo);
 
@@ -95,7 +95,7 @@ public class Client {
         );
     }
 
-    private static void validarCampos(String documento,TipoDocumento tipoDocumento,String nombre,String celular,
+    private static void validarCampos(String documento, DocumentType tipoDocumento, String nombre, String celular,
                                       String correo) {
 
         boolean esInvalido = esNuloOBlanco(documento)
@@ -104,8 +104,8 @@ public class Client {
                 || esNuloOBlanco(celular)
                 || esNuloOBlanco(correo);
 
-        if (esInvalido || (tipoDocumento == TipoDocumento.NIT)){
-            throw new ClientExceptions(MessageExceptionsClient.DATOS_INVALIDOS);
+        if (esInvalido || (tipoDocumento == DocumentType.NIT)){
+            throw new BusinessExceptions(ClientMessageExceptions.DATOS_INVALIDOS);
         }
     }
 
@@ -132,7 +132,7 @@ public class Client {
         return documento;
     }
 
-    public TipoDocumento getTipoDocumento() {
+    public DocumentType getTipoDocumento() {
         return tipoDocumento;
     }
 

@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.client;
 
-import com.smartbarber.domain.enums.TipoDocumento;
+import com.smartbarber.domain.enums.DocumentType;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -11,7 +11,7 @@ public record ClientRsDto (
         UUID id,
         UUID userId,
         String documento,
-        TipoDocumento tipoDocumento,
+        DocumentType tipoDocumento,
         String nombre,
         String celular,
         String correo,

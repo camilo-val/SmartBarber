@@ -16,8 +16,8 @@ public class ClientRuta {
     @Bean
     public RouterFunction<ServerResponse> clientRutas(){
         return RouterFunctions.route(RequestPredicates.POST(CLIENT_SERVICE + "/crear-cliente"),clientHandler::crearCliente)
-                .andRoute(RequestPredicates.GET(CLIENT_SERVICE + "/nombre/{nombre}"),clientHandler::buscarClientePorNombre)
-                .andRoute(RequestPredicates.GET(CLIENT_SERVICE + "/documento/{documento}"),clientHandler::buscarClientePorDocuemnto)
+                .andRoute(RequestPredicates.GET(CLIENT_SERVICE + "/name/{name}"),clientHandler::buscarClientePorNombre)
+                .andRoute(RequestPredicates.GET(CLIENT_SERVICE + "/document/{document}"),clientHandler::buscarClientePorDocuemnto)
                 .andRoute(RequestPredicates.GET(CLIENT_SERVICE + "/id/{id}"),clientHandler::buscarClientePorId)
                 .andRoute(RequestPredicates.PUT(CLIENT_SERVICE + "/actualizar-cliente/{id}"),clientHandler::actualizarCliente);
     }

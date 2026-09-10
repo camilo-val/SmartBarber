@@ -1,9 +1,9 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler;
 
-import com.smartbarber.domain.exceptions.BarberiaExcepciones;
+import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.error.ErrorRsDto;
-import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.ExcepcionesTecnicas;
-import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.MensajesExcepcionesTecnicas;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
 import com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.webflux.error.ErrorWebExceptionHandler;
@@ -21,8 +21,8 @@ import java.util.Map;
 
 import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.UNEXPECTED;
 
-//@Component
-//@Order(-2)
+@Component
+@Order(-2)
 @AllArgsConstructor
 public class GlobalHandlerError implements ErrorWebExceptionHandler {
 
@@ -43,10 +43,10 @@ public class GlobalHandlerError implements ErrorWebExceptionHandler {
     }
 
     private HttpStatus getStatus(Throwable ex) {
-        if (ex instanceof BarberiaExcepciones) {
+        if (ex instanceof BusinessExceptions) {
             return HttpStatus.CONFLICT;
-        } else if (ex instanceof ExcepcionesTecnicas excepcionesTecnicas) {
-            return switch (excepcionesTecnicas.getMensajesExcepciones()) {
+        } else if (ex instanceof TechnicalExceptions technicalExceptions) {
+            return switch (technicalExceptions.getMensajesExcepciones()) {
                 case BAD_REQUEST ->
                         HttpStatus.BAD_REQUEST;
                 case INTERNAL_SERVER_ERROR, UNEXPECTED_ERROR ->
@@ -59,21 +59,21 @@ public class GlobalHandlerError implements ErrorWebExceptionHandler {
     }
 
     private Map<String, ErrorRsDto> errorMap(Throwable ex) {
-        if (ex instanceof BarberiaExcepciones barberiaExcepciones) {
-            return buildMapError(barberiaExcepciones.getMensajesExcepcionBarberia().getCodigo()
-                    ,barberiaExcepciones.getMensajesExcepcionBarberia().getMensaje(),
+        if (ex instanceof BusinessExceptions businessExceptions) {
+            return buildMapError(businessExceptions.getExceptionMessage().getCode()
+                    ,businessExceptions.getExceptionMessage().getMessage(),
                     HandlerConstant.BUSINESS
             );
 
-        } else if (ex instanceof ExcepcionesTecnicas excepcionesTecnicas) {
-            return buildMapError(excepcionesTecnicas.getMensajesExcepciones().getCode()
-                    ,excepcionesTecnicas.getMensajesExcepciones().getMensaje(),
+        } else if (ex instanceof TechnicalExceptions technicalExceptions) {
+            return buildMapError(technicalExceptions.getMensajesExcepciones().getCode()
+                    , technicalExceptions.getMensajesExcepciones().getMensaje(),
                     HandlerConstant.TECHNICAL
             );
 
         }
-        return buildMapError(MensajesExcepcionesTecnicas.UNEXPECTED_ERROR.getCode()
-                ,MensajesExcepcionesTecnicas.UNEXPECTED_ERROR.getMensaje(),
+        return buildMapError(TechnicalMessageExceptions.UNEXPECTED_ERROR.getCode()
+                , TechnicalMessageExceptions.UNEXPECTED_ERROR.getMensaje(),
                 UNEXPECTED);
 
 

@@ -1,13 +1,13 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.user;
 
-import com.smartbarber.application.usecase.Usuario.UpdateUserUC;
-import com.smartbarber.application.usecase.Usuario.SearchUserUC;
-import com.smartbarber.application.usecase.Usuario.CreateUserUC;
+import com.smartbarber.application.usecase.user.UpdateUserUC;
+import com.smartbarber.application.usecase.user.SearchUserUC;
+import com.smartbarber.application.usecase.user.CreateUserUC;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.User.UserRqDto;
-import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.ExcepcionesTecnicas;
-import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.MensajesExcepcionesTecnicas;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.user.UserEntryMapper;
-import com.smartbarber.infrastructure.entrypoint.utils.ValidacionRequest;
+import com.smartbarber.infrastructure.entrypoint.utils.validateRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,18 +22,18 @@ import reactor.core.publisher.Mono;
 public class UserHandler {
     private final UserEntryMapper mapper;
     private final CreateUserUC createUserUC;
-    private final ValidacionRequest validacionRequest;
+    private final validateRequest validateRequest;
     private final SearchUserUC searchUserUC;
     private final UpdateUserUC updateUserUC;
 
     public Mono<ServerResponse> createUser(ServerRequest request){
         return request.bodyToMono(UserRqDto.class)
-                .doOnNext(validacionRequest::validar)
+                .doOnNext(validateRequest::validate)
                 .map(mapper::toDomain)
                 .flatMap(createUserUC::crearUsuario)
                 .map(mapper::toResponse)
                 .flatMap( response -> ServerResponse.created(request.uri()).bodyValue(response))
-                .switchIfEmpty(Mono.error(new ExcepcionesTecnicas(MensajesExcepcionesTecnicas.BAD_REQUEST)));
+                .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));
     }
 
     public Mono<ServerResponse> SearchUserId(ServerRequest request) {
@@ -45,7 +45,7 @@ public class UserHandler {
 
     public Mono<ServerResponse> updateUser(ServerRequest request) {
         return request.bodyToMono(UserRqDto.class)
-                .doOnNext(validacionRequest::validar)
+                .doOnNext(validateRequest::validate)
                 .map(mapper::toDomain)
                 .flatMap( user -> updateUserUC
                         .actualizarUsuario(request.pathVariable("id"), user))

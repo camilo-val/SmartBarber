@@ -1,9 +1,8 @@
 package com.smartbarber.domain.model.user;
 
-import com.smartbarber.domain.exceptions.UserExceptions;
-import com.smartbarber.domain.exceptions.MessageExceptionUser;
+import com.smartbarber.domain.exceptions.BusinessExceptions;
+import com.smartbarber.domain.exceptions.user.UserMessageExceptions;
 
-import java.net.PortUnreachableException;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -34,8 +33,8 @@ public class User {
 
     public static User actualizar(UUID id, String firebaseId, String estado, LocalDate fechaCreacion, LocalDate fechaModificacion){
         if (id == null) {
-            throw new UserExceptions(
-                    MessageExceptionUser.DATOS_INVALIDOS
+            throw new BusinessExceptions(
+                    UserMessageExceptions.DATOS_INVALIDOS
             );
         }
         return new User(
@@ -49,7 +48,7 @@ public class User {
 
     public static User reconstruir(UUID id, String firebaseId, String estado, LocalDate fechaCreacion, LocalDate fechaModificacion){
         if (id == null || estado == null || estado.isBlank()){
-            throw new UserExceptions(MessageExceptionUser.DATOS_INVALIDOS);
+            throw new BusinessExceptions(UserMessageExceptions.DATOS_INVALIDOS);
         }
         return new User(
                 id,
