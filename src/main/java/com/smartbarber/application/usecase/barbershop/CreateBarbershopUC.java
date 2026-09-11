@@ -14,6 +14,7 @@ public class CreateBarbershopUC {
     private final BarberShopRepositoryPort barberShopRepositoryPort;
 
     public Mono<Barbershop> crearBarberia(Barbershop barbershop) {
+        System.out.println("Creando Barbershop:  " + barbershop.toString());
         return barberShopRepositoryPort.existByName(barbershop.getName())
                 .flatMap(exist -> {
                     if(Boolean.TRUE.equals(exist)){

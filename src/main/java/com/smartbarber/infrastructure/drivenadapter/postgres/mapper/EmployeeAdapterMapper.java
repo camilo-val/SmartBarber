@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.drivenadapter.postgres.mapper;
 
-import com.smartbarber.domain.enums.TipoDocumento;
+import com.smartbarber.domain.enums.DocumentType;
 import com.smartbarber.domain.model.employee.Employee;
 import com.smartbarber.infrastructure.drivenadapter.postgres.entity.EmployeeEntity;
 import org.mapstruct.Mapper;
@@ -27,9 +27,9 @@ public interface EmployeeAdapterMapper {
                 entity.getFechaModificacion()
         );
     }
-    default TipoDocumento mapTipoDocumento(String tipoDocumento) {
+    default DocumentType mapTipoDocumento(String tipoDocumento) {
         return tipoDocumento == null
                 ? null
-                : TipoDocumento.valueOf(tipoDocumento);
+                : DocumentType.valueOf(tipoDocumento);
     }
 }

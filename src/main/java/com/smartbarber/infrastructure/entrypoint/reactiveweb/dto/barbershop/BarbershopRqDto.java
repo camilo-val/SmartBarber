@@ -17,7 +17,7 @@ public record BarbershopRqDto(
         String location,
         @NotBlank(message = "El celuar es obligatorio")
         @Pattern(regexp = "^[0-9]{10}$", message = "El cell no puede ser allfanumerico y debe tener 10 digitos")
-        String cell,
+        String phone,
         @NotBlank(message = "El document es obligatorio")
         String document,
         @NotNull

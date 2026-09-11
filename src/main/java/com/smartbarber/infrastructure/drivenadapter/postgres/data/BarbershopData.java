@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface BarbershopData extends ReactiveCrudRepository<BarbershopEntity, UUID> {
-    Mono<BarbershopEntity> findByNombre(String nombre);
-    Flux<BarbershopEntity> findByRazonSocial(String razonSocial);
-    Mono<BarbershopEntity> findByDocumento(String documento);
+    Mono<BarbershopEntity> findByName(String name);
+    Flux<BarbershopEntity> findByCompanyName(String companyName);
+    Mono<BarbershopEntity> findByDocument(String document);
 
 }

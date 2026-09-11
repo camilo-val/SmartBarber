@@ -7,7 +7,7 @@ public class EmployeeExceptions extends RuntimeException{
 
     private final MessageExceptionsEmployee messageExceptionsEmployee;
     public EmployeeExceptions(MessageExceptionsEmployee messageExceptionsEmployee){
-        super(messageExceptionsEmployee.getMensaje());
+        super(messageExceptionsEmployee.getMessage());
         this.messageExceptionsEmployee = messageExceptionsEmployee;
     }
 }
