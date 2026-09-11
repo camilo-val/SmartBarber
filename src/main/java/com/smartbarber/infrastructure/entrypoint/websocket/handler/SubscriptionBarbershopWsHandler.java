@@ -2,7 +2,9 @@ package com.smartbarber.infrastructure.entrypoint.websocket.handler;
 
 import com.smartbarber.application.command.SubscriptionBarbershopCommand;
 import com.smartbarber.application.usecase.subscriptionbarber.CreateSubscriptionBarberUC;
+import com.smartbarber.application.usecase.subscriptionbarber.SendMessageUC;
 import com.smartbarber.infrastructure.entrypoint.utils.commons.WebSocketConnectionManager;
+import com.smartbarber.infrastructure.entrypoint.websocket.MessageMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,7 +24,8 @@ public class SubscriptionBarbershopWsHandler implements WebSocketHandler {
     private final WebSocketConnectionManager connectionManager;
     private final ObjectMapper objectMapper;
     private final CreateSubscriptionBarberUC createSubscriptionBarberUC;
-
+    private final SendMessageUC sendMessageUC;
+    private final MessageMapper mapper;
 
     @Override
     public List<String> getSubProtocols() {
@@ -40,6 +43,8 @@ public class SubscriptionBarbershopWsHandler implements WebSocketHandler {
                             return subscription;
                         }))
                 .flatMap(createSubscriptionBarberUC::createSubscription)
+                .map(mapper::toRequest)
+                .flatMap(sendMessageUC::sendMessage)
                 .doOnNext(message -> log.info("message -> {}", message))
                 .then();
     }

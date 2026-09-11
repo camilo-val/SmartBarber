@@ -1,6 +1,5 @@
-package com.smartbarber.application.port;
+package com.smartbarber.application.port.subscriptionbarbershop;
 
-import com.smartbarber.application.command.SubscriptionBarbershopCommand;
 import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

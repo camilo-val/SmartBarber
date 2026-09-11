@@ -1,7 +1,6 @@
 package com.smartbarber.infrastructure.drivenadapter.postgres.adapter;
 
-import com.smartbarber.application.command.SubscriptionBarbershopCommand;
-import com.smartbarber.application.port.SubscriptionBarbershopRepositoryPort;
+import com.smartbarber.application.port.subscriptionbarbershop.SubscriptionBarbershopRepositoryPort;
 import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;
 import com.smartbarber.infrastructure.drivenadapter.postgres.data.SubscriptionBarbershopData;
 import com.smartbarber.infrastructure.drivenadapter.postgres.mapper.SubscriptionBarbershopAdapterMapper;

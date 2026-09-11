@@ -1,7 +1,9 @@
 package com.smartbarber.infrastructure.entrypoint.utils.commons;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.socket.WebSocketMessage;
 import org.springframework.web.reactive.socket.WebSocketSession;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -21,14 +23,31 @@ public class WebSocketConnectionManager {
     }
 
     public Mono<Void> send(UUID orderId, String message){
+        System.out.println("SESSION: {} -> " + orderId);
         WebSocketSession session = sessions.get(orderId);
-        if(session==null ||session.isOpen()){
+        if(session==null || !session.isOpen()){
+            System.out.println("SESSION IS CLOSED: {} -> " + orderId);
             return Mono.empty();
         }
 
         return session.send(
                 Mono.just(session.textMessage(message))
         );
+    }
+
+    public Flux<String> receive(UUID orderId){
+        System.out.println("SESSION: {} -> " + orderId);
+        WebSocketSession session = sessions.get(orderId);
+        if(session==null || !session.isOpen()){
+            System.out.println("SESSION IS CLOSED: {} -> " + orderId);
+            return Flux.empty();
+        }
+
+        return session.receive()
+                .map(WebSocketMessage::getPayloadAsText)
+                .doOnNext(webSocketMessage -> {
+                    System.out.println("Received message: {} -> " + webSocketMessage);
+                });
     }
 
 }
