@@ -15,7 +15,7 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class BarbershopRepositoryAdapter implements BarberShopRepositoryPort {
+public class BarbershopAdapter implements BarberShopRepositoryPort {
     private final BarbershopData barbershopData;
     private final BarbershopAdapterMapper mapper;
     @Override

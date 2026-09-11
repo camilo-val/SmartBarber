@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 public class Subscription {
-    private final UUID id;
+    private final Integer id;
     private final String name;
     private final String description;
     private final Integer price;
@@ -15,7 +15,7 @@ public class Subscription {
     private final Instant updateAt;
 
 
-    private Subscription(UUID id, String name, String description, Integer price, Instant createAt, Instant updateAt) {
+    private Subscription(Integer id, String name, String description, Integer price, Instant createAt, Instant updateAt) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -29,10 +29,10 @@ public class Subscription {
         if(isInvalid || price == null || price <= 0){
             throw new BusinessExceptions(SubscriptionMessageExceptions.INVALID_SUBSCRIPTION);
         }
-        return new Subscription(UUID.randomUUID(), name, description, price, Instant.now(),null);
+        return new Subscription(null, name, description, price, Instant.now(),null);
     }
 
-    public static Subscription rebuild(UUID id,String name, String description, Integer price, Instant createAt, Instant updateAt) {
+    public static Subscription rebuild(Integer id,String name, String description, Integer price, Instant createAt, Instant updateAt) {
         boolean isInvalid = isBlankOrNull(name) && isBlankOrNull(description);
         if(isInvalid || price == null || price <= 0 || id == null || createAt == null){
             throw new BusinessExceptions(SubscriptionMessageExceptions.INVALID_SUBSCRIPTION);
@@ -44,7 +44,7 @@ public class Subscription {
         return attribute == null || attribute.isBlank();
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 

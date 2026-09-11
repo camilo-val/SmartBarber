@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface SubscriptionRepositoryPort {
     Mono<Subscription> save(Subscription subscription);
-    Mono<Subscription> findById(UUID id);
+    Mono<Subscription> findById(Integer id);
     Flux<Subscription> findAll();
-    Mono <Boolean> existsById(UUID id);
+    Mono <Boolean> existsById(Integer id);
 }

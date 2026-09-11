@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Builder
 public record SubscriptionCommand (
-        UUID id,
+        Integer id,
         String name,
         String description,
         Integer price

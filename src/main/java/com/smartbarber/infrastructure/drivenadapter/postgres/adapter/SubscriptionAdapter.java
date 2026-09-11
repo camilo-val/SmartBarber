@@ -28,13 +28,13 @@ public class SubscriptionAdapter implements SubscriptionRepositoryPort {
     }
 
     @Override
-    public Mono<Subscription> findById(UUID id) {
+    public Mono<Subscription> findById(Integer id) {
         return data.findById(id)
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Boolean> existsById(UUID id) {
+    public Mono<Boolean> existsById(Integer id) {
         return data.existsById(id);
     }
 

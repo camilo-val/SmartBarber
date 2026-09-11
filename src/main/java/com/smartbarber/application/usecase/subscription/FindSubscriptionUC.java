@@ -17,7 +17,7 @@ public class FindSubscriptionUC {
     private final SubscriptionRepositoryPort port;
 
     public Mono<Subscription> findSubscriptionById(String id){
-        return port.findById(UUID.fromString(id))
+        return port.findById(Integer.valueOf(id))
                 .switchIfEmpty(Mono.error(() -> new BusinessExceptions(SubscriptionMessageExceptions.SUBSCRIPTION_NOT_FOUND)));
     }
 

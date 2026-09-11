@@ -6,7 +6,6 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
-import java.util.UUID;
 
 @Getter
 @Builder
@@ -16,7 +15,7 @@ import java.util.UUID;
 public class SubscriptionEntity {
     @Id
     @Column("id_suscripcion")
-    private UUID id;
+    private Integer id;
     @Column("nombre")
     private String name;
     @Column("descripcion")

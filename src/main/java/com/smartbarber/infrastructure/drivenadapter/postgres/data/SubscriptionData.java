@@ -5,5 +5,5 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import java.util.UUID;
 
-public interface SubscriptionData extends ReactiveCrudRepository<SubscriptionEntity, UUID> {
+public interface SubscriptionData extends ReactiveCrudRepository<SubscriptionEntity, Integer> {
 }
