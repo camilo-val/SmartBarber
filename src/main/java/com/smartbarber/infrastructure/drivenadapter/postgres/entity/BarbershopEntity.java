@@ -18,24 +18,24 @@ public class BarbershopEntity {
     @Column("id_barberia")
     private UUID id;
     @Column("nombre")
-    private String nombre;
+    private String name;
     @Column("descripcion")
-    private String descripcion;
+    private String description;
     @Column("ubicacion")
-    private String ubicacion;
+    private String location;
     @Column("celular")
-    private String celular;
+    private String phone;
     @Column("documento")
-    private String documento;
+    private String document;
     @Column("tipo_documento")
-    private String tipoDocumento;
+    private String documentType;
     @Column("razon_social")
-    private String razonSocial;
+    private String companyName;
     @Column("estado")
-    private String estado;
+    private String status;
     @Column("fecha_creacion")
-    private Instant fechaCreacion;
+    private Instant createAt;
     @Column("fecha_modificacion")
-    private Instant fechaModificacion;
+    private Instant updateAt;
     
 }

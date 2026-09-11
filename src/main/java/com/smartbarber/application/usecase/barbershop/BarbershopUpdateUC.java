@@ -18,7 +18,7 @@ public class BarbershopUpdateUC {
 
         return barberShopRepositoryPort.findById(UUID.fromString(id))
                 .map(existsBarber -> Barbershop.update(existsBarber.getId(), barbershop.getName(), barbershop.getDescription(),
-                        barbershop.getLocation(), barbershop.getCell(), barbershop.getDocument(), barbershop.getDocumentType(), barbershop.getCompanyName()
+                        barbershop.getLocation(), barbershop.getPhone(), barbershop.getDocument(), barbershop.getDocumentType(), barbershop.getCompanyName()
                 , barbershop.getStatus(), existsBarber.getCreateAt(), Instant.now()))
                 .flatMap(barberUpdate -> barberShopRepositoryPort.update(UUID.fromString(id), barberUpdate));
     }

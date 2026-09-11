@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee;
 
-import com.smartbarber.domain.enums.TipoDocumento;
+import com.smartbarber.domain.enums.DocumentType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +21,7 @@ public record EmployeeRqDto (
         @NotBlank(message = "El documento es obligatorio")
         String documento,
         @NotNull
-        TipoDocumento tipoDocumento,
+        DocumentType tipoDocumento,
         @NotBlank(message = "El celuar es obligatorio")
         @Pattern(regexp = "^[0-9]{10}$", message = "El celular no puede ser allfanumerico y debe tener 10 digitos")
         String celular,

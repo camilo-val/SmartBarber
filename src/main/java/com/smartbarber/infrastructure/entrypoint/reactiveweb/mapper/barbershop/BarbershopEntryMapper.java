@@ -14,7 +14,7 @@ public interface BarbershopEntryMapper {
                 rqDto.name(),
                 rqDto.description(),
                 rqDto.location(),
-                rqDto.cell(),
+                rqDto.phone(),
                 rqDto.document(),
                 rqDto.documentType(),
                 rqDto.companyName()

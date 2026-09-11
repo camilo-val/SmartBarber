@@ -28,6 +28,10 @@ public class BarbershopHandler {
     public Mono<ServerResponse> createBarbershop(ServerRequest request){
         return request.bodyToMono(BarbershopRqDto.class)
                 .doOnNext(validateRequest::validate)
+                .map(e -> {
+                    System.out.println("AAAAA: " + e.toString());
+                    return e;
+                })
                 .map(mapper::toDomain)
                 .flatMap(createBarbershopUC::crearBarberia)
                 .map(mapper::toResponse)

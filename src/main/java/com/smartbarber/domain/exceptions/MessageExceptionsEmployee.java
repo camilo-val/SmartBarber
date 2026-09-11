@@ -1,6 +1,6 @@
 package com.smartbarber.domain.exceptions;
 
-public enum MessageExceptionsEmployee {
+public enum MessageExceptionsEmployee implements ErrorMessage{
 
     EMPLOYEE_INVALIDO("EY_001", "Empleado invalido"),
     EMPLOYEE_EXISTENTE("CT_002", "Empleado existente"),
@@ -15,6 +15,14 @@ public enum MessageExceptionsEmployee {
         this.mensaje = mensaje;
     }
 
-    public String getCodigo() { return codigo; }
-    public String getMensaje() { return mensaje; }
+
+    @Override
+    public String getCode() {
+        return codigo;
+    }
+
+    @Override
+    public String getMessage() {
+        return mensaje;
+    }
 }

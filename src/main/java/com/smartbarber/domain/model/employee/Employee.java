@@ -1,9 +1,8 @@
 package com.smartbarber.domain.model.employee;
 
-import com.smartbarber.domain.enums.TipoDocumento;
-import com.smartbarber.domain.exceptions.ClientExceptions;
+import com.smartbarber.domain.enums.DocumentType;
+import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.EmployeeExceptions;
-import com.smartbarber.domain.exceptions.MessageExceptionsClient;
 import com.smartbarber.domain.exceptions.MessageExceptionsEmployee;
 
 import java.time.LocalDate;
@@ -15,7 +14,7 @@ public class Employee {
     private final UUID userId;
     private final UUID barberiaId;
     private final String documento;
-    private final TipoDocumento tipoDocumento;
+    private final DocumentType tipoDocumento;
     private final String nombre;
     private final String celular;
     private final String correo;
@@ -23,7 +22,7 @@ public class Employee {
     private final LocalDate fechaCreacion;
     private final LocalDate fechaModificacion;
 
-    private Employee(UUID id, UUID userId, UUID barberiaId, String documento, TipoDocumento tipoDocumento,String nombre,
+    private Employee(UUID id, UUID userId, UUID barberiaId, String documento, DocumentType tipoDocumento,String nombre,
                      String celular, String correo, String especialidad, LocalDate fechaCreacion,
                      LocalDate fechaModificacion){
 
@@ -40,7 +39,7 @@ public class Employee {
         this.fechaModificacion = fechaModificacion;
     }
 
-    public static  Employee crear(UUID id, UUID userId, UUID barberiaId, String documento, TipoDocumento tipoDocumento,
+    public static  Employee crear(UUID id, UUID userId, UUID barberiaId, String documento, DocumentType tipoDocumento,
                                   String nombre, String celular, String correo, String especialidad){
         validarCampos(documento, tipoDocumento, nombre, celular, correo, especialidad);
         return new Employee(
@@ -58,7 +57,7 @@ public class Employee {
         );
     }
 
-    public static Employee actualizar(UUID id, UUID userId, UUID barberiaId, String documento, TipoDocumento tipoDocumento,
+    public static Employee actualizar(UUID id, UUID userId, UUID barberiaId, String documento, DocumentType tipoDocumento,
                                       String nombre, String celular, String correo, String especialidad,
                                       LocalDate fechaCreacion) {
 
@@ -84,7 +83,7 @@ public class Employee {
         );
     }
 
-    public static Employee reconstruir(UUID id, UUID userId, UUID barberiaId, String documento, TipoDocumento tipoDocumento,
+    public static Employee reconstruir(UUID id, UUID userId, UUID barberiaId, String documento, DocumentType tipoDocumento,
                                        String nombre, String celular, String correo, String especialidad,
                                        LocalDate fechaCreacion, LocalDate fechaModificacion){
 
@@ -110,7 +109,7 @@ public class Employee {
         );
     }
 
-    private static void  validarCampos(String documento, TipoDocumento tipoDocumento, String nombre, String celular,
+    private static void  validarCampos(String documento, DocumentType tipoDocumento, String nombre, String celular,
                                        String correo, String especialidad){
 
         boolean esInvalido = esNuloOBlanco(documento)
@@ -120,8 +119,8 @@ public class Employee {
                 || esNuloOBlanco(correo)
                 || esNuloOBlanco(especialidad);
 
-        if (esInvalido || (tipoDocumento == TipoDocumento.NIT)){
-            throw new ClientExceptions(MessageExceptionsClient.DATOS_INVALIDOS);
+        if (esInvalido || (tipoDocumento == DocumentType.NIT)){
+            throw new BusinessExceptions(MessageExceptionsEmployee.DATOS_INVALIDOS);
         }
     }
 
@@ -151,7 +150,7 @@ public class Employee {
         return documento;
     }
 
-    public TipoDocumento getTipoDocumento() {
+    public DocumentType getTipoDocumento() {
         return tipoDocumento;
     }
 

@@ -12,7 +12,7 @@ public class Barbershop {
     private final String name;
     private final String description;
     private final String location;
-    private final String cell;
+    private final String phone;
     private final String document;
     private final DocumentType documentType;
     private final String companyName;
@@ -21,14 +21,14 @@ public class Barbershop {
     private final Instant updateAt;
 
 
-    private Barbershop(UUID id, String name, String description, String location, String cell, String document,
+    private Barbershop(UUID id, String name, String description, String location, String phone, String document,
                        DocumentType documentType, String companyName, String status, Instant createAt,
                        Instant updateAt) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.location = location;
-        this.cell = cell;
+        this.phone = phone;
         this.document = document;
         this.documentType = documentType;
         this.companyName = companyName;
@@ -38,15 +38,15 @@ public class Barbershop {
     }
 
     public static Barbershop createBarbershop(UUID id, String name, String description, String location,
-                                              String cell, String document, DocumentType documentType,
+                                              String phone, String document, DocumentType documentType,
                                               String companyName){
-        validateInputs(name, description, location, cell, document, documentType, companyName);
+        validateInputs(name, description, location, phone, document, documentType, companyName);
         return new Barbershop(
                 id,
                 name,
                 description,
                 location,
-                cell,
+                phone,
                 document,
                 documentType,
                 companyName,
@@ -59,7 +59,7 @@ public class Barbershop {
 
 
     public static Barbershop update(UUID id, String name, String description, String location,
-                                    String cell, String document, DocumentType documentType,
+                                    String phone, String document, DocumentType documentType,
                                     String companyName, String status, Instant createAt,
                                     Instant updateAt) {
         if (id == null) {
@@ -68,14 +68,14 @@ public class Barbershop {
             );
         }
 
-        validateInputs(name, description, location, cell, document, documentType, companyName);
+        validateInputs(name, description, location, phone, document, documentType, companyName);
 
         return new Barbershop(
                 id,
                 name,
                 description,
                 location,
-                cell,
+                phone,
                 document,
                 documentType,
                 companyName,
@@ -87,25 +87,25 @@ public class Barbershop {
 
 
     public static Barbershop rebuild(UUID id, String name, String description, String location,
-                                     String cell, String document, DocumentType documentType,
+                                     String phone, String document, DocumentType documentType,
                                      String companyName, String status, Instant createAt,
                                      Instant updateAt) {
         if (id == null || status == null || status.isBlank()) {
             throw new BusinessExceptions(BarberShopMessageExceptions.INVALID_DATA);
         }
-        validateInputs(name, description, location, cell, document, documentType, companyName);
+        validateInputs(name, description, location, phone, document, documentType, companyName);
 
-        return new Barbershop(id, name, description, location, cell, document,
+        return new Barbershop(id, name, description, location, phone, document,
                 documentType, companyName, status, createAt, updateAt);
     }
 
     private static void validateInputs(String name, String description, String location,
-                                      String cell, String document, DocumentType documentType,
+                                      String phone, String document, DocumentType documentType,
                                       String companyName) {
         boolean isInvalid = isNullOrBlank(name)
                 || isNullOrBlank(description)
                 || isNullOrBlank(location)
-                || isNullOrBlank(cell)
+                || isNullOrBlank(phone)
                 || isNullOrBlank(document)
                 || documentType == null;
 
@@ -133,8 +133,8 @@ public class Barbershop {
         return location;
     }
 
-    public String getCell() {
-        return cell;
+    public String getPhone() {
+        return phone;
     }
 
     public String getDocument() {
@@ -159,5 +159,22 @@ public class Barbershop {
 
     public Instant getUpdateAt() {
         return updateAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Barbershop{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                ", phone='" + phone + '\'' +
+                ", document='" + document + '\'' +
+                ", documentType=" + documentType +
+                ", companyName='" + companyName + '\'' +
+                ", status='" + status + '\'' +
+                ", createAt=" + createAt +
+                ", updateAt=" + updateAt +
+                '}';
     }
 }

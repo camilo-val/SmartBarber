@@ -4,6 +4,7 @@ import com.smartbarber.domain.enums.DocumentType;
 import com.smartbarber.domain.model.barbershop.Barbershop;
 import com.smartbarber.infrastructure.drivenadapter.postgres.entity.BarbershopEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface BarbershopAdapterMapper {
@@ -15,16 +16,16 @@ public interface BarbershopAdapterMapper {
 
         return Barbershop.rebuild(
                 entity.getId(),
-                entity.getNombre(),
-                entity.getDescripcion(),
-                entity.getUbicacion(),
-                entity.getCelular(),
-                entity.getDocumento(),
-                mapTipoDocumento(entity.getTipoDocumento()),
-                entity.getRazonSocial(),
-                entity.getEstado(),
-                entity.getFechaCreacion(),
-                entity.getFechaModificacion()
+                entity.getName(),
+                entity.getDescription(),
+                entity.getLocation(),
+                entity.getPhone(),
+                entity.getDocument(),
+                mapTipoDocumento(entity.getDocumentType()),
+                entity.getCompanyName(),
+                entity.getStatus(),
+                entity.getCreateAt(),
+                entity.getUpdateAt()
         );
     }
 

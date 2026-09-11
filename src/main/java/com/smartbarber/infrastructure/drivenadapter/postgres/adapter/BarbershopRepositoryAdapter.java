@@ -26,24 +26,26 @@ public class BarbershopRepositoryAdapter implements BarberShopRepositoryPort {
 
     @Override
     public Mono<Barbershop> findByName(String name) {
-        return barbershopData.findByNombre(name)
+        return barbershopData.findByName(name)
                 .map(mapper::toDomain);
     }
 
     @Override
     public Flux<Barbershop> findByCompanyName(String razonSocial) {
-        return barbershopData.findByRazonSocial(razonSocial)
+        return barbershopData.findByCompanyName(razonSocial)
                 .map(mapper::toDomain);
     }
 
     @Override
     public Mono<Barbershop> findByDocument(String document) {
-        return barbershopData.findByDocumento(document)
+        return barbershopData.findByDocument(document)
                 .map(mapper::toDomain);
     }
 
     @Override
     public Mono<Barbershop> save(Barbershop barbershop) {
+        System.out.println("BARBERSHOP SAVING:   " +  barbershop );
+        System.out.println("BARBERSHOP ENTITy: " + mapper.toEntity(barbershop).toString());
         return barbershopData.save(mapper.toEntity(barbershop))
                 .doOnNext(e -> log.info("Data registrada {}", e.toString()))
                 .doOnSuccess(entityGuardada ->
@@ -65,7 +67,7 @@ public class BarbershopRepositoryAdapter implements BarberShopRepositoryPort {
 
     @Override
     public Mono<Boolean> existByName(String nombreBarberia) {
-        return barbershopData.findByNombre(nombreBarberia)
+        return barbershopData.findByName(nombreBarberia)
                 .map(mapper::toDomain).hasElement();
     }
 }
