@@ -10,7 +10,7 @@ public record UserRsDto (
         UUID id,
         String firebaseId,
         String estado,
-        LocalDate fechaCracion,
+        LocalDate fechaCreacion,
         LocalDate fechaModificacion
 ){
 }
