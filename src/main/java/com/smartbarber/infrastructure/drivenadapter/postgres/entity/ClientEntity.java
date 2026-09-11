@@ -18,13 +18,13 @@ public class ClientEntity {
     private UUID id;
     @Column("user_id")
     private UUID userId;
-    @Column("document")
+    @Column("documento")
     private String documento;
     @Column("tipo_documento")
     private String tipoDocumento;
-    @Column("name")
+    @Column("nombre")
     private String nombre;
-    @Column("cell")
+    @Column("celular")
     private String celular;
     @Column("correo")
     private String correo;

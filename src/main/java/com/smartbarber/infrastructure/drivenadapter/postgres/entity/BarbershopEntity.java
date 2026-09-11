@@ -17,15 +17,15 @@ public class BarbershopEntity {
     @Id
     @Column("id_barberia")
     private UUID id;
-    @Column("name")
+    @Column("nombre")
     private String nombre;
-    @Column("description")
+    @Column("descripcion")
     private String descripcion;
-    @Column("location")
+    @Column("ubicacion")
     private String ubicacion;
-    @Column("cell")
+    @Column("celular")
     private String celular;
-    @Column("document")
+    @Column("documento")
     private String documento;
     @Column("tipo_documento")
     private String tipoDocumento;

@@ -56,8 +56,7 @@ public class ClientAdapter implements ClientPort{
     public Mono<Void> eliminarCliente(UUID id) { return clientData.deleteById(id);}
 
     @Override
-    public Mono<Boolean> existeClientePorNombre(String nombreClient) {
-        return clientData.findByNombre(nombreClient)
-                .map(mapper::toDomain).hasElement();
+    public Mono<Boolean> existsByDocument(String document) {
+        return clientData.existsByDocumento(document);
     }
 }

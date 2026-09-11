@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface ClientData extends ReactiveCrudRepository<ClientEntity, UUID>{
     Mono<ClientEntity> findByNombre(String nombre);
     Mono<ClientEntity> findByDocumento(String documento);
+    Mono<Boolean> existsByDocumento(String documento);
 }

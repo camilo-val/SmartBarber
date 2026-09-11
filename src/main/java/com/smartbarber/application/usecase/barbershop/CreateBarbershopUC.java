@@ -17,7 +17,7 @@ public class CreateBarbershopUC {
         return barberShopRepositoryPort.existByName(barbershop.getName())
                 .flatMap(exist -> {
                     if(Boolean.TRUE.equals(exist)){
-                        return Mono.error(new BusinessExceptions(BarberShopMessageExceptions.BARBERSHOP_ALREADY_EXIST));
+                        return Mono.error(() -> new BusinessExceptions(BarberShopMessageExceptions.BARBERSHOP_ALREADY_EXIST));
                     }
                     return Mono.just(barbershop);
                 })

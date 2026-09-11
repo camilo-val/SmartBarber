@@ -17,9 +17,9 @@ public class SubscriptionEntity {
     @Id
     @Column("id_suscripcion")
     private UUID id;
-    @Column("name")
+    @Column("nombre")
     private String name;
-    @Column("description")
+    @Column("descripcion")
     private String description;
     @Column("precio")
     private Integer price;

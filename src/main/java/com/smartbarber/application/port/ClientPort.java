@@ -12,5 +12,5 @@ public interface ClientPort {
     Mono<Client> crearCliente(Client client);
     Mono<Client> actualizarCliente(UUID id, Client client);
     Mono<Void> eliminarCliente(UUID id);
-    Mono<Boolean> existeClientePorNombre(String nombreClient);
+    Mono<Boolean> existsByDocument(String document);
 }

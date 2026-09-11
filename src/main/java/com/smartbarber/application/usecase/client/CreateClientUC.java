@@ -15,10 +15,11 @@ public class CreateClientUC {
     private final ClientPort clientPort;
 
     public Mono<Client> crearCliente(Client client){
-        return clientPort.existeClientePorNombre(client.getNombre())
+        return clientPort.existsByDocument(client.getDocumento())
                 .flatMap( exist-> {
+                    System.out.println("Existe cliente: +" + exist);
                     if (Boolean.TRUE.equals(exist)){
-                        Mono.error(new BusinessExceptions(ClientMessageExceptions.CLIENT_EXISTENTE));
+                        return Mono.error(() -> new BusinessExceptions(ClientMessageExceptions.CLIENT_EXISTENTE));
                     }
                     return Mono.just(client);
                 })
