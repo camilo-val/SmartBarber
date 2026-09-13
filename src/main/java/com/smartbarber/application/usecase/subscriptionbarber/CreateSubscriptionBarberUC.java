@@ -1,7 +1,7 @@
 package com.smartbarber.application.usecase.subscriptionbarber;
 
 import com.smartbarber.application.command.SubscriptionBarbershopCommand;
-import com.smartbarber.application.port.subscriptionbarbershop.SubscriptionBarbershopRepositoryPort;
+import com.smartbarber.domain.port.subscriptionbarbershop.SubscriptionBarbershopRepositoryPort;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.subscriptionbarber.SubscriptionBarberMessageExceptions;
 import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;

@@ -1,6 +1,6 @@
 package com.smartbarber.application.usecase.barbershop;
 
-import com.smartbarber.application.port.BarberShopRepositoryPort;
+import com.smartbarber.domain.port.BarberShopRepositoryPort;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.barbershop.BarberShopMessageExceptions;
 import com.smartbarber.domain.model.barbershop.Barbershop;

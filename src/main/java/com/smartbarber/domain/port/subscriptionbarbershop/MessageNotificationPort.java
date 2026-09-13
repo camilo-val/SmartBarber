@@ -1,4 +1,4 @@
-package com.smartbarber.application.port.subscriptionbarbershop;
+package com.smartbarber.domain.port.subscriptionbarbershop;
 
 import com.smartbarber.application.command.MessageCommand;
 import reactor.core.publisher.Flux;

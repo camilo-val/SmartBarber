@@ -1,6 +1,6 @@
 package com.smartbarber.application.usecase.barbershop;
 
-import com.smartbarber.application.port.BarberShopRepositoryPort;
+import com.smartbarber.domain.port.BarberShopRepositoryPort;
 import com.smartbarber.domain.model.barbershop.Barbershop;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

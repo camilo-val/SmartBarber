@@ -1,4 +1,4 @@
-package com.smartbarber.application.port;
+package com.smartbarber.domain.port;
 
 import com.smartbarber.domain.model.barbershop.Barbershop;
 import reactor.core.publisher.Flux;

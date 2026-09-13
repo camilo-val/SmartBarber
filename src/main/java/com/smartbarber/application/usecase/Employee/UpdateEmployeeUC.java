@@ -1,6 +1,6 @@
 package com.smartbarber.application.usecase.Employee;
 
-import com.smartbarber.application.port.EmployeePort;
+import com.smartbarber.domain.port.EmployeePort;
 import com.smartbarber.domain.model.employee.Employee;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

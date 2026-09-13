@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.drivenadapter.postgres.adapter;
 
-import com.smartbarber.application.port.UserPort;
+import com.smartbarber.domain.port.UserPort;
 import com.smartbarber.domain.model.user.User;
 import com.smartbarber.infrastructure.drivenadapter.postgres.data.UserData;
 import com.smartbarber.infrastructure.drivenadapter.postgres.mapper.UserAdapterMapper;

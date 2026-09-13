@@ -1,7 +1,7 @@
 package com.smartbarber.infrastructure.drivenadapter.websocket.adapter;
 
 import com.smartbarber.application.command.MessageCommand;
-import com.smartbarber.application.port.subscriptionbarbershop.MessageNotificationPort;
+import com.smartbarber.domain.port.subscriptionbarbershop.MessageNotificationPort;
 import com.smartbarber.infrastructure.entrypoint.utils.commons.ObjectMessageMapper;
 import com.smartbarber.infrastructure.entrypoint.utils.commons.WebSocketConnectionManager;
 import org.springframework.beans.factory.annotation.Value;

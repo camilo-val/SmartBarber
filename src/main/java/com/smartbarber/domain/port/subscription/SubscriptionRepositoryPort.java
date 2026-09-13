@@ -1,4 +1,4 @@
-package com.smartbarber.application.port.subscription;
+package com.smartbarber.domain.port.subscription;
 
 import com.smartbarber.domain.model.suscription.Subscription;
 import reactor.core.publisher.Flux;

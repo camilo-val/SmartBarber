@@ -1,6 +1,6 @@
 package com.smartbarber.application.usecase.user;
 
-import com.smartbarber.application.port.UserPort;
+import com.smartbarber.domain.port.UserPort;
 import com.smartbarber.domain.model.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
