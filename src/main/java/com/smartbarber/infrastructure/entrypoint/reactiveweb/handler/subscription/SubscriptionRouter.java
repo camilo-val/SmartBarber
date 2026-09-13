@@ -16,7 +16,7 @@ public class SubscriptionRouter {
     private final HandlerSubscription handler;
     @Bean
     public RouterFunction<ServerResponse> routerSubscription(){
-        return RouterFunctions.route(RequestPredicates.GET(SUBSCRIPTION_SERVICE + "/id/{id}"),handler::createSubscription)
+        return RouterFunctions.route(RequestPredicates.POST(SUBSCRIPTION_SERVICE + "/create-subscription"),handler::createSubscription)
                 .andRoute(RequestPredicates.GET(SUBSCRIPTION_SERVICE + "/all"),handler::getAllSubscription)
                 .andRoute(RequestPredicates.GET(SUBSCRIPTION_SERVICE + "/id/{id}"),handler::getSubscription);
     }

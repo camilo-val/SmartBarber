@@ -21,8 +21,8 @@ import java.util.Map;
 
 import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.UNEXPECTED;
 
-//@Component
-//@Order(-2)
+@Component
+@Order(-2)
 @AllArgsConstructor
 public class GlobalHandlerError implements ErrorWebExceptionHandler {
 

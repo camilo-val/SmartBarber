@@ -15,11 +15,11 @@ public class BarbershopRouter {
 
     @Bean
     public RouterFunction<ServerResponse> routerBarbershop(){
-        return RouterFunctions.route(RequestPredicates.POST(BARBER_SERVICE + "/crear-barberia"), barbershopHandler::createBarbershop)
+        return RouterFunctions.route(RequestPredicates.POST(BARBER_SERVICE + "/create-barber"), barbershopHandler::createBarbershop)
                 .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/name/{name}"), barbershopHandler::findBarbershopByNae)
-                .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/razon-social/{companyName}"), barbershopHandler::findBarbershopByCompanyName)
+                .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/companyName/{companyName}"), barbershopHandler::findBarbershopByCompanyName)
                 .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/document/{document}"), barbershopHandler::findByBarbershopByDocument)
                 .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/id/{id}"), barbershopHandler::findBarbershopById)
-                .andRoute(RequestPredicates.PUT(BARBER_SERVICE + "/actualizar-barberia/{id}"), barbershopHandler::updateBarbershop);
+                .andRoute(RequestPredicates.PUT(BARBER_SERVICE + "/update-barber/{id}"), barbershopHandler::updateBarbershop);
     }
 }

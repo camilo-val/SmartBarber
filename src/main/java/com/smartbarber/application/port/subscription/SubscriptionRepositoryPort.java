@@ -10,5 +10,5 @@ public interface SubscriptionRepositoryPort {
     Mono<Subscription> save(Subscription subscription);
     Mono<Subscription> findById(Integer id);
     Flux<Subscription> findAll();
-    Mono <Boolean> existsById(Integer id);
+    Mono <Boolean> existsByName(String name);
 }

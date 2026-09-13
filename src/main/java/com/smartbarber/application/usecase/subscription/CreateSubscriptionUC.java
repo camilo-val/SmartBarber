@@ -16,7 +16,7 @@ public class CreateSubscriptionUC {
     private final SubscriptionRepositoryPort port;
 
     public Mono<Subscription> createSubscription(SubscriptionCommand subscription){
-        return port.existsById(subscription.id())
+        return port.existsByName(subscription.name())
                 .flatMap(exists -> {
                     if (Boolean.TRUE.equals(exists)){
                         return Mono.error(() -> new BusinessExceptions(SubscriptionMessageExceptions.SUBSCRIPTION_ALREADY_EXIST));

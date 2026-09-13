@@ -34,8 +34,8 @@ public class SubscriptionAdapter implements SubscriptionRepositoryPort {
     }
 
     @Override
-    public Mono<Boolean> existsById(Integer id) {
-        return data.existsById(id);
+    public Mono<Boolean> existsByName(String name) {
+        return data.existsByName(name);
     }
 
 
