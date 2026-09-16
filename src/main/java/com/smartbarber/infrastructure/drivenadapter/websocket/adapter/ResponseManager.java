@@ -3,6 +3,8 @@ package com.smartbarber.infrastructure.drivenadapter.websocket.adapter;
 import com.smartbarber.application.command.in.SubscriptionBarbershopCommand;
 import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;
 import com.smartbarber.domain.port.subscriptionbarbershop.MessageResponsePort;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -30,7 +32,10 @@ public class ResponseManager implements MessageResponsePort  {
         return sink.asFlux()
                 .next()
                 .timeout(Duration.ofSeconds(timeOut))
-                .doFinally(signalType -> pending.remove(orderId));
+                .doFinally(signalType -> {
+                    Mono.error(() -> new TechnicalExceptions(TechnicalMessageExceptions.TIME_OUT));
+                    pending.remove(orderId);
+                });
     }
 
     @Override

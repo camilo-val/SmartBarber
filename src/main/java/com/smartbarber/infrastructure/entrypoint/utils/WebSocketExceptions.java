@@ -7,6 +7,8 @@ import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.Technical
 import com.smartbarber.infrastructure.entrypoint.websocket.dto.MessageRsDto;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.*;
 
 @Component
@@ -31,6 +33,7 @@ public class WebSocketExceptions {
                 .data(ErrorRsDto.builder().reason(reason)
                         .code(code)
                         .message(message)
+                        .date(Instant.now())
                         .build())
                 .build();
     }

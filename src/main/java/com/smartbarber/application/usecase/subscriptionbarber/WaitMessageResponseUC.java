@@ -4,6 +4,8 @@ import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;
 import com.smartbarber.domain.port.subscriptionbarbershop.MessageNotificationPort;
 import com.smartbarber.domain.port.subscriptionbarbershop.MessageResponsePort;
 import com.smartbarber.domain.port.subscriptionbarbershop.SubscriptionBarbershopRepositoryPort;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -33,6 +35,6 @@ public class WaitMessageResponseUC {
                         return repositoryPort.update(update);
                     }
             ))
-            .onErrorMap(e -> new RuntimeException(e.getMessage()));
+            .onErrorResume(e -> Mono.error(() -> new TechnicalExceptions(TechnicalMessageExceptions.TIME_OUT)));
     }
 }
