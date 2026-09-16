@@ -17,20 +17,20 @@ import java.util.UUID;
 public class SearchEmployeeUC {
     private final EmployeePort employeePort;
 
-    public Mono<Employee> buscarPorNombre(String nombre){
-        return employeePort.buscarEmpleadoPorNombre(nombre)
+    public Mono<Employee> buscarPorNombre(String name){
+        return employeePort.findByName(name)
                 .doOnNext(employee -> log.info("Datos encontrados {}", employee))
                 .switchIfEmpty(Mono.error(new EmployeeExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
     }
 
-    public Mono<Employee> buscarPorDocuemnto(String documento){
-        return employeePort.buscarPorDocuemnto(documento)
+    public Mono<Employee> buscarPorDocuemnto(String document){
+        return employeePort.findByDocument(document)
                 .doOnNext(employee -> log.info("Datos encontrados {}", employee))
                 .switchIfEmpty(Mono.error(new EmployeeExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
     }
 
     public Mono<Employee> buscarPorId(String id){
-        return employeePort.buscarEmpleadoPorId(UUID.fromString(id))
+        return employeePort.findById(UUID.fromString(id))
                 .doOnNext(employee -> log.info("Datos encontrados {}", employee))
                 .switchIfEmpty(Mono.error(new EmployeeExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
     }

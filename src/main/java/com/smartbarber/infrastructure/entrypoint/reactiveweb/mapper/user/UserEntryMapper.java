@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public interface UserEntryMapper {
     UserRsDto toResponse(User user);
     default User toDomain(UserRqDto rqDto){
-        return User.crear(
+        return User.createUser(
                 null,
                 rqDto.firebaseId()
         );

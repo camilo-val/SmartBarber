@@ -7,13 +7,13 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface EmployeePort {
-    Mono<Employee> buscarEmpleadoPorId(UUID id);
-    Mono<Employee> buscarEmpleadoPorNombre(String nombre);
-    Mono<Employee> buscarPorDocuemnto(String documento);
-    Mono<Employee> crearEmpleado(Employee employee);
-    Mono<Employee> actualizarEmpleado( UUID id, Employee employee);
+    Mono<Employee> findById(UUID id);
+    Mono<Employee> findByName(String name);
+    Mono<Employee> findByDocument(String document);
+    Mono<Employee> save(Employee employee);
+    Mono<Employee> update( UUID id, Employee employee);
     Mono<Void> eliminarEmpleado(UUID id);
-    Mono<Boolean> existeEmpleadoPorNombre(String nombreEmpleado);
+    Mono<Boolean> existsByDocument(String document);
 
 
 }

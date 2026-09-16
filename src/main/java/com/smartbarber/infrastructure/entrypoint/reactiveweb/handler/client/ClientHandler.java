@@ -25,7 +25,7 @@ public class ClientHandler {
     private final UpdateClientUC updateClientUC;
     private final SearchClientUC searchClientUC;
 
-    public Mono<ServerResponse> crearCliente(ServerRequest request){
+    public Mono<ServerResponse> createClient(ServerRequest request){
         return request.bodyToMono(ClientRqDto.class)
                 .doOnNext(validateRequest::validate)
                 .map(mapper::toDomain)
@@ -35,33 +35,33 @@ public class ClientHandler {
                 .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));
     }
 
-    public Mono<ServerResponse> buscarClientePorNombre(ServerRequest request){
+    public Mono<ServerResponse> findClientByName(ServerRequest request){
         return searchClientUC.buscarPorNombre(request.pathVariable("name"))
                 .map(mapper::toResponse)
                 .flatMap( response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> buscarClientePorDocuemnto(ServerRequest request){
+    public Mono<ServerResponse> findByClientByDocument(ServerRequest request){
         return searchClientUC.bucarPorDocumento(request.pathVariable("document"))
                 .map(mapper::toResponse)
                 .flatMap( response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> buscarClientePorId(ServerRequest request){
+    public Mono<ServerResponse> findClientById(ServerRequest request){
         return searchClientUC.buscarPorId(request.pathVariable("id"))
                 .map(mapper::toResponse)
                 .flatMap( response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> actualizarCliente(ServerRequest request){
+    public Mono<ServerResponse> updateClient(ServerRequest request){
         return request.bodyToMono(ClientRqDto.class)
                 .doOnNext(validateRequest::validate)
                 .map(mapper::toDomain)
                 .flatMap( client -> updateClientUC
-                        .actualizarCliente(request.pathVariable("id"), client))
+                        .clientUpdate(request.pathVariable("id"), client))
                 .map(mapper::toResponse)
                 .flatMap( response -> ServerResponse.accepted().bodyValue(response));
     }

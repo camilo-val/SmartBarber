@@ -15,7 +15,7 @@ public class CreateClientUC {
     private final ClientPort clientPort;
 
     public Mono<Client> crearCliente(Client client){
-        return clientPort.existsByDocument(client.getDocumento())
+        return clientPort.existsByDocument(client.getDocument())
                 .flatMap( exist-> {
                     System.out.println("Existe cliente: +" + exist);
                     if (Boolean.TRUE.equals(exist)){
@@ -23,6 +23,6 @@ public class CreateClientUC {
                     }
                     return Mono.just(client);
                 })
-                .flatMap(clientPort::crearCliente);
+                .flatMap(clientPort::save);
     }
 }

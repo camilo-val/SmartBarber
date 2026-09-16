@@ -18,7 +18,7 @@ public class SearchUserUC {
     private final UserPort userPort;
 
     public Mono<User> buscarPorId(String id){
-        return userPort.buscarUsuarioPorId(UUID.fromString(id))
+        return userPort.findById(UUID.fromString(id))
                 .doOnNext( user -> log.info("Datos encontrados {}", user))
                 .switchIfEmpty(Mono.error(() -> new BusinessExceptions(UserMessageExceptions.USUARIO_NO_EXISTE)));
     }

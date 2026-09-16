@@ -2,6 +2,7 @@ package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.User;
 
 import lombok.Builder;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -9,8 +10,8 @@ import java.util.UUID;
 public record UserRsDto (
         UUID id,
         String firebaseId,
-        String estado,
-        LocalDate fechaCreacion,
-        LocalDate fechaModificacion
+        String status,
+        Instant createAt,
+        Instant updateAt
 ){
 }

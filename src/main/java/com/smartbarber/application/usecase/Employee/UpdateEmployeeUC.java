@@ -13,13 +13,13 @@ import java.util.UUID;
 public class UpdateEmployeeUC {
     private final EmployeePort employeePort;
 
-    public Mono<Employee> actualizarEmpleado(String id, Employee employee){
+    public Mono<Employee> employeeUpdate(String id, Employee employee){
 
-        return employeePort.buscarEmpleadoPorId(UUID.fromString(id))
-                .map( employeeDB -> Employee.actualizar(employeeDB.getId(), employeeDB.getUserId(),
-                        employeeDB.getBarberiaId(), employee.getDocumento(), employee.getTipoDocumento(),
-                        employee.getNombre(), employee.getCelular(), employee.getCorreo(), employee.getEspecialidad(),
-                        employeeDB.getFechaCreacion()))
-                .flatMap( empleadoModificado -> employeePort.actualizarEmpleado(UUID.fromString(id), empleadoModificado));
+        return employeePort.findById(UUID.fromString(id))
+                .map( employeeDB -> Employee.update(employeeDB.getId(), employeeDB.getUserId(),
+                        employeeDB.getBarberiaId(), employee.getDocument(), employee.getDocumentType(),
+                        employee.getName(), employee.getCell(), employee.getEmail(), employee.getSpecialty(),
+                        employeeDB.getCreateAt()))
+                .flatMap( employeeUpdate -> employeePort.update(UUID.fromString(id), employeeUpdate));
     }
 }

@@ -7,7 +7,8 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface EmployeeData extends ReactiveCrudRepository<EmployeeEntity, UUID>{
-    Mono<EmployeeEntity> findByNombre(String nombre);
-    Mono<EmployeeEntity> findByDocumento(String documento);
+    Mono<EmployeeEntity> findByName(String name);
+    Mono<EmployeeEntity> findByDocument(String document);
+    Mono<Boolean> existsByDocument(String document);
 
 }

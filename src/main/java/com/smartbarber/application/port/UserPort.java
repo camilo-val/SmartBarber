@@ -6,9 +6,9 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface UserPort {
-    Mono<User> buscarUsuarioPorId(UUID id);
-    Mono<User> crearUsuario(User user);
-    Mono<User> actualizarUsuario(UUID id, User user);
+    Mono<User> findById(UUID id);
+    Mono<User> save(User user);
+    Mono<User> update(UUID id, User user);
     Mono<Void> eliminarUsuario(UUID id);
-    Mono<Boolean> existeUsuarioPorFirebaseId(String firebaseId);
+    Mono<Boolean> existByFirebaseId(String firebaseId);
 }

@@ -15,13 +15,13 @@ public class CrateEmployeeUC {
     private final EmployeePort employeePort;
 
     public Mono<Employee> crearEmpleado(Employee employee){
-        return employeePort.existeEmpleadoPorNombre(employee.getNombre())
+        return employeePort.existsByDocument(employee.getDocument())
                 .flatMap(exist -> {
                     if (Boolean.TRUE.equals(exist)){
                         Mono.error(new EmployeeExceptions(MessageExceptionsEmployee.EMPLOYEE_EXISTENTE));
                     }
                     return Mono.just(employee);
                 })
-                .flatMap(employeePort::crearEmpleado);
+                .flatMap(employeePort::save);
     }
 }

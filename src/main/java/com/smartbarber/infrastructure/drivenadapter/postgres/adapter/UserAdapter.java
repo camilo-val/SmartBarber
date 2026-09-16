@@ -19,13 +19,13 @@ public class UserAdapter implements UserPort {
     private final UserData userData;
     private final UserAdapterMapper mapper;
     @Override
-    public Mono<User> buscarUsuarioPorId(UUID id) {
+    public Mono<User> findById(UUID id) {
         return userData.findById(id)
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<User> crearUsuario(User user) {
+    public Mono<User> save(User user) {
         return userData.save(mapper.toEntity(user))
                 .doOnNext(e -> log.info("Data registrada {}", e.toString()))
                 .doOnSuccess(entityGuardada ->
@@ -36,7 +36,7 @@ public class UserAdapter implements UserPort {
     }
 
     @Override
-    public Mono<User> actualizarUsuario(UUID id, User user) {
+    public Mono<User> update(UUID id, User user) {
         return userData.save(mapper.toEntity(user))
                 .map(mapper::toDomain);
     }
@@ -45,7 +45,7 @@ public class UserAdapter implements UserPort {
     public Mono<Void> eliminarUsuario(UUID id) { return userData.deleteById(id); }
 
     @Override
-    public Mono<Boolean> existeUsuarioPorFirebaseId(String firebaseId){
+    public Mono<Boolean> existByFirebaseId(String firebaseId){
         return userData.findByFirebaseId(firebaseId)
                 .map(mapper::toDomain).hasElement();
     }

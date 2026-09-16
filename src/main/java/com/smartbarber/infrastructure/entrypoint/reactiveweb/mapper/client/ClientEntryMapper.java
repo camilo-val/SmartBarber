@@ -9,14 +9,14 @@ import org.mapstruct.Mapper;
 public interface ClientEntryMapper {
     ClientRsDto toResponse(Client client);
     default Client toDomain(ClientRqDto rqDto){
-        return Client.crear(
+        return Client.createClient(
                 null,
                 rqDto.userId(),
-                rqDto.documento(),
-                rqDto.tipoDocumento(),
-                rqDto.nombre(),
-                rqDto.celular(),
-                rqDto.correo()
+                rqDto.document(),
+                rqDto.documentType(),
+                rqDto.name(),
+                rqDto.cell(),
+                rqDto.email()
 
         );
     }

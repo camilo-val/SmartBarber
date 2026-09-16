@@ -14,13 +14,13 @@ public class CreateUserUC {
     private final UserPort userPort;
 
     public Mono<User> crearUsuario(User user) {
-        return userPort.existeUsuarioPorFirebaseId(user.getFirebaseId())
+        return userPort.existByFirebaseId(user.getFirebaseId())
                 .flatMap( exist-> {
                     if (Boolean.TRUE.equals(exist)){
                         return Mono.error(() -> new BusinessExceptions(UserMessageExceptions.USUARIO_EXISTENTE));
                     }
                     return Mono.just(user);
                 })
-                .flatMap(userPort::crearUsuario);
+                .flatMap(userPort::save);
     }
 }

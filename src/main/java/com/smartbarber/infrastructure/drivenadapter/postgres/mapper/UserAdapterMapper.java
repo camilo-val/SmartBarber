@@ -11,12 +11,12 @@ public interface UserAdapterMapper {
         if (entity == null){
             return null;
         }
-        return User.reconstruir(
+        return User.rebuild(
                 entity.getId(),
                 entity.getFirebaseId(),
-                entity.getEstado(),
-                entity.getFechaCreacion(),
-                entity.getFechaModificacion()
+                entity.getStatus(),
+                entity.getCreateAt(),
+                entity.getUpdateAt()
         );
     }
 }

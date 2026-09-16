@@ -18,25 +18,25 @@ public class ClientAdapter implements ClientPort{
     private final ClientData clientData;
     private final ClientAdapterMapper mapper;
     @Override
-    public Mono<Client> buscarClientePorId(UUID id){
+    public Mono<Client> findById(UUID id){
         return clientData.findById(id)
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Client> buscarClientePorNombre(String nombre){
-        return clientData.findByNombre(nombre)
+    public Mono<Client> findByName(String name){
+        return clientData.findByName(name)
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Client> buscarPorDocuemnto(String documento){
-        return clientData.findByDocumento(documento)
+    public Mono<Client> findByDocument(String document){
+        return clientData.findByDocument(document)
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Client> crearCliente(Client client){
+    public Mono<Client> save(Client client){
         return clientData.save(mapper.toEntity(client))
                 .doOnNext( e -> log.info("Data registrada {}", e.toString()))
                 .doOnSuccess( entityGuardada ->
@@ -47,7 +47,7 @@ public class ClientAdapter implements ClientPort{
     }
 
     @Override
-    public Mono<Client> actualizarCliente(UUID id, Client client){
+    public Mono<Client> update(UUID id, Client client){
         return clientData.save(mapper.toEntity(client))
                 .map(mapper::toDomain);
     }
@@ -57,6 +57,6 @@ public class ClientAdapter implements ClientPort{
 
     @Override
     public Mono<Boolean> existsByDocument(String document) {
-        return clientData.existsByDocumento(document);
+        return clientData.existsByDocument(document);
     }
 }

@@ -15,16 +15,16 @@ public record ClientRqDto(
         @NotNull(message = "El id del usuario es obligatorio")
         UUID userId,
         @NotBlank(message = "El name es obligatorio")
-        String nombre,
+        String name,
         @NotBlank(message = "El document es obligatorio")
-        String documento,
+        String document,
         @NotNull
-        DocumentType tipoDocumento,
+        DocumentType documentType,
         @NotBlank(message = "El celuar es obligatorio")
         @Pattern(regexp = "^[0-9]{10}$", message = "El cell no puede ser allfanumerico y debe tener 10 digitos")
-        String celular,
+        String cell,
         @NotBlank(message = "El Correo es obligatorio")
         @Email(message = "El correo no tiene un formato válido")
-        String correo
+        String email
 ){
 }
