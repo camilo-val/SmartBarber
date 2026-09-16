@@ -1,4 +1,4 @@
-package com.smartbarber.infrastructure.entrypoint.utils.commons;
+package com.smartbarber.infrastructure.drivenadapter.websocket.config;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -13,27 +13,28 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Log4j2
 @Component
-public class WebSocketConnectionManager {
+public class WebSocketPaymentManager {
     private final Map<UUID, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
     public void registerSession(UUID orderId, WebSocketSession session) {
-        log.info("Registering WebSocket session for orderId: {},  sessionID: {}", orderId,session.getId());
+        log.info("Registering WebSocket Payment session for orderId: {}, sesion id : {}", orderId, session.getId());
         sessions.put(orderId, session);
     }
 
-    public Mono<Void> send(UUID orderId, String message){
-        WebSocketSession session = sessions.get(orderId);
-
-        if(session==null){
-            log.warn("WebSocket session for orderId: {} not found", orderId);
-            return Mono.empty();
-        }
-        log.info("Sending WebSocket message for orderId: {},  sessionID: {}", orderId,session.getId());
-        return session.send(Mono.just(session.textMessage(message)));
-    }
-
     public void removeSession(UUID orderId) {
+        log.info("Removing WebSocket Payment session for orderId: {}", orderId);
         sessions.remove(orderId);
     }
 
+    public Mono<Void> send(UUID orderId, String message){
+        log.info("Sending message to WebSocket Payment session for orderId: {}", orderId);
+        WebSocketSession session = sessions.get(orderId);
+        if(session==null){
+            log.warn("WebSocket Payment session for orderId: {} not found session id{}", orderId, session.getId());
+            return Mono.empty();
+        }
+
+        return session.send(Mono.just(session.textMessage(message)));
+
+    }
 }

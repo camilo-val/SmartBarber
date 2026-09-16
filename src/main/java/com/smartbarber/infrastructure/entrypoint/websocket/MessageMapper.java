@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.websocket;
 
-import com.smartbarber.application.command.MessageCommand;
+import com.smartbarber.application.command.out.MessageCommand;
 import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

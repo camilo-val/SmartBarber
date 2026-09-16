@@ -1,6 +1,6 @@
 package com.smartbarber.application.usecase.subscriptionbarber;
 
-import com.smartbarber.application.command.SubscriptionBarbershopCommand;
+import com.smartbarber.application.command.in.SubscriptionBarbershopCommand;
 import com.smartbarber.domain.port.subscriptionbarbershop.SubscriptionBarbershopRepositoryPort;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.subscriptionbarber.SubscriptionBarberMessageExceptions;
@@ -16,8 +16,9 @@ public class CreateSubscriptionBarberUC {
     private final SubscriptionBarbershopRepositoryPort port;
 
     public Mono<SubscriptionBarbershop> createSubscription(SubscriptionBarbershopCommand subscriptionBarbershop) {
+        System.out.println("CreateSubscriptionBarberUC.createSubscription: " + subscriptionBarbershop);
         return port.existsByOrderId(subscriptionBarbershop.orderId())
-                .flatMap( exists -> {
+                .flatMap(exists -> {
                     if (exists) {
                         return Mono.error(() -> new BusinessExceptions(SubscriptionBarberMessageExceptions.SUBSCRIPTION_BARBER_ALREADY_EXISTS));
                     }

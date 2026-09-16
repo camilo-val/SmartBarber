@@ -1,8 +1,6 @@
-package com.smartbarber.application.command;
+package com.smartbarber.application.command.in;
 
 import lombok.Builder;
-
-import java.util.UUID;
 
 @Builder
 public record SubscriptionCommand (

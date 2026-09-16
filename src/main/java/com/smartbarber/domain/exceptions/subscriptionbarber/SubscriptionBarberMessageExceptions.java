@@ -5,7 +5,8 @@ import com.smartbarber.domain.exceptions.ErrorMessage;
 public enum SubscriptionBarberMessageExceptions implements ErrorMessage {
     INVALID_SUBSCRIPTION_BARBER("SB_001","invalid subscription barber"),
     SUBSCRIPTION_BARBER_NOT_FOUND("SB_002","subscription barber not found"),
-    SUBSCRIPTION_BARBER_ALREADY_EXISTS("SB_003","subscription barber already exists"),;
+    SUBSCRIPTION_BARBER_ALREADY_EXISTS("SB_003","subscription barber already exists"),
+    INVALID_SUBSCRIPTION_BARBER_STATUS("SB_004","invalid subscription barber status");
     private final String code;
     private final String message;
     SubscriptionBarberMessageExceptions(String code, String message) {

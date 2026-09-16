@@ -57,8 +57,25 @@ public class SubscriptionBarbershop {
             throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER);
         }
 
-        return new SubscriptionBarbershop(null, barberId, subscriptionId,orderId, transactionId, status, amount,
+        return new SubscriptionBarbershop(id, barberId, subscriptionId,orderId, transactionId, status, amount,
                 duration, createdAt,updatedAt);
+    }
+
+    public SubscriptionBarbershop update(SubscriptionBarberStatus status){
+
+        boolean attributeIsNull = isNull(barberId) || isNull(subscriptionId) || isNull(orderId)
+                || isNull(transactionId) || isNull(amount) || isNull(duration);
+
+        if(attributeIsNull || amount <= 0 || duration <= 0){
+            throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER);
+        }
+        if (status.equals(SubscriptionBarberStatus.PENDING)) {
+            throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER_STATUS);
+
+        }
+
+        return new SubscriptionBarbershop(this.id, this.barberId, this.subscriptionId, this.orderId, this.transactionId
+                , status, this.amount, this.duration, this.createdAt,Instant.now());
     }
 
     private static boolean isNull(Object attribute){
@@ -104,5 +121,21 @@ public class SubscriptionBarbershop {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "SubscriptionBarbershop{" +
+                "id=" + id +
+                ", barberId=" + barberId +
+                ", subscriptionId=" + subscriptionId +
+                ", orderId=" + orderId +
+                ", transactionId=" + transactionId +
+                ", status=" + status +
+                ", amount=" + amount +
+                ", duration=" + duration +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

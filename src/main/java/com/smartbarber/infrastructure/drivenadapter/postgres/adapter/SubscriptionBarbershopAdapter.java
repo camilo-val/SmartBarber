@@ -27,9 +27,13 @@ public class SubscriptionBarbershopAdapter implements SubscriptionBarbershopRepo
 
     @Override
     public Mono<Boolean> existsByOrderId(UUID orderId) {
-        System.out.println(orderId);
+        System.out.println("Entrando");
         return data.existsByOrderId(orderId).doOnSuccess(x -> System.out.println("onSuccess: " +x))
-                .doOnError(x -> System.out.println("onError: " +x));
+                .doOnError(x -> System.out.println("onError: " +x))
+                .onErrorResume(e -> {
+                    System.out.println("Error checking existence of orderId: " + orderId + ", error: " + e.getMessage());
+                    return Mono.just(false);
+                });
     }
 
     @Override

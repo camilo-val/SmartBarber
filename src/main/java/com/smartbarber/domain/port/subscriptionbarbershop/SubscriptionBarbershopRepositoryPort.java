@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface SubscriptionBarbershopRepositoryPort {
-    Mono<SubscriptionBarbershop> findByOrderId(UUID id);
+    Mono<SubscriptionBarbershop> findByOrderId(UUID orderId);
     Mono<Boolean> existsByOrderId(UUID orderId);
     Flux<SubscriptionBarbershop> findByBarberId(UUID barberId);
     Mono<SubscriptionBarbershop> findByTransactionId(UUID transactionId);

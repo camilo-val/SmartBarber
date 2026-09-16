@@ -1,6 +1,9 @@
 package com.smartbarber.infrastructure.entrypoint.utils.constants;
 
 public class HandlerConstant {
+    private HandlerConstant() {
+    }
+
 
     public static final String EMPLOYEE_SERVICE = "employee-service";
     public static final String CLIENT_SERVICE = "client-service";

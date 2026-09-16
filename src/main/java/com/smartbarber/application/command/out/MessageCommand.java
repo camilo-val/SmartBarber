@@ -1,4 +1,4 @@
-package com.smartbarber.application.command;
+package com.smartbarber.application.command.out;
 
 import lombok.Builder;
 

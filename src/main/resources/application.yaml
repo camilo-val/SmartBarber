@@ -16,3 +16,4 @@ logging:
 
 payment:
   key: ${PAYMENT_KEY}
+  timeout: 15

@@ -1,4 +1,4 @@
-package com.smartbarber.application.command;
+package com.smartbarber.application.command.in;
 
 import com.smartbarber.domain.enums.SubscriptionBarberStatus;
 import lombok.Builder;
