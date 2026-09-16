@@ -1,6 +1,9 @@
 package com.smartbarber.domain.exceptions;
 
 
+import lombok.Getter;
+
+@Getter
 public class BusinessExceptions extends RuntimeException {
     private final ErrorMessage exceptionMessage;
 
@@ -9,7 +12,4 @@ public class BusinessExceptions extends RuntimeException {
         this.exceptionMessage = exceptionMessage;
     }
 
-    public ErrorMessage getExceptionMessage() {
-        return exceptionMessage;
-    }
 }

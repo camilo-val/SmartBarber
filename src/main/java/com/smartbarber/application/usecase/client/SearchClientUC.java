@@ -1,6 +1,6 @@
 package com.smartbarber.application.usecase.client;
 
-import com.smartbarber.application.port.ClientPort;
+import com.smartbarber.domain.port.ClientPort;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.client.ClientMessageExceptions;
 import com.smartbarber.domain.model.client.Client;

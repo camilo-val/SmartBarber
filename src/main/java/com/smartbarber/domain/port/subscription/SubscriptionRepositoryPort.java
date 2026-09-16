@@ -1,4 +1,4 @@
-package com.smartbarber.application.port.subscription;
+package com.smartbarber.domain.port.subscription;
 
 import com.smartbarber.domain.model.suscription.Subscription;
 import reactor.core.publisher.Flux;
@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface SubscriptionRepositoryPort {
     Mono<Subscription> save(Subscription subscription);
-    Mono<Subscription> findById(UUID id);
+    Mono<Subscription> findById(Integer id);
     Flux<Subscription> findAll();
-    Mono <Boolean> existsById(UUID id);
+    Mono <Boolean> existsByName(String name);
 }

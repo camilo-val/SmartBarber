@@ -13,3 +13,7 @@ logging:
   level:
     org.springframework.data.r2dbc: DEBUG
     org.springframework.r2dbc: DEBUG
+
+payment:
+  key: ${PAYMENT_KEY}
+  timeout: 15
