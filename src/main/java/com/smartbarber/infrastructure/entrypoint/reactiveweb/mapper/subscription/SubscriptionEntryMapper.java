@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.subscription;
 
-import com.smartbarber.application.command.SubscriptionCommand;
+import com.smartbarber.application.command.in.SubscriptionCommand;
 import com.smartbarber.domain.model.suscription.Subscription;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.subscription.SubscriptionRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.subscription.SubscriptionRsDto;

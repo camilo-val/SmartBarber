@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.drivenadapter.postgres.adapter;
 
-import com.smartbarber.application.port.BarberShopRepositoryPort;
+import com.smartbarber.domain.port.BarberShopRepositoryPort;
 import com.smartbarber.domain.model.barbershop.Barbershop;
 import com.smartbarber.infrastructure.drivenadapter.postgres.data.BarbershopData;
 import com.smartbarber.infrastructure.drivenadapter.postgres.mapper.BarbershopAdapterMapper;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 @Slf4j
-public class BarbershopRepositoryAdapter implements BarberShopRepositoryPort {
+public class BarbershopAdapter implements BarberShopRepositoryPort {
     private final BarbershopData barbershopData;
     private final BarbershopAdapterMapper mapper;
     @Override
