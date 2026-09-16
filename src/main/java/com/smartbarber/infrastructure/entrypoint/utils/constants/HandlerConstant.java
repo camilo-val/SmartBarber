@@ -12,5 +12,6 @@ public class HandlerConstant {
     public static final String SUBSCRIPTION_SERVICE= "subscription-service";
     public static final String BUSINESS = "business";
     public static final String TECHNICAL = "technical";
+    public static final String ERROR = "error";
     public static final String UNEXPECTED = "unexpected";
 }
