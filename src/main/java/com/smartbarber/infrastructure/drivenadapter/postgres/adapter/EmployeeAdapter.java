@@ -18,25 +18,25 @@ public class EmployeeAdapter  implements EmployeePort{
     private final EmployeeData employeeData;
     private final EmployeeAdapterMapper mapper;
     @Override
-    public Mono<Employee> buscarEmpleadoPorId(UUID id){
+    public Mono<Employee> findById(UUID id){
         return employeeData.findById(id)
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Employee> buscarEmpleadoPorNombre(String nombre){
-        return employeeData.findByNombre(nombre)
+    public Mono<Employee> findByName(String name){
+        return employeeData.findByName(name)
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Employee> buscarPorDocuemnto(String documento){
-        return employeeData.findByDocumento(documento)
+    public Mono<Employee> findByDocument(String document){
+        return employeeData.findByDocument(document)
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Employee> crearEmpleado(Employee employee){
+    public Mono<Employee> save(Employee employee){
         return employeeData.save(mapper.toEntity(employee))
                 .doOnNext(e -> log.info("Data registrada {}", e.toString()))
                 .doOnSuccess( entityGuardada ->
@@ -47,7 +47,7 @@ public class EmployeeAdapter  implements EmployeePort{
     }
 
     @Override
-    public Mono<Employee> actualizarEmpleado(UUID id, Employee employee){
+    public Mono<Employee> update(UUID id, Employee employee){
         return employeeData.save(mapper.toEntity(employee))
                 .map(mapper::toDomain);
     }
@@ -56,8 +56,5 @@ public class EmployeeAdapter  implements EmployeePort{
     public Mono<Void> eliminarEmpleado(UUID id) { return employeeData.deleteById(id);}
 
     @Override
-    public Mono<Boolean> existeEmpleadoPorNombre(String nombreEmpleado) {
-        return employeeData.findByNombre(nombreEmpleado)
-                .map(mapper::toDomain).hasElement();
-    }
+    public Mono<Boolean> existsByDocument(String document) { return employeeData.existsByDocument(document); }
 }

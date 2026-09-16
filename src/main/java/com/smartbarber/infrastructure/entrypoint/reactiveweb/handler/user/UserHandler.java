@@ -48,7 +48,7 @@ public class UserHandler {
                 .doOnNext(validateRequest::validate)
                 .map(mapper::toDomain)
                 .flatMap( user -> updateUserUC
-                        .actualizarUsuario(request.pathVariable("id"), user))
+                        .userUpdate(request.pathVariable("id"), user))
                 .map(mapper::toResponse)
                 .flatMap( response -> ServerResponse.accepted().bodyValue(response));
     }

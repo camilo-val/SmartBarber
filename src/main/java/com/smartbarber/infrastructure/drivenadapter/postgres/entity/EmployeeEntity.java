@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -22,19 +23,19 @@ public class EmployeeEntity {
     @Column("id_barberia")
     private UUID barberiaId;
     @Column("documento")
-    private String documento;
+    private String document;
     @Column("tipo_documento")
-    private String tipoDocumento;
+    private String documentType;
     @Column("nombre")
-    private String nombre;
+    private String name;
     @Column("celular")
-    private String celular;
+    private String cell;
     @Column("correo")
-    private String correo;
+    private String email;
     @Column("especialidad")
-    private String especialidad;
+    private String specialty;
     @Column("fecha_creacion")
-    private LocalDate fechaCreacion;
+    private Instant createAt;
     @Column("fecha_modificacion")
-    private LocalDate fechaModificacion;
+    private Instant updateAt;
 }

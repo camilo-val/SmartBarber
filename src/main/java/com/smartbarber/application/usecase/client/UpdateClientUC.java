@@ -13,12 +13,12 @@ import java.util.UUID;
 public class UpdateClientUC {
     private final ClientPort clientPort;
 
-    public Mono<Client> actualizarCliente(String id, Client client){
+    public Mono<Client> clientUpdate(String id, Client client){
 
-        return clientPort.buscarClientePorId(UUID.fromString(id))
-                .map( clientDB -> Client.actualizar(clientDB.getId(), clientDB.getUserId(), client.getDocumento(),
-                        client.getTipoDocumento(), client.getNombre(), client.getCelular(), client.getCorreo(),
-                        clientDB.getFechaCreacion()))
-                .flatMap( clienteModificado -> clientPort.actualizarCliente(UUID.fromString(id), clienteModificado));
+        return clientPort.findById(UUID.fromString(id))
+                .map( clientDB -> Client.update(clientDB.getId(), clientDB.getUserId(), client.getDocument(),
+                        client.getDocumentType(), client.getName(), client.getCell(), client.getEmail(),
+                        clientDB.getCreateAt()))
+                .flatMap( clientUpdate -> clientPort.update(UUID.fromString(id), clientUpdate));
     }
 }

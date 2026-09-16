@@ -9,16 +9,16 @@ import org.mapstruct.Mapper;
 public interface EmployeeEntryMapper {
     EmployeeRsDto toResponse(Employee employee);
     default Employee toDomain(EmployeeRqDto rqDto){
-        return Employee.crear(
+        return Employee.createEmployee(
                 null,
                 rqDto.userId(),
                 rqDto.barberiaId(),
-                rqDto.documento(),
-                rqDto.tipoDocumento(),
-                rqDto.nombre(),
-                rqDto.celular(),
-                rqDto.correo(),
-                rqDto.especialidad()
+                rqDto.document(),
+                rqDto.documentType(),
+                rqDto.name(),
+                rqDto.cell(),
+                rqDto.email(),
+                rqDto.specialty()
         );
     }
 }

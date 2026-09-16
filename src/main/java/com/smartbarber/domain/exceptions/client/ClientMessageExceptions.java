@@ -4,10 +4,10 @@ import com.smartbarber.domain.exceptions.ErrorMessage;
 
 public enum ClientMessageExceptions implements ErrorMessage {
 
-    CLIENT_INVALIDO("CT_001", "Cliente invalido"),
-    CLIENT_EXISTENTE("CT_002", "Cliente existente"),
-    DATOS_INVALIDOS("CT_003","datos invalidos"),
-    CLIENT_NO_EXISTE("CT_004", "Cliente no existe");
+    CLIENT_INVALIDO("CT_001", "invalid client"),
+    CLIENT_EXISTENTE("CT_002", "client already exists"),
+    DATOS_INVALIDOS("CT_003","invalid data"),
+    CLIENT_NO_EXISTE("CT_004", "client not found");
 
     private final String codigo;
     private final String mensaje;

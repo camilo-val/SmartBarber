@@ -25,7 +25,7 @@ public class EmployeeHandler {
     private final UpdateEmployeeUC updateEmployeeUC;
     private final SearchEmployeeUC searchEmployeeUC;
 
-    public Mono<ServerResponse> crearEmpleado(ServerRequest request){
+    public Mono<ServerResponse> createEmployee(ServerRequest request){
         return request.bodyToMono(EmployeeRqDto.class)
                 .doOnNext(validateRequest::validate)
                 .map(mapper::toDomain)
@@ -35,33 +35,33 @@ public class EmployeeHandler {
                 .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));
     }
 
-    public Mono<ServerResponse> buscarEmpleadoPorNombre(ServerRequest request){
+    public Mono<ServerResponse> findEmployeeByName(ServerRequest request){
         return searchEmployeeUC.buscarPorNombre(request.pathVariable("nombre"))
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> buscarEmpleadoPorDocumento(ServerRequest request){
+    public Mono<ServerResponse> findByEmployeeByDocument(ServerRequest request){
         return searchEmployeeUC.buscarPorDocuemnto(request.pathVariable("documento"))
                 .map(mapper::toResponse)
                 .flatMap( response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> buscarEmpleadoPorId(ServerRequest request){
+    public Mono<ServerResponse> findEmployeeById(ServerRequest request){
         return searchEmployeeUC.buscarPorId(request.pathVariable("id"))
                 .map(mapper::toResponse)
                 .flatMap( response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> actualizarEmpleado(ServerRequest request){
+    public Mono<ServerResponse> updateEmployee(ServerRequest request){
         return request.bodyToMono(EmployeeRqDto.class)
                 .doOnNext(validateRequest::validate)
                 .map(mapper::toDomain)
                 .flatMap(employee -> updateEmployeeUC
-                        .actualizarEmpleado(request.pathVariable("id"), employee))
+                        .employeeUpdate(request.pathVariable("id"), employee))
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.accepted().bodyValue(response));
     }

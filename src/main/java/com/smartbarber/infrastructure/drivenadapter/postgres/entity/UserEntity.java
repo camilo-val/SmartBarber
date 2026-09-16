@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -19,9 +20,9 @@ public class UserEntity {
     @Column("uid_firebase")
     private String firebaseId;
     @Column("estado")
-    private String estado;
+    private String status;
     @Column("fecha_creacion")
-    private LocalDate fechaCreacion;
+    private Instant createAt;
     @Column("fecha_modificacion")
-    private LocalDate fechaModificacion;
+    private Instant updateAt;
 }

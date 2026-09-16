@@ -15,10 +15,10 @@ public class EmployeeRuta {
 
     @Bean
     public RouterFunction<ServerResponse> employeeRutas(){
-        return RouterFunctions.route(RequestPredicates.POST(EMPLOYEE_SERVICE + "/crear-empleado"), employeeHandler::crearEmpleado)
-                .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/nombre/{nombre}"),employeeHandler::buscarEmpleadoPorNombre)
-                .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/documento/{documento}"),employeeHandler::buscarEmpleadoPorDocumento)
-                .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/id/{id}"),employeeHandler::buscarEmpleadoPorId)
-                .andRoute(RequestPredicates.PUT(EMPLOYEE_SERVICE + "/actualizar-empleado/{id}"),employeeHandler::actualizarEmpleado);
+        return RouterFunctions.route(RequestPredicates.POST(EMPLOYEE_SERVICE + "/crear-empleado"), employeeHandler::createEmployee)
+                .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/nombre/{nombre}"),employeeHandler::findEmployeeByName)
+                .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/documento/{documento}"),employeeHandler::findByEmployeeByDocument)
+                .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/id/{id}"),employeeHandler::findEmployeeById)
+                .andRoute(RequestPredicates.PUT(EMPLOYEE_SERVICE + "/actualizar-empleado/{id}"),employeeHandler::updateEmployee);
     }
 }

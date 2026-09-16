@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -14,10 +15,10 @@ import java.util.UUID;
 public class UpdateUserUC {
     private final UserPort userPort;
 
-    public Mono<User> actualizarUsuario(String id, User user){
+    public Mono<User> userUpdate(String id, User user){
 
-        return userPort.buscarUsuarioPorId(UUID.fromString(id))
-                .map( userPort -> User.actualizar(userPort.getId(), user.getFirebaseId() ,user.getEstado(), userPort.getFechaCreacion(), LocalDate.now()))
-                .flatMap(userModificado -> userPort.actualizarUsuario(UUID.fromString(id), userModificado));
+        return userPort.findById(UUID.fromString(id))
+                .map( userPort -> User.update(userPort.getId(), user.getFirebaseId() ,user.getStatus(), userPort.getCreateAt(), Instant.now()))
+                .flatMap(userUpdate -> userPort.update(UUID.fromString(id), userUpdate));
     }
 }

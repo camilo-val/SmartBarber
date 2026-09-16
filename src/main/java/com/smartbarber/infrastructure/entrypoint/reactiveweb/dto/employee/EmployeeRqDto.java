@@ -17,18 +17,18 @@ public record EmployeeRqDto (
         @NotNull(message = "El id de la barberia es obligatorio")
         UUID barberiaId,
         @NotBlank(message = "El nombre es obligatorio")
-        String nombre,
+        String name,
         @NotBlank(message = "El documento es obligatorio")
-        String documento,
+        String document,
         @NotNull
-        DocumentType tipoDocumento,
+        DocumentType documentType,
         @NotBlank(message = "El celuar es obligatorio")
         @Pattern(regexp = "^[0-9]{10}$", message = "El celular no puede ser allfanumerico y debe tener 10 digitos")
-        String celular,
+        String cell,
         @NotBlank(message = "El Correo es obligatorio")
         @Email(message = "El correo no tiene un formato válido")
-        String correo,
+        String email,
         @NotBlank(message = "La especialidad es obligatorio")
-        String especialidad
+        String specialty
 ){
 }

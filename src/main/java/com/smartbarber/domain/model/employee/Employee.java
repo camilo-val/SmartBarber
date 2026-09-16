@@ -5,7 +5,7 @@ import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.EmployeeExceptions;
 import com.smartbarber.domain.exceptions.MessageExceptionsEmployee;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.UUID;
 
 public class Employee {
@@ -13,53 +13,53 @@ public class Employee {
     private final UUID id;
     private final UUID userId;
     private final UUID barberiaId;
-    private final String documento;
-    private final DocumentType tipoDocumento;
-    private final String nombre;
-    private final String celular;
-    private final String correo;
-    private final String especialidad;
-    private final LocalDate fechaCreacion;
-    private final LocalDate fechaModificacion;
+    private final String document;
+    private final DocumentType documentType;
+    private final String name;
+    private final String cell;
+    private final String email;
+    private final String specialty;
+    private final Instant createAt;
+    private final Instant updateAt;
 
-    private Employee(UUID id, UUID userId, UUID barberiaId, String documento, DocumentType tipoDocumento,String nombre,
-                     String celular, String correo, String especialidad, LocalDate fechaCreacion,
-                     LocalDate fechaModificacion){
+    private Employee(UUID id, UUID userId, UUID barberiaId, String document, DocumentType documentType,String name,
+                     String cell, String email, String specialty, Instant createAt,
+                     Instant updateAt){
 
         this.id = id;
         this.userId = userId;
         this.barberiaId = barberiaId;
-        this.nombre = nombre;
-        this.celular = celular;
-        this.correo = correo;
-        this.documento = documento;
-        this.tipoDocumento = tipoDocumento;
-        this.especialidad = especialidad;
-        this.fechaCreacion = fechaCreacion;
-        this.fechaModificacion = fechaModificacion;
+        this.name = name;
+        this.cell = cell;
+        this.email = email;
+        this.document = document;
+        this.documentType = documentType;
+        this.specialty = specialty;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
     }
 
-    public static  Employee crear(UUID id, UUID userId, UUID barberiaId, String documento, DocumentType tipoDocumento,
-                                  String nombre, String celular, String correo, String especialidad){
-        validarCampos(documento, tipoDocumento, nombre, celular, correo, especialidad);
+    public static  Employee createEmployee(UUID id, UUID userId, UUID barberiaId, String document, DocumentType documentType,
+                                  String name, String cell, String email, String specialty){
+        validateInputs(document, documentType, name, cell, email, specialty);
         return new Employee(
                 id,
                 userId,
                 barberiaId,
-                documento,
-                tipoDocumento,
-                nombre,
-                celular,
-                correo,
-                especialidad,
-                LocalDate.now(),
+                document,
+                documentType,
+                name,
+                cell,
+                email,
+                specialty,
+                Instant.now(),
                 null
         );
     }
 
-    public static Employee actualizar(UUID id, UUID userId, UUID barberiaId, String documento, DocumentType tipoDocumento,
-                                      String nombre, String celular, String correo, String especialidad,
-                                      LocalDate fechaCreacion) {
+    public static Employee update(UUID id, UUID userId, UUID barberiaId, String document, DocumentType documentType,
+                                      String name, String cell, String email, String specialty,
+                                      Instant createAt) {
 
         if (id == null) {
             throw new EmployeeExceptions(
@@ -67,25 +67,25 @@ public class Employee {
             );
         }
 
-        validarCampos(documento, tipoDocumento, nombre, celular, correo, especialidad);
+        validateInputs(document, documentType, name, cell, email, specialty);
         return new Employee(
                 id,
                 userId,
                 barberiaId,
-                documento,
-                tipoDocumento,
-                nombre,
-                celular,
-                correo,
-                especialidad,
-                fechaCreacion,
-                LocalDate.now()
+                document,
+                documentType,
+                name,
+                cell,
+                email,
+                specialty,
+                createAt,
+                Instant.now()
         );
     }
 
-    public static Employee reconstruir(UUID id, UUID userId, UUID barberiaId, String documento, DocumentType tipoDocumento,
-                                       String nombre, String celular, String correo, String especialidad,
-                                       LocalDate fechaCreacion, LocalDate fechaModificacion){
+    public static Employee rebuild(UUID id, UUID userId, UUID barberiaId, String document, DocumentType documentType,
+                                       String name, String cell, String email, String specialty,
+                                       Instant createAt, Instant updateAt){
 
         if (id == null) {
             throw new EmployeeExceptions(
@@ -93,38 +93,38 @@ public class Employee {
             );
         }
 
-        validarCampos(documento, tipoDocumento, nombre, celular, correo, especialidad);
+        validateInputs(document, documentType, name, cell, email, specialty);
         return new Employee(
                 id,
                 userId,
                 barberiaId,
-                documento,
-                tipoDocumento,
-                nombre,
-                celular,
-                correo,
-                especialidad,
-                fechaCreacion,
-                fechaModificacion
+                document,
+                documentType,
+                name,
+                cell,
+                email,
+                specialty,
+                createAt,
+                updateAt
         );
     }
 
-    private static void  validarCampos(String documento, DocumentType tipoDocumento, String nombre, String celular,
-                                       String correo, String especialidad){
+    private static void  validateInputs(String document, DocumentType documentType, String name, String cell,
+                                       String email, String specialty){
 
-        boolean esInvalido = esNuloOBlanco(documento)
-                || tipoDocumento == null
-                || esNuloOBlanco(nombre)
-                || esNuloOBlanco(celular)
-                || esNuloOBlanco(correo)
-                || esNuloOBlanco(especialidad);
+        boolean esInvalido = isNullOrBlank(document)
+                || documentType == null
+                || isNullOrBlank(name)
+                || isNullOrBlank(cell)
+                || isNullOrBlank(email)
+                || isNullOrBlank(specialty);
 
-        if (esInvalido || (tipoDocumento == DocumentType.NIT)){
+        if (esInvalido || (documentType == DocumentType.NIT)){
             throw new BusinessExceptions(MessageExceptionsEmployee.DATOS_INVALIDOS);
         }
     }
 
-    private static boolean esNuloOBlanco(String texto){
+    private static boolean isNullOrBlank(String texto){
         return texto == null || texto.isBlank();
     }
 
@@ -134,31 +134,31 @@ public class Employee {
 
     public UUID getBarberiaId() { return barberiaId; }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public String getCelular() {
-        return celular;
+    public String getCell() {
+        return cell;
     }
 
-    public String getCorreo() { return correo; }
+    public String getEmail() { return email; }
 
-    public String getEspecialidad() { return especialidad; }
+    public String getSpecialty() { return specialty; }
 
-    public String getDocumento() {
-        return documento;
+    public String getDocument() {
+        return document;
     }
 
-    public DocumentType getTipoDocumento() {
-        return tipoDocumento;
+    public DocumentType getDocumentType() {
+        return documentType;
     }
 
-    public LocalDate getFechaCreacion() {
-        return fechaCreacion;
+    public Instant getCreateAt() {
+        return createAt;
     }
 
-    public LocalDate getFechaModificacion() {
-        return fechaModificacion;
+    public Instant getUpdateAt() {
+        return updateAt;
     }
 }

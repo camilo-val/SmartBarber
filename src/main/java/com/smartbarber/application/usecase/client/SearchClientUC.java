@@ -17,20 +17,20 @@ import java.util.UUID;
 public class SearchClientUC {
     private final ClientPort clientPort;
 
-    public Mono<Client> buscarPorNombre(String nombre){
-        return clientPort.buscarClientePorNombre(nombre)
+    public Mono<Client> buscarPorNombre(String name){
+        return clientPort.findByName(name)
                 .doOnNext(client -> log.info("Datos encontrados {}", client))
                 .switchIfEmpty(Mono.error(() -> (new BusinessExceptions(ClientMessageExceptions.CLIENT_NO_EXISTE))));
     }
 
-    public Mono<Client> bucarPorDocumento(String documento) {
-        return clientPort.buscarPorDocuemnto(documento)
+    public Mono<Client> bucarPorDocumento(String document) {
+        return clientPort.findByDocument(document)
                 .doOnNext(client -> log.info("Datos encontrados {}", client))
                 .switchIfEmpty(Mono.error(() -> (new BusinessExceptions(ClientMessageExceptions.CLIENT_NO_EXISTE))));
     }
 
     public Mono<Client> buscarPorId(String id){
-        return clientPort.buscarClientePorId(UUID.fromString(id))
+        return clientPort.findById(UUID.fromString(id))
                 .doOnNext(client -> log.info("Datos encontrados {}", client))
                 .switchIfEmpty(Mono.error(() -> (new BusinessExceptions(ClientMessageExceptions.CLIENT_NO_EXISTE))));
     }

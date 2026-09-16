@@ -13,23 +13,23 @@ public interface EmployeeAdapterMapper {
             return null;
         }
 
-        return Employee.reconstruir(
+        return Employee.rebuild(
                 entity.getId(),
                 entity.getUserId(),
                 entity.getBarberiaId(),
-                entity.getDocumento(),
-                mapTipoDocumento(entity.getTipoDocumento()),
-                entity.getNombre(),
-                entity.getCelular(),
-                entity.getCorreo(),
-                entity.getEspecialidad(),
-                entity.getFechaCreacion(),
-                entity.getFechaModificacion()
+                entity.getDocument(),
+                mapTipoDocumento(entity.getDocumentType()),
+                entity.getName(),
+                entity.getCell(),
+                entity.getEmail(),
+                entity.getSpecialty(),
+                entity.getCreateAt(),
+                entity.getUpdateAt()
         );
     }
-    default DocumentType mapTipoDocumento(String tipoDocumento) {
-        return tipoDocumento == null
+    default DocumentType mapTipoDocumento(String documentType) {
+        return documentType == null
                 ? null
-                : DocumentType.valueOf(tipoDocumento);
+                : DocumentType.valueOf(documentType);
     }
 }

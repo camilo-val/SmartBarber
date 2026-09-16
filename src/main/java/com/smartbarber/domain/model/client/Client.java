@@ -4,54 +4,54 @@ import com.smartbarber.domain.enums.DocumentType;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.client.ClientMessageExceptions;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.UUID;
 
 public class Client {
 
     private final UUID id;
     private final UUID userId;
-    private final String documento;
-    private final DocumentType tipoDocumento;
-    private final String nombre;
-    private final String celular;
-    private final String correo;
-    private final LocalDate fechaCreacion;
-    private final LocalDate fechaModificacion;
+    private final String document;
+    private final DocumentType documentType;
+    private final String name;
+    private final String cell;
+    private final String email;
+    private final Instant createAt;
+    private final Instant updateAt;
 
-    private Client(UUID id, UUID userId, String documento, DocumentType tipoDocumento,
-                   String nombre, String celular, String correo, LocalDate fechaCreacion,
-                   LocalDate fechaModificacion){
+    private Client(UUID id, UUID userId, String document, DocumentType documentType,
+                   String name, String cell, String email, Instant createAt,
+                   Instant updateAt){
 
         this.id = id;
         this.userId = userId;
-        this.nombre = nombre;
-        this.celular = celular;
-        this.correo = correo;
-        this.documento = documento;
-        this.tipoDocumento = tipoDocumento;
-        this.fechaCreacion = fechaCreacion;
-        this.fechaModificacion = fechaModificacion;
+        this.name = name;
+        this.cell = cell;
+        this.email = email;
+        this.document = document;
+        this.documentType = documentType;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
     }
 
-    public static Client crear(UUID id, UUID userId, String documento, DocumentType tipoDocumento,
-                               String nombre, String celular, String correo){
-        validarCampos(documento, tipoDocumento, nombre, celular, correo);
+    public static Client createClient(UUID id, UUID userId, String document, DocumentType documentType,
+                               String name, String cell, String email){
+        validateInputs(document, documentType, name, cell, email);
         return new Client(
                 id,
                 userId,
-                documento,
-                tipoDocumento,
-                nombre,
-                celular,
-                correo,
-                LocalDate.now(),
+                document,
+                documentType,
+                name,
+                cell,
+                email,
+                Instant.now(),
                 null
         );
     }
 
-    public static Client actualizar(UUID id, UUID userId, String documento, DocumentType tipoDocumento,
-                                    String nombre, String celular, String correo, LocalDate fechaCreacion) {
+    public static Client update(UUID id, UUID userId, String document, DocumentType documentType,
+                                    String name, String cell, String email, Instant createAt) {
 
         if (id == null) {
             throw new BusinessExceptions(
@@ -59,57 +59,57 @@ public class Client {
             );
         }
 
-        validarCampos(documento, tipoDocumento, nombre, celular, correo);
+        validateInputs(document, documentType, name, cell, email);
         return new Client(
                 id,
                 userId,
-                documento,
-                tipoDocumento,
-                nombre,
-                celular,
-                correo,
-                fechaCreacion,
-                LocalDate.now()
+                document,
+                documentType,
+                name,
+                cell,
+                email,
+                createAt,
+                Instant.now()
         );
     }
 
-    public static Client reconstruir(UUID id, UUID userId, String documento, DocumentType tipoDocumento,
-                                     String nombre, String celular, String correo, LocalDate fechaCreacion,
-                                     LocalDate fechaModificacion){
+    public static Client rebuild(UUID id, UUID userId, String document, DocumentType documentType,
+                                     String name, String cell, String email, Instant createAt,
+                                     Instant updateAt){
 
         if (id == null){
             throw new BusinessExceptions(ClientMessageExceptions.DATOS_INVALIDOS);
         }
-        validarCampos(documento, tipoDocumento, nombre, celular, correo);
+        validateInputs(document, documentType, name, cell, email);
 
         return new Client(
                 id,
                 userId,
-                documento,
-                tipoDocumento,
-                nombre,
-                celular,
-                correo,
-                fechaCreacion,
-                fechaModificacion
+                document,
+                documentType,
+                name,
+                cell,
+                email,
+                createAt,
+                updateAt
         );
     }
 
-    private static void validarCampos(String documento, DocumentType tipoDocumento, String nombre, String celular,
-                                      String correo) {
+    private static void validateInputs(String document, DocumentType documentType, String name, String cell,
+                                      String email) {
 
-        boolean esInvalido = esNuloOBlanco(documento)
-                || tipoDocumento == null
-                || esNuloOBlanco(nombre)
-                || esNuloOBlanco(celular)
-                || esNuloOBlanco(correo);
+        boolean esInvalido = isNullOrBlank(document)
+                || documentType == null
+                || isNullOrBlank(name)
+                || isNullOrBlank(cell)
+                || isNullOrBlank(email);
 
-        if (esInvalido || (tipoDocumento == DocumentType.NIT)){
+        if (esInvalido || (documentType == DocumentType.NIT)){
             throw new BusinessExceptions(ClientMessageExceptions.DATOS_INVALIDOS);
         }
     }
 
-    private static boolean esNuloOBlanco(String texto){
+    private static boolean isNullOrBlank(String texto){
 
         return texto == null || texto.isBlank();
     }
@@ -118,30 +118,30 @@ public class Client {
 
     public UUID getUserId() { return userId; }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public String getCelular() {
-        return celular;
+    public String getCell() {
+        return cell;
     }
 
-    public String getCorreo() { return correo; }
+    public String getEmail() { return email; }
 
-    public String getDocumento() {
-        return documento;
+    public String getDocument() {
+        return document;
     }
 
-    public DocumentType getTipoDocumento() {
-        return tipoDocumento;
+    public DocumentType getDocumentType() {
+        return documentType;
     }
 
-    public LocalDate getFechaCreacion() {
-        return fechaCreacion;
+    public Instant getCreateAt() {
+        return createAt;
     }
 
-    public LocalDate getFechaModificacion() {
-        return fechaModificacion;
+    public Instant getUpdateAt() {
+        return updateAt;
     }
 
 }
