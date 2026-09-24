@@ -7,7 +7,7 @@ public class TechnicalExceptions extends RuntimeException{
     private final TechnicalMessageExceptions mensajesExcepciones;
 
     public TechnicalExceptions(TechnicalMessageExceptions mensajesExcepciones) {
-        super(mensajesExcepciones.getMensaje());
+        super(mensajesExcepciones.getMessage());
         this.mensajesExcepciones = mensajesExcepciones;
     }
 }

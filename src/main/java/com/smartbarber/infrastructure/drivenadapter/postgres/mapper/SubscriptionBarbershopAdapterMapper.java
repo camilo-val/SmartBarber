@@ -1,12 +1,12 @@
 package com.smartbarber.infrastructure.drivenadapter.postgres.mapper;
 
 import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;
-import com.smartbarber.infrastructure.drivenadapter.postgres.entity.SubscriptionBarbershopEntyty;
+import com.smartbarber.infrastructure.drivenadapter.postgres.entity.SubscriptionBarbershopEntity;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface SubscriptionBarbershopAdapterMapper {
-    default SubscriptionBarbershop toDomain(SubscriptionBarbershopEntyty entyty){
+    default SubscriptionBarbershop toDomain(SubscriptionBarbershopEntity entyty){
         if(entyty.getId()  == null){
             return null;
         }
@@ -14,14 +14,16 @@ public interface SubscriptionBarbershopAdapterMapper {
                 entyty.getId(),
                 entyty.getBarberId(),
                 entyty.getSubscriptionId(),
-                entyty.getOrderId(),
-                entyty.getTransactionId(),
                 entyty.getStatus(),
-                entyty.getAmount(),
                 entyty.getDuration(),
+                entyty.getSubscriptionPrice(),
+                entyty.getSubscriptionDiscount(),
                 entyty.getCreatedAt(),
-                entyty.getUpdatedAt()
+                entyty.getUpdatedAt(),
+                entyty.getStartDate(),
+                entyty.getExpirationDate()
+
         );
     }
-    SubscriptionBarbershopEntyty toEntity(SubscriptionBarbershop domain);
+    SubscriptionBarbershopEntity toEntity(SubscriptionBarbershop domain);
 }

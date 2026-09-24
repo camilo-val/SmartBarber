@@ -29,7 +29,6 @@ public class BarbershopHandler {
         return request.bodyToMono(BarbershopRqDto.class)
                 .doOnNext(validateRequest::validate)
                 .map(e -> {
-                    System.out.println("AAAAA: " + e.toString());
                     return e;
                 })
                 .map(mapper::toDomain)

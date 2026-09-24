@@ -17,7 +17,6 @@ public class CreateClientUC {
     public Mono<Client> crearCliente(Client client){
         return clientPort.existsByDocument(client.getDocument())
                 .flatMap( exist-> {
-                    System.out.println("Existe cliente: +" + exist);
                     if (Boolean.TRUE.equals(exist)){
                         return Mono.error(() -> new BusinessExceptions(ClientMessageExceptions.CLIENT_EXISTENTE));
                     }

@@ -11,12 +11,13 @@ public interface SubscriptionBarberAdapterMapper {
                 .rebuild(null,
                 command.barberId(),
                 command.subscriptionId(),
-                command.orderId(),
-                command.transactionId(),
                 command.status(),
-                command.amount(),
                 command.duration(),
+                command.subscriptionPrice(),
+                command.subscriptionDiscount(),
                 null,
-                null);
+                null,
+                null,
+                 null);
     }
 }

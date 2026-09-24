@@ -1,15 +1,15 @@
-package com.smartbarber.application.command.out;
+package com.smartbarber.application.command.in;
 
 import lombok.Builder;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 @Builder
 public record MessageCommand (
-        BigDecimal amount,
+        BigInteger amount,
         String currency,
         String description,
         UUID orderId){
-
 }

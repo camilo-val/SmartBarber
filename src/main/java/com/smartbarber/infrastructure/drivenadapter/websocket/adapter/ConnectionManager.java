@@ -1,9 +1,10 @@
 package com.smartbarber.infrastructure.drivenadapter.websocket.adapter;
 
 import com.smartbarber.application.command.in.SubscriptionBarbershopCommand;
-import com.smartbarber.domain.port.subscriptionbarbershop.MessageNotificationPort;
-import com.smartbarber.domain.port.subscriptionbarbershop.MessageResponsePort;
+import com.smartbarber.application.command.in.TransactionCommand;
+import com.smartbarber.domain.port.event.MessageNotificationPort;
 import com.smartbarber.infrastructure.drivenadapter.websocket.config.WebSocketPaymentManager;
+import com.smartbarber.infrastructure.drivenadapter.websocket.mapper.TransactionWsAdapterMapper;
 import com.smartbarber.infrastructure.entrypoint.utils.commons.ObjectMessageMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,8 +21,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ConnectionManager implements MessageNotificationPort{
 
-    private final MessageResponsePort responsePort;
+    private final ResponseManager RsManager;
+
     private final ObjectMessageMapper objectMapper;
+    private final GatewayResponseHandler gatewayResponseHandler;
     private final ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient();
     private final WebSocketPaymentManager connectionPaymentManager;
 
@@ -37,12 +40,12 @@ public class ConnectionManager implements MessageNotificationPort{
                 session -> {
                     connectionPaymentManager.registerSession(userId, session);
                     return session.receive()
-                                .doOnNext(payload -> {
-                                    log.info("Received message: {}", payload.getPayloadAsText());
-                                    SubscriptionBarbershopCommand command = objectMapper.readValue(
-                                            payload.getPayloadAsText(), SubscriptionBarbershopCommand.class);
-                                    responsePort.completeResponse(command.orderId(), command);
-                                })
+                            .flatMap(payload -> {
+                                TransactionCommand transaction = objectMapper.readValue(payload.getPayloadAsText(), TransactionCommand.class);
+                                     return gatewayResponseHandler.handle(transaction.status(), transaction.orderId())
+                                             .doOnSuccess(unused -> RsManager.completeResponse(transaction.orderId(), transaction));
+
+                            })
                             .doFinally( signalType -> connectionPaymentManager.removeSession(userId))
                             .doOnError(e -> {
                                 log.error("Error in WebSocket session: {}", e.getMessage());

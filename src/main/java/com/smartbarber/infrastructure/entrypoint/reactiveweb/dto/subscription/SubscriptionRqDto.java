@@ -6,6 +6,7 @@ import lombok.Builder;
 public record SubscriptionRqDto (
         String name,
         String description,
-        Integer price
+        Integer price,
+        Byte discount
 ){
 }

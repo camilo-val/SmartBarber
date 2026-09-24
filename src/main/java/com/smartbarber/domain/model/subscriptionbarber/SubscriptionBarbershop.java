@@ -4,7 +4,9 @@ import com.smartbarber.domain.enums.SubscriptionBarberStatus;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.subscriptionbarber.SubscriptionBarberMessageExceptions;
 
+import java.math.BigInteger;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,70 +14,75 @@ public class SubscriptionBarbershop {
     private final UUID id;
     private final UUID barberId;
     private final Integer subscriptionId;
-    private final UUID orderId;
-    private final UUID transactionId;
     private final SubscriptionBarberStatus status;
-    private final Integer amount;
     private final Integer duration;
+    private final BigInteger subscriptionPrice;
+    private final Byte subscriptionDiscount;
     private final Instant createdAt;
     private final Instant updatedAt;
+    private final Instant startDate;
+    private final Instant expirationDate;
 
-
-    private SubscriptionBarbershop(UUID id, UUID barberId, Integer subscriptionId, UUID orderId, UUID transactionId, SubscriptionBarberStatus status, Integer amount, Integer duration, Instant createdAt, Instant updatedAt) {
+    private SubscriptionBarbershop(UUID id, UUID barberId, Integer subscriptionId,
+                                   SubscriptionBarberStatus status, Integer duration, BigInteger subscriptionPrice, Byte subscriptionDiscount, Instant createdAt,
+                                   Instant updatedAt, Instant startDate, Instant expirationDate) {
         this.id = id;
         this.barberId = barberId;
         this.subscriptionId = subscriptionId;
-        this.orderId = orderId;
-        this.transactionId = transactionId;
         this.status = status;
-        this.amount = amount;
         this.duration = duration;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.startDate = startDate;
+        this.expirationDate = expirationDate;
+        this.subscriptionPrice = subscriptionPrice;
+        this.subscriptionDiscount = subscriptionDiscount;
     }
 
-    public static SubscriptionBarbershop create(UUID barberId, Integer subscriptionId, UUID orderId, UUID transactionId, Integer amount, Integer duration){
+    public static SubscriptionBarbershop create(UUID barberId, Integer subscriptionId, Integer duration,  BigInteger subscriptionPrice, Byte subscriptionDiscount){
+        Instant now = Instant.now();
+        boolean attributeIsNull = isNull(barberId) || isNull(subscriptionId) || isNull(duration);
 
-        boolean attributeIsNull = isNull(barberId) || isNull(subscriptionId) || isNull(orderId)
-                || isNull(transactionId) || isNull(amount) || isNull(duration);
+        if(attributeIsNull || duration <= 0){
+            throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER);
+        }
+        return new SubscriptionBarbershop(null, barberId, subscriptionId, SubscriptionBarberStatus.PENDING, duration, subscriptionPrice, subscriptionDiscount, now,null,null,null);
+    }
 
-        if(attributeIsNull || amount <= 0 || duration <= 0){
+    public static SubscriptionBarbershop rebuild(UUID id, UUID barberId, Integer subscriptionId,
+                                                 SubscriptionBarberStatus status, Integer duration,
+                                                 BigInteger price, Byte discount,
+                                                 Instant createdAt, Instant updatedAt,
+                                                 Instant initialDate, Instant finalDate){
+
+        boolean attributeIsNull =  isNull(id) || isNull(barberId) || isNull(subscriptionId) || isNull(duration) || isNull(createdAt);
+
+
+        if(attributeIsNull || duration <= 0){
             throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER);
         }
 
-        return new SubscriptionBarbershop(null, barberId, subscriptionId,orderId, transactionId, SubscriptionBarberStatus.PENDING, amount,
-                duration, Instant.now(),null);
+        return new SubscriptionBarbershop(id, barberId, subscriptionId, status, duration, price, discount, createdAt,updatedAt,initialDate,finalDate);
     }
 
-    public static SubscriptionBarbershop rebuild(UUID id, UUID barberId, Integer subscriptionId, UUID orderId, UUID transactionId, SubscriptionBarberStatus status, Integer amount, Integer duration, Instant createdAt, Instant updatedAt){
+    public SubscriptionBarbershop processPaymentResult(SubscriptionBarberStatus status){
+        Instant now = Instant.now();
+        boolean attributeIsNull = isNull(barberId) || isNull(subscriptionId) || isNull(duration);
 
-        boolean attributeIsNull =  isNull(id) || isNull(barberId) || isNull(subscriptionId) || isNull(orderId)
-                || isNull(transactionId) || isNull(amount) || isNull(duration) || isNull(createdAt);
-
-
-        if(attributeIsNull || amount <= 0 || duration <= 0){
+        if(attributeIsNull || duration <= 0){
             throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER);
         }
-
-        return new SubscriptionBarbershop(id, barberId, subscriptionId,orderId, transactionId, status, amount,
-                duration, createdAt,updatedAt);
-    }
-
-    public SubscriptionBarbershop update(SubscriptionBarberStatus status){
-
-        boolean attributeIsNull = isNull(barberId) || isNull(subscriptionId) || isNull(orderId)
-                || isNull(transactionId) || isNull(amount) || isNull(duration);
-
-        if(attributeIsNull || amount <= 0 || duration <= 0){
-            throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER);
-        }
-        if (status.equals(SubscriptionBarberStatus.PENDING)) {
+        if (status == SubscriptionBarberStatus.PENDING) {
             throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER_STATUS);
 
         }
+        if(status == SubscriptionBarberStatus.APPROVED){
+            return new SubscriptionBarbershop(this.id, this.barberId, this.subscriptionId, status,
+                    this.duration, this.subscriptionPrice, this.subscriptionDiscount, this.createdAt,now, now, now.plus(duration, ChronoUnit.DAYS));
+        }
 
-        return new SubscriptionBarbershop(this.id, this.barberId, this.subscriptionId, this.orderId, this.transactionId
-                , status, this.amount, this.duration, this.createdAt,Instant.now());
+        return new SubscriptionBarbershop(this.id, this.barberId, this.subscriptionId, status,
+                this.duration, this.subscriptionPrice, this.subscriptionDiscount, this.createdAt,now, null, null);
     }
 
     private static boolean isNull(Object attribute){
@@ -95,20 +102,8 @@ public class SubscriptionBarbershop {
         return subscriptionId;
     }
 
-    public UUID getOrderId() {
-        return orderId;
-    }
-
-    public UUID getTransactionId() {
-        return transactionId;
-    }
-
     public SubscriptionBarberStatus getStatus() {
         return status;
-    }
-
-    public Integer getAmount() {
-        return amount;
     }
 
     public Integer getDuration() {
@@ -123,19 +118,36 @@ public class SubscriptionBarbershop {
         return updatedAt;
     }
 
+    public Instant getStartDate() {
+            return startDate;
+        }
+
+    public Instant getExpirationDate() {
+        return expirationDate;
+    }
+
+    public BigInteger getSubscriptionPrice() {
+        return subscriptionPrice;
+    }
+
+    public Byte getSubscriptionDiscount() {
+        return subscriptionDiscount;
+    }
+
     @Override
     public String toString() {
         return "SubscriptionBarbershop{" +
                 "id=" + id +
                 ", barberId=" + barberId +
                 ", subscriptionId=" + subscriptionId +
-                ", orderId=" + orderId +
-                ", transactionId=" + transactionId +
                 ", status=" + status +
-                ", amount=" + amount +
                 ", duration=" + duration +
+                ", price=" + subscriptionPrice +
+                ", discount=" + subscriptionDiscount +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", startDate=" + startDate +
+                ", expirationDate=" + expirationDate +
                 '}';
     }
 }

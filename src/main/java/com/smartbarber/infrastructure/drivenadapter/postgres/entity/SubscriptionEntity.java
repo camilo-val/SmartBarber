@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.math.BigInteger;
 import java.time.Instant;
 
 @Getter
@@ -21,7 +22,9 @@ public class SubscriptionEntity {
     @Column("descripcion")
     private String description;
     @Column("precio")
-    private Integer price;
+    private BigInteger price;
+    @Column("descuento")
+    private Byte discount;
     @Column("fecha_creacion")
     private Instant createAt;
     @Column("fecha_actualizacion")
