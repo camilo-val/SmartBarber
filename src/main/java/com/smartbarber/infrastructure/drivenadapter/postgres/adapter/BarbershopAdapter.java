@@ -44,14 +44,7 @@ public class BarbershopAdapter implements BarberShopRepositoryPort {
 
     @Override
     public Mono<Barbershop> save(Barbershop barbershop) {
-        System.out.println("BARBERSHOP SAVING:   " +  barbershop );
-        System.out.println("BARBERSHOP ENTITy: " + mapper.toEntity(barbershop).toString());
         return barbershopData.save(mapper.toEntity(barbershop))
-                .doOnNext(e -> log.info("Data registrada {}", e.toString()))
-                .doOnSuccess(entityGuardada ->
-                        log.info("Proceso de guardado finalizado correctamente"))
-                .doOnError(error ->
-                        log.error("Error guardando barbería", error))
                 .map(mapper::toDomain);
     }
 

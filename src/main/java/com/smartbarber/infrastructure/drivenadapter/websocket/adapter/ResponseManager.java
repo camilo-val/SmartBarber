@@ -1,8 +1,7 @@
 package com.smartbarber.infrastructure.drivenadapter.websocket.adapter;
 
-import com.smartbarber.application.command.in.SubscriptionBarbershopCommand;
-import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;
-import com.smartbarber.domain.port.subscriptionbarbershop.MessageResponsePort;
+import com.smartbarber.application.command.in.TransactionCommand;
+import com.smartbarber.domain.port.event.MessageResponsePort;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
 import lombok.extern.log4j.Log4j2;
@@ -22,16 +21,16 @@ public class ResponseManager implements MessageResponsePort  {
     @Value("${payment.timeout}")
     private Long timeOut;
 
-    private final Map<UUID, Sinks.Many<SubscriptionBarbershopCommand>>  pending =
+    private final Map<UUID, Sinks.Many<TransactionCommand>>  pending =
             new ConcurrentHashMap<>();
 
-    public Mono<SubscriptionBarbershopCommand> waitForResponse(UUID orderId) {
-        log.info("Waiting for response for orderId: {}", orderId);
-        Sinks.Many<SubscriptionBarbershopCommand> sink = Sinks.many().multicast().onBackpressureBuffer();
+    public Mono<TransactionCommand> waitForResponse(UUID orderId) {
+        Sinks.Many<TransactionCommand> sink = Sinks.many().multicast().onBackpressureBuffer();
         pending.put(orderId, sink);
         return sink.asFlux()
                 .next()
                 .timeout(Duration.ofSeconds(timeOut))
+                .doOnError(error -> log.error("Timeout waiting for response for orderId: {}", orderId, error))
                 .doFinally(signalType -> {
                     Mono.error(() -> new TechnicalExceptions(TechnicalMessageExceptions.TIME_OUT));
                     pending.remove(orderId);
@@ -39,10 +38,10 @@ public class ResponseManager implements MessageResponsePort  {
     }
 
     @Override
-    public void completeResponse(UUID orderId, SubscriptionBarbershopCommand command) {
-        Sinks.Many<SubscriptionBarbershopCommand> sink = pending.remove(orderId);
+    public <T> void completeResponse(UUID orderId, T transaction) {
+        Sinks.Many<TransactionCommand> sink = pending.remove(orderId);
         if (sink != null) {
-            sink.tryEmitNext(command);
+            sink.tryEmitNext((TransactionCommand) transaction);
         }
     }
 }

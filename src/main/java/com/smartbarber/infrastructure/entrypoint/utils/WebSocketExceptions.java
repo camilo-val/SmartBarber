@@ -4,7 +4,7 @@ import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.error.ErrorRsDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
-import com.smartbarber.infrastructure.entrypoint.websocket.dto.MessageRsDto;
+import com.smartbarber.infrastructure.entrypoint.websocket.dto.event.MessageRsDto;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;

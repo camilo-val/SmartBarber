@@ -12,6 +12,7 @@ public interface SubscriptionAdapterMapper {
                 entity.getName(),
                 entity.getDescription(),
                 entity.getPrice(),
+                entity.getDiscount(),
                 entity.getCreateAt(),
                 entity.getUpdateAt()
         );

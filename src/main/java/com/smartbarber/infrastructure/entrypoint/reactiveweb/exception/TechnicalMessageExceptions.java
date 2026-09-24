@@ -1,7 +1,9 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.exception;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
@@ -14,5 +16,5 @@ public enum TechnicalMessageExceptions {
     ;
 
     private final String code;
-    private final String mensaje;
+    private final String message;
 }

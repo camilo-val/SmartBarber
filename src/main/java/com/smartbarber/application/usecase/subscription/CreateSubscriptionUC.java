@@ -23,7 +23,7 @@ public class CreateSubscriptionUC {
                     }
                     Subscription newSubscription =  Subscription.
                             create(subscription.name(), subscription.description(),
-                                    subscription.price());
+                                    subscription.price(), subscription.discount());
                     return port.save(newSubscription);
                 });
     }

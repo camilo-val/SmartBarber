@@ -4,8 +4,8 @@ import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.error.ErrorRsDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
-import com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant;
-import lombok.AllArgsConstructor;
+import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.webflux.error.ErrorWebExceptionHandler;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -19,11 +19,11 @@ import tools.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.Map;
 
-import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.UNEXPECTED;
+import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.*;
 
 @Component
 @Order(-2)
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GlobalHandlerError implements ErrorWebExceptionHandler {
 
     private final ObjectMapper objectMapper;
@@ -54,26 +54,34 @@ public class GlobalHandlerError implements ErrorWebExceptionHandler {
                 default ->
                         HttpStatus.SERVICE_UNAVAILABLE;
             };
+        } else if (ex instanceof ConstraintViolationException) {
+            return HttpStatus.BAD_REQUEST;
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     private Map<String, ErrorRsDto> errorMap(Throwable ex) {
+
         if (ex instanceof BusinessExceptions businessExceptions) {
             return buildMapError(businessExceptions.getExceptionMessage().getCode()
                     ,businessExceptions.getExceptionMessage().getMessage(),
-                    HandlerConstant.BUSINESS
+                    BUSINESS
             );
 
         } else if (ex instanceof TechnicalExceptions technicalExceptions) {
             return buildMapError(technicalExceptions.getMensajesExcepciones().getCode()
-                    , technicalExceptions.getMensajesExcepciones().getMensaje(),
-                    HandlerConstant.TECHNICAL
+                    , technicalExceptions.getMensajesExcepciones().getMessage(),
+                    TECHNICAL
             );
 
+        }else if (ex instanceof ConstraintViolationException constraintViolationException) {
+            return buildMapError(TechnicalMessageExceptions.UNEXPECTED_ERROR.getCode()
+                    , constraintViolationException.getMessage(),
+                    TECHNICAL
+            );
         }
         return buildMapError(TechnicalMessageExceptions.UNEXPECTED_ERROR.getCode()
-                , TechnicalMessageExceptions.UNEXPECTED_ERROR.getMensaje(),
+                , ex.getMessage(),
                 UNEXPECTED);
 
 

@@ -33,8 +33,6 @@ public class WebSocketPaymentManager {
             log.warn("WebSocket Payment session for orderId: {} not found session id{}", orderId, session.getId());
             return Mono.empty();
         }
-
         return session.send(Mono.just(session.textMessage(message)));
-
     }
 }
