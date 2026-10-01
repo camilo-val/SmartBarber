@@ -6,6 +6,7 @@ import com.smartbarber.infrastructure.drivenadapter.postgres.data.TransactionDat
 import com.smartbarber.infrastructure.drivenadapter.postgres.mapper.TransactionAdapterMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,36 +19,42 @@ public class TransactionAdapter implements TransactionRepositoryPort {
     private final TransactionData transactionData;
     private final TransactionAdapterMapper mapper;
 
+    @Transactional
     @Override
     public Mono<Transaction> save(Transaction transaction) {
         return transactionData.save(mapper.toEntity(transaction))
                 .map(mapper::toDomain);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Mono<Transaction> findById(UUID transactionId) {
         return transactionData.findById(transactionId)
                 .map(mapper::toDomain);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Mono<Transaction> findByOrderId(UUID orderId) {
         return transactionData.findByOrderId(orderId)
                 .map(mapper::toDomain);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Flux<Transaction> findByReservationId(UUID reservationId) {
         return transactionData.findByReservationId(reservationId)
                 .map(mapper::toDomain);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Mono<Transaction> findBySubscriptionBarberId(UUID subscriptionBarberId) {
         return transactionData.findBySubscriptionBarberId(subscriptionBarberId)
                 .map(mapper::toDomain);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Mono<Boolean> existsByOrderId(UUID orderId) {
         return transactionData.existsByOrderId(orderId);

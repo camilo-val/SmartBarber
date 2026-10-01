@@ -18,6 +18,7 @@ public interface SubscriptionBarbershopAdapterMapper {
                 entyty.getDuration(),
                 entyty.getSubscriptionPrice(),
                 entyty.getSubscriptionDiscount(),
+                entyty.getAutomaticRenew(),
                 entyty.getCreatedAt(),
                 entyty.getUpdatedAt(),
                 entyty.getStartDate(),

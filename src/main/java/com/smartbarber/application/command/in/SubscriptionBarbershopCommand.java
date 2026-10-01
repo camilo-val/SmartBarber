@@ -15,6 +15,7 @@ public record SubscriptionBarbershopCommand (
         Integer duration,
         BigInteger subscriptionPrice,
         Byte subscriptionDiscount,
+        Boolean automaticRenew,
         SubscriptionType type
 ){
 }

@@ -22,6 +22,5 @@ public record BarbershopRqDto(
         String document,
         @NotNull
         DocumentType documentType,
-        @NotBlank(message = "La razon social es obligatoria")
         String companyName){
 }

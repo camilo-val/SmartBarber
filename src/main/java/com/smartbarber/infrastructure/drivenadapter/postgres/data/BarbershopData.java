@@ -12,5 +12,7 @@ public interface BarbershopData extends ReactiveCrudRepository<BarbershopEntity,
     Mono<BarbershopEntity> findByName(String name);
     Flux<BarbershopEntity> findByCompanyName(String companyName);
     Mono<BarbershopEntity> findByDocument(String document);
-
+    Mono<Boolean> existsByName(String name);
+    Mono<Boolean> existsByCompanyName(String companyName);
+    Mono<Boolean> existsByDocument(String document);
 }

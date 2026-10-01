@@ -30,10 +30,11 @@ public class ResponseManager implements MessageResponsePort  {
         return sink.asFlux()
                 .next()
                 .timeout(Duration.ofSeconds(timeOut))
+                .doOnNext(transactionResponse -> log.info("ResponseManager.waitForResponse: transactionResponse: {}", transactionResponse))
                 .doOnError(error -> log.error("Timeout waiting for response for orderId: {}", orderId, error))
                 .doFinally(signalType -> {
                     Mono.error(() -> new TechnicalExceptions(TechnicalMessageExceptions.TIME_OUT));
-                    pending.remove(orderId);
+                    //pending.remove(orderId);
                 });
     }
 
