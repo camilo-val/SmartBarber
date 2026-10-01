@@ -15,6 +15,7 @@ public interface SubscriptionBarberAdapterMapper {
                 command.duration(),
                 command.subscriptionPrice(),
                 command.subscriptionDiscount(),
+                command.automaticRenew(),
                 null,
                 null,
                 null,

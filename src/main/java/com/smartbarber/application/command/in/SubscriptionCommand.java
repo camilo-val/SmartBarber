@@ -10,6 +10,7 @@ public record SubscriptionCommand (
         String name,
         String description,
         BigInteger price,
-        Byte discount
+        Byte discount,
+        Boolean automaticRenew
 ){
 }

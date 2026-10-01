@@ -15,4 +15,6 @@ public interface BarberShopRepositoryPort {
     Mono<Barbershop> update(UUID id, Barbershop barbershop);
     Mono<Void> deleteBarbershop(UUID id);
     Mono<Boolean> existByName(String name);
+    Mono<Boolean> existByCompanyName(String companyName);
+    Mono<Boolean> existByDocument(String document);
 }

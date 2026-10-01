@@ -13,8 +13,8 @@ import reactor.core.publisher.Mono;
 public class CreateBarbershopUC {
     private final BarberShopRepositoryPort barberShopRepositoryPort;
 
-    public Mono<Barbershop> crearBarberia(Barbershop barbershop) {
-        return barberShopRepositoryPort.existByName(barbershop.getName())
+    public Mono<Barbershop> createBarbershop(Barbershop barbershop) {
+        return existBarbershop(barbershop)
                 .flatMap(exist -> {
                     if(Boolean.TRUE.equals(exist)){
                         return Mono.error(() -> new BusinessExceptions(BarberShopMessageExceptions.BARBERSHOP_ALREADY_EXIST));
@@ -22,5 +22,19 @@ public class CreateBarbershopUC {
                     return Mono.just(barbershop);
                 })
                 .flatMap(barberShopRepositoryPort::save);
+    }
+
+    private Mono<Boolean> existBarbershop(Barbershop barbershop) {
+        return Mono.zip(
+                barberShopRepositoryPort.existByName(barbershop.getName()),
+                barberShopRepositoryPort.existByDocument(barbershop.getDocument())
+        ).map(tuple -> tuple.getT1() || tuple.getT2())
+                .flatMap(exist -> {
+                    barberShopRepositoryPort.existByCompanyName(barbershop.getCompanyName());
+                    return barbershop.getCompanyName() == null || barbershop.getCompanyName().isEmpty()
+                            ? Mono.just(exist)
+                            : barberShopRepositoryPort.existByCompanyName(barbershop.getCompanyName())
+                            .map(exist1 -> exist || exist1);
+                });
     }
 }

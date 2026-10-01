@@ -22,6 +22,7 @@ public class WaitMessageResponseUC {
 
     public Mono<Transaction> waitForResponseAndSendMessage(UUID orderId) {
         return responsePort.waitForResponse(orderId)
+                .doOnNext(transactionResponse -> log.info("WaitMessageResponseUC.waitForResponseAndSendMessage: transactionResponse: {}", transactionResponse))
                 .flatMap(transactionResponse ->
                         transactionUc.findTransactionByOrderId(transactionResponse.orderId()));
     }

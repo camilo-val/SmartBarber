@@ -1,10 +1,7 @@
 package com.smartbarber.infrastructure.drivenadapter.postgres.entity;
 
 import com.smartbarber.domain.enums.SubscriptionBarberStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
@@ -18,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Table("suscripcion_barberia")
+@ToString
 public class SubscriptionBarbershopEntity {
     @Id
     @Column("id_suscripcion_barberia")
@@ -34,6 +32,8 @@ public class SubscriptionBarbershopEntity {
     private BigInteger subscriptionPrice;
     @Column("descuento")
     private Byte subscriptionDiscount;
+    @Column("renovacion_automatica")
+    private Boolean automaticRenew;
     @Column("fecha_creacion")
     private Instant createdAt;
     @Column("fecha_modificacion")

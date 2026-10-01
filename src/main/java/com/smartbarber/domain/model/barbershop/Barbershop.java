@@ -49,7 +49,7 @@ public class Barbershop {
                 phone,
                 document,
                 documentType,
-                companyName,
+                documentType == DocumentType.NIT ? companyName : null,
                 "ACTIVO",
                 Instant.now(),
                 null

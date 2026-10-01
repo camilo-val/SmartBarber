@@ -21,6 +21,9 @@ public record SubscriptionBarbershopRqDto(
         @NotNull(message = "El duration es obligatorio")
         Integer duration,
         @NotNull(message = "El type es obligatorio")
-        SubscriptionType type
+        SubscriptionType type,
+        @NotNull(message = "El automaticRenew es obligatorio")
+        Boolean automaticRenew
+
 ){
 }

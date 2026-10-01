@@ -44,12 +44,8 @@ public class ConnectionManager implements MessageNotificationPort{
                                 TransactionCommand transaction = objectMapper.readValue(payload.getPayloadAsText(), TransactionCommand.class);
                                      return gatewayResponseHandler.handle(transaction.status(), transaction.orderId())
                                              .doOnSuccess(unused -> RsManager.completeResponse(transaction.orderId(), transaction));
-
                             })
                             .doFinally( signalType -> connectionPaymentManager.removeSession(userId))
-                            .doOnError(e -> {
-                                log.error("Error in WebSocket session: {}", e.getMessage());
-                            })
                             .then();
                 }
         );

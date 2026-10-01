@@ -5,16 +5,19 @@ import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.suscription.SubscriptionMessageExceptions;
 import com.smartbarber.domain.model.suscription.Subscription;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @AllArgsConstructor
 @Component
 public class FindSubscriptionUC {
     private final SubscriptionRepositoryPort port;
 
     public Mono<Subscription> findSubscriptionById(String id){
+        log.info("Finding subscription with ID: {}", id);
         return port.findById(Integer.valueOf(id))
                 .switchIfEmpty(Mono.error(() -> new BusinessExceptions(SubscriptionMessageExceptions.SUBSCRIPTION_NOT_FOUND)));
     }

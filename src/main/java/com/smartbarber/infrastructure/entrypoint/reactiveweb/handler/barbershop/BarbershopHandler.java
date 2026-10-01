@@ -32,7 +32,7 @@ public class BarbershopHandler {
                     return e;
                 })
                 .map(mapper::toDomain)
-                .flatMap(createBarbershopUC::crearBarberia)
+                .flatMap(createBarbershopUC::createBarbershop)
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response))
                 .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)) );

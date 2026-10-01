@@ -2,6 +2,7 @@ package com.smartbarber.domain.enums;
 
 
 public enum SubscriptionBarberStatus {
+    ACTIVE,
     APPROVED,
     PENDING,
     DECLINED,
@@ -16,7 +17,7 @@ public enum SubscriptionBarberStatus {
                     SubscriptionBarberStatus.PENDING;
 
             case APPROVED ->
-                    SubscriptionBarberStatus.APPROVED;
+                    SubscriptionBarberStatus.ACTIVE;
 
             case REJECTED, REFUNDED, CANCELED ->
                     SubscriptionBarberStatus.DECLINED;

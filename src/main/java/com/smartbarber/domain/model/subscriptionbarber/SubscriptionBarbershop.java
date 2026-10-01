@@ -18,19 +18,21 @@ public class SubscriptionBarbershop {
     private final Integer duration;
     private final BigInteger subscriptionPrice;
     private final Byte subscriptionDiscount;
+    private final Boolean automaticRenew;
     private final Instant createdAt;
     private final Instant updatedAt;
     private final Instant startDate;
     private final Instant expirationDate;
 
     private SubscriptionBarbershop(UUID id, UUID barberId, Integer subscriptionId,
-                                   SubscriptionBarberStatus status, Integer duration, BigInteger subscriptionPrice, Byte subscriptionDiscount, Instant createdAt,
+                                   SubscriptionBarberStatus status, Integer duration, BigInteger subscriptionPrice, Byte subscriptionDiscount, Boolean automaticRenew, Instant createdAt,
                                    Instant updatedAt, Instant startDate, Instant expirationDate) {
         this.id = id;
         this.barberId = barberId;
         this.subscriptionId = subscriptionId;
         this.status = status;
         this.duration = duration;
+        this.automaticRenew = automaticRenew;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.startDate = startDate;
@@ -39,21 +41,24 @@ public class SubscriptionBarbershop {
         this.subscriptionDiscount = subscriptionDiscount;
     }
 
-    public static SubscriptionBarbershop create(UUID barberId, Integer subscriptionId, Integer duration,  BigInteger subscriptionPrice, Byte subscriptionDiscount){
+    public static SubscriptionBarbershop create(UUID barberId, Integer subscriptionId, Integer duration,  BigInteger subscriptionPrice, Byte subscriptionDiscount, Boolean automaticRenew){
         Instant now = Instant.now();
         boolean attributeIsNull = isNull(barberId) || isNull(subscriptionId) || isNull(duration);
 
         if(attributeIsNull || duration <= 0){
             throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER);
         }
-        return new SubscriptionBarbershop(null, barberId, subscriptionId, SubscriptionBarberStatus.PENDING, duration, subscriptionPrice, subscriptionDiscount, now,null,null,null);
+        return new SubscriptionBarbershop(null, barberId, subscriptionId, SubscriptionBarberStatus.PENDING, duration, subscriptionPrice, subscriptionDiscount, automaticRenew, now,null,null,null);
     }
 
     public static SubscriptionBarbershop rebuild(UUID id, UUID barberId, Integer subscriptionId,
                                                  SubscriptionBarberStatus status, Integer duration,
                                                  BigInteger price, Byte discount,
+                                                 Boolean automaticRenew,
                                                  Instant createdAt, Instant updatedAt,
                                                  Instant initialDate, Instant finalDate){
+
+        System.out.println("SubscriptionBarbershop.rebuild -> status: " + automaticRenew);
 
         boolean attributeIsNull =  isNull(id) || isNull(barberId) || isNull(subscriptionId) || isNull(duration) || isNull(createdAt);
 
@@ -62,10 +67,11 @@ public class SubscriptionBarbershop {
             throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER);
         }
 
-        return new SubscriptionBarbershop(id, barberId, subscriptionId, status, duration, price, discount, createdAt,updatedAt,initialDate,finalDate);
+        return new SubscriptionBarbershop(id, barberId, subscriptionId, status, duration, price, discount, automaticRenew, createdAt,updatedAt,initialDate,finalDate);
     }
 
     public SubscriptionBarbershop processPaymentResult(SubscriptionBarberStatus status){
+        System.out.println("SubscriptionBarbershop.processPaymentResult -> status: " + this.automaticRenew);
         Instant now = Instant.now();
         boolean attributeIsNull = isNull(barberId) || isNull(subscriptionId) || isNull(duration);
 
@@ -76,13 +82,12 @@ public class SubscriptionBarbershop {
             throw new BusinessExceptions(SubscriptionBarberMessageExceptions.INVALID_SUBSCRIPTION_BARBER_STATUS);
 
         }
-        if(status == SubscriptionBarberStatus.APPROVED){
+        if(status == SubscriptionBarberStatus.ACTIVE){
             return new SubscriptionBarbershop(this.id, this.barberId, this.subscriptionId, status,
-                    this.duration, this.subscriptionPrice, this.subscriptionDiscount, this.createdAt,now, now, now.plus(duration, ChronoUnit.DAYS));
+                    this.duration, this.subscriptionPrice, this.subscriptionDiscount, this.automaticRenew, this.createdAt,now, now, now.plus(duration, ChronoUnit.DAYS));
         }
-
         return new SubscriptionBarbershop(this.id, this.barberId, this.subscriptionId, status,
-                this.duration, this.subscriptionPrice, this.subscriptionDiscount, this.createdAt,now, null, null);
+                this.duration, this.subscriptionPrice, this.subscriptionDiscount, this.automaticRenew, this.createdAt,now, this.startDate, this.expirationDate);
     }
 
     private static boolean isNull(Object attribute){
@@ -108,6 +113,10 @@ public class SubscriptionBarbershop {
 
     public Integer getDuration() {
         return duration;
+    }
+
+    public Boolean getAutomaticRenew() {
+        return automaticRenew;
     }
 
     public Instant getCreatedAt() {
@@ -144,6 +153,7 @@ public class SubscriptionBarbershop {
                 ", duration=" + duration +
                 ", price=" + subscriptionPrice +
                 ", discount=" + subscriptionDiscount +
+                ", isAutomatic=" + automaticRenew +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", startDate=" + startDate +

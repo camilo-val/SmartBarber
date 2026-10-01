@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.sql.SQLException;
 import java.util.UUID;
 
 @Component
@@ -25,12 +26,9 @@ public class GatewayResponseHandler {
         return findTransactionUc.findTransactionByOrderId(orderId)
                 .flatMap(transaction -> updateTransactionUC.changeStatus(status,orderId))
                 .flatMap(transaction -> findSubscriptionBarberUC.findSubscriptionById(transaction.getSubscriptionBarberId())
-                                .flatMap( subscriptionExist ->
-                                        updateSubscriptionBarberStatusUC.changeStatus(
-                                                    SubscriptionBarberStatus.mapStatus(status),
-                                                            subscriptionExist.getId()
-
-                                )
+                                .flatMap( subscriptionExist ->{
+                                    return updateSubscriptionBarberStatusUC.changeStatus(subscriptionExist, SubscriptionBarberStatus.mapStatus(transaction.getStatus()));
+                                }
                         )
                 .then()
                 );
