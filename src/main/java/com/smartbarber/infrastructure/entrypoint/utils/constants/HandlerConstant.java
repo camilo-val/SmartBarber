@@ -4,7 +4,8 @@ public class HandlerConstant {
     private HandlerConstant() {
     }
 
-
+    public static final String SERVICES_SERVICE = "services-service";
+    public static final String ROLE_SERVICE = "role-service";
     public static final String EMPLOYEE_SERVICE = "employee-service";
     public static final String CLIENT_SERVICE = "client-service";
     public static final String USER_SERVICE = "user-service";

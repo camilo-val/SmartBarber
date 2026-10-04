@@ -16,7 +16,8 @@ public interface UserAdapterMapper {
                 entity.getFirebaseId(),
                 entity.getStatus(),
                 entity.getCreateAt(),
-                entity.getUpdateAt()
+                entity.getUpdateAt(),
+                entity.getRoleId()
         );
     }
 }

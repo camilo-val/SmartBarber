@@ -1,8 +1,8 @@
 package com.smartbarber.application.usecase.Employee;
 
+import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.port.EmployeePort;
-import com.smartbarber.domain.exceptions.MessageExceptionsEmployee;
-import com.smartbarber.domain.exceptions.EmployeeExceptions;
+import com.smartbarber.domain.exceptions.employee.MessageExceptionsEmployee;
 import com.smartbarber.domain.model.employee.Employee;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,19 +19,19 @@ public class SearchEmployeeUC {
 
     public Mono<Employee> buscarPorNombre(String name){
         return employeePort.findByName(name)
-                .doOnNext(employee -> log.info("Datos encontrados {}", employee))
-                .switchIfEmpty(Mono.error(new EmployeeExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
+                .doOnNext(employee -> log.info("Datos encontrados por nombre {}", employee))
+                .switchIfEmpty(Mono.error(new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
     }
 
     public Mono<Employee> buscarPorDocuemnto(String document){
         return employeePort.findByDocument(document)
-                .doOnNext(employee -> log.info("Datos encontrados {}", employee))
-                .switchIfEmpty(Mono.error(new EmployeeExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
+                .doOnNext(employee -> log.info("Datos encontrados por documento {}", employee))
+                .switchIfEmpty(Mono.error(new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
     }
 
     public Mono<Employee> buscarPorId(String id){
         return employeePort.findById(UUID.fromString(id))
                 .doOnNext(employee -> log.info("Datos encontrados {}", employee))
-                .switchIfEmpty(Mono.error(new EmployeeExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
+                .switchIfEmpty(Mono.error(new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
     }
 }

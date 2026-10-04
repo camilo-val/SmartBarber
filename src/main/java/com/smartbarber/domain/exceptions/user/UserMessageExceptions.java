@@ -6,7 +6,8 @@ public enum UserMessageExceptions implements ErrorMessage {
     USUARIO_INVALIDO("US_001","invalid user"),
     USUARIO_EXISTENTE("US_002","user already exists"),
     DATOS_INVALIDOS("US_003","invalid data"),
-    USUARIO_NO_EXISTE("US_004","user not found");
+    USUARIO_NO_EXISTE("US_004","user not found"),
+    ROL_NO_EXISTE("US_005","role not found");
 
     private final String codigo;
     private final String mensaje;
@@ -15,6 +16,7 @@ public enum UserMessageExceptions implements ErrorMessage {
         this.codigo = codigo;
         this.mensaje = mensaje;
     }
+
     @Override
     public String getCode() {
         return codigo;

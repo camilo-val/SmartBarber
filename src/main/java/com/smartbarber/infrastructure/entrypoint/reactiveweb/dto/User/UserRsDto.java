@@ -12,6 +12,7 @@ public record UserRsDto (
         String firebaseId,
         String status,
         Instant createAt,
-        Instant updateAt
+        Instant updateAt,
+        Short roleId
 ){
 }

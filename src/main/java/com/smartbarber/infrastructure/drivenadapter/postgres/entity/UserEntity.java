@@ -25,4 +25,6 @@ public class UserEntity {
     private Instant createAt;
     @Column("fecha_modificacion")
     private Instant updateAt;
+    @Column("id_rol")
+    private Short roleId;
 }
