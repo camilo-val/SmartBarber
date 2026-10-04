@@ -12,26 +12,29 @@ public class User {
     private final String status;
     private final Instant createAt;
     private final Instant updateAt;
+    private final Short roleId;
 
-    private User(UUID id, String firebaseId, String status, Instant createAt, Instant updateAt){
+    private User(UUID id, String firebaseId, String status, Instant createAt, Instant updateAt, Short roleId){
         this.id = id;
         this.firebaseId = firebaseId;
         this.status = status;
         this.createAt = createAt;
         this.updateAt = updateAt;
+        this.roleId = roleId;
     }
 
-    public static User createUser(UUID id , String firebaseId){
+    public static User createUser(UUID id , String firebaseId, Short roleId){
         return new User(
                 id,
                 firebaseId,
                 "Activo",
                 Instant.now(),
-                null
+                null,
+                roleId
         );
     }
 
-    public static User update(UUID id, String firebaseId, String status, Instant createAt, Instant updateAt){
+    public static User update(UUID id, String firebaseId, String status, Instant createAt, Instant updateAt, Short roleId){
         if (id == null) {
             throw new BusinessExceptions(
                     UserMessageExceptions.DATOS_INVALIDOS
@@ -42,11 +45,12 @@ public class User {
                 firebaseId,
                 status,
                 createAt,
-                updateAt
+                updateAt,
+                roleId
         );
     }
 
-    public static User rebuild(UUID id, String firebaseId, String status, Instant createAt, Instant updateAt){
+    public static User rebuild(UUID id, String firebaseId, String status, Instant createAt, Instant updateAt, Short roleId){
         if (id == null || status == null || status.isBlank()){
             throw new BusinessExceptions(UserMessageExceptions.DATOS_INVALIDOS);
         }
@@ -55,7 +59,8 @@ public class User {
                 firebaseId,
                 status,
                 createAt,
-                updateAt
+                updateAt,
+                roleId
         );
     }
 
@@ -76,5 +81,7 @@ public class User {
     public Instant getUpdateAt() {
         return updateAt;
     }
+
+    public Short getRoleId(){return roleId;}
 }
 

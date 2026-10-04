@@ -2,8 +2,7 @@ package com.smartbarber.domain.model.employee;
 
 import com.smartbarber.domain.enums.DocumentType;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
-import com.smartbarber.domain.exceptions.EmployeeExceptions;
-import com.smartbarber.domain.exceptions.MessageExceptionsEmployee;
+import com.smartbarber.domain.exceptions.employee.MessageExceptionsEmployee;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -62,7 +61,7 @@ public class Employee {
                                       Instant createAt) {
 
         if (id == null) {
-            throw new EmployeeExceptions(
+            throw new BusinessExceptions(
                     MessageExceptionsEmployee.DATOS_INVALIDOS
             );
         }
@@ -88,7 +87,7 @@ public class Employee {
                                        Instant createAt, Instant updateAt){
 
         if (id == null) {
-            throw new EmployeeExceptions(
+            throw new BusinessExceptions(
                     MessageExceptionsEmployee.DATOS_INVALIDOS
             );
         }

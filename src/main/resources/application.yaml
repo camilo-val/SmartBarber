@@ -1,14 +1,14 @@
 spring:
   application:
     name: smart_barber
+
   r2dbc:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     pool:
-      enabled: true
-      initial-size: 5
-      max-size: 20
+      enabled: false
+
 logging:
   level:
     org.springframework.data.r2dbc: DEBUG

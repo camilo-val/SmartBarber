@@ -1,6 +1,8 @@
-package com.smartbarber.domain.exceptions;
+package com.smartbarber.domain.exceptions.employee;
 
-public enum MessageExceptionsEmployee implements ErrorMessage{
+import com.smartbarber.domain.exceptions.ErrorMessage;
+
+public enum MessageExceptionsEmployee implements ErrorMessage {
 
     EMPLOYEE_INVALIDO("EY_001", "invalid employee"),
     EMPLOYEE_EXISTENTE("CT_002", "employee already exists"),
