@@ -1,9 +1,12 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.config;
 
+import com.smartbarber.domain.enums.RoleType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -14,7 +17,9 @@ import java.util.List;
 
 @Configuration
 @EnableWebFluxSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtFilter filter;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(
@@ -29,13 +34,17 @@ public class SecurityConfig {
                 )
                 .authorizeExchange(exchange -> exchange
                         // Rutas públicas
-                        /*.pathMatchers("/auth/**")
+                        .pathMatchers("/auth/**")
                         .permitAll()
-                        .pathMatchers(HttpMethod.GET, "/products/**")
-                        .permitAll()*/
+                        .pathMatchers(HttpMethod.GET, "/user-service/**")
+                                .hasRole(String.valueOf(RoleType.Cliente))
+                        //.permitAll()
                         .anyExchange()
-                        //.authenticated()
-                        .permitAll()
+                        .authenticated()
+                        //.permitAll()
+                ).addFilterAt(
+                        filter,
+                        SecurityWebFiltersOrder.AUTHENTICATION
                 )
                 /*.oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt -> {})

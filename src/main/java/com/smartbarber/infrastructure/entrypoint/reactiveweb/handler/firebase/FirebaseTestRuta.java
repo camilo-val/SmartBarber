@@ -16,7 +16,7 @@ public class FirebaseTestRuta {
             FirebaseTestHandler handler
     ) {
         return route(
-                POST("/firebase-test/verify"),
+                POST("/auth/verify"),
                 handler::verifyToken
         );
     }
