@@ -11,4 +11,5 @@ public interface UserPort {
     Mono<User> update(UUID id, User user);
     Mono<Void> eliminarUsuario(UUID id);
     Mono<Boolean> existByFirebaseId(String firebaseId);
+    Mono<User> findByFirebaseId(String firebaseId);
 }

@@ -1,5 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.firebase;
 
+import com.smartbarber.application.usecase.athentication.Authentication;
 import com.smartbarber.domain.port.FirebaseAuthPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +13,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class FirebaseTestHandler {
 
-    private final FirebaseAuthPort firebaseAuthPort;
+    private final Authentication authentication;
 
     public Mono<ServerResponse> verifyToken(ServerRequest request) {
 
@@ -26,7 +27,7 @@ public class FirebaseTestHandler {
 
         String idToken = authorization.substring(7);
 
-        return firebaseAuthPort.verifyToken(idToken)
+        return authentication.authorization(idToken)
                 .flatMap(uid -> ServerResponse.ok()
                         .bodyValue(uid))
                /* .onErrorResume(error ->

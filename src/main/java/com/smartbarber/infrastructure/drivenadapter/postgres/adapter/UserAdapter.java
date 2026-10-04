@@ -49,4 +49,10 @@ public class UserAdapter implements UserPort {
         return userData.findByFirebaseId(firebaseId)
                 .map(mapper::toDomain).hasElement();
     }
+
+    @Override
+    public Mono<User> findByFirebaseId(String firebaseId) {
+        return userData.findByFirebaseId(firebaseId)
+        .map(mapper::toDomain);
+    }
 }
