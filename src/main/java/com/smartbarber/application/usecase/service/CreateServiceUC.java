@@ -19,8 +19,8 @@ public class CreateServiceUC {
                 .flatMap(exist -> {
 
                     if (Boolean.TRUE.equals(exist)){
-                        return Mono.error(new BusinessExceptions(
-                                ServiceMessageExceptions.SERVICE_EXISTENTE
+                        return Mono.error(() -> new BusinessExceptions(
+                                ServiceMessageExceptions.SERVICE_NOT_FOUND
                         ));
                     }
 

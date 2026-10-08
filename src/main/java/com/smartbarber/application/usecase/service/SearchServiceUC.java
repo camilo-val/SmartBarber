@@ -18,11 +18,11 @@ public class SearchServiceUC {
     public Mono<Service> buscarPorNombre(String name){
         return servicePort.findByName(name)
                 .doOnNext(service -> log.info("Datos encontrados {}", service))
-                .switchIfEmpty(Mono.error(new BusinessExceptions(ServiceMessageExceptions.SERVICE_NO_EXISTE)));
+                .switchIfEmpty(Mono.error(new BusinessExceptions(ServiceMessageExceptions.SERVICE_NOT_FOUND)));
     }
     public Mono<Service> buscarPorId(Integer id){
         return servicePort.findById(id)
                 .doOnNext(service -> log.info("Datos encontrados {}", service))
-                .switchIfEmpty(Mono.error(new BusinessExceptions(ServiceMessageExceptions.SERVICE_NO_EXISTE)));
+                .switchIfEmpty(Mono.error(new BusinessExceptions(ServiceMessageExceptions.SERVICE_NOT_FOUND)));
     }
 }

@@ -1,7 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.firebase;
 
 import com.smartbarber.application.usecase.athentication.Authentication;
-import com.smartbarber.domain.port.FirebaseAuthPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -20,14 +19,7 @@ public class FirebaseTestHandler {
         String authorization = request.headers()
                 .firstHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            return ServerResponse.badRequest()
-                    .bodyValue("Authorization Bearer token is required");
-        }
-
-        String idToken = authorization.substring(7);
-
-        return authentication.authorization(idToken)
+        return authentication.authorization(authorization)
                 .flatMap(uid -> ServerResponse.ok()
                         .bodyValue(uid))
                /* .onErrorResume(error ->

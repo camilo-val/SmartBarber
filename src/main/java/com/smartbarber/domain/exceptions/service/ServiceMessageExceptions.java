@@ -5,9 +5,9 @@ import com.smartbarber.domain.exceptions.ErrorMessage;
 public enum ServiceMessageExceptions implements ErrorMessage{
 
     SERVICE_INVALID("SC_001", "invalid service"),
-    SERVICE_EXISTENTE("SC_002", "service already exists"),
-    DATOS_INVALIDOS("SC_003","invalid data"),
-    SERVICE_NO_EXISTE("SC_004", "service not found");
+    SERVICE_ALREADY_EXISTS("SC_002", "service already exists"),
+    INVALID_DATA("SC_003","invalid data"),
+    SERVICE_NOT_FOUND("SC_004", "service not found");
 
     private final String codigo;
     private final String mensaje;

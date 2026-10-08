@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase.Employee;
+package com.smartbarber.application.usecase.employee;
 
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.port.EmployeePort;
@@ -18,7 +18,7 @@ public class CrateEmployeeUC {
         return employeePort.existsByDocument(employee.getDocument())
                 .flatMap(exist -> {
                     if (Boolean.TRUE.equals(exist)){
-                        Mono.error(new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_EXISTENTE));
+                        return Mono.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_EXISTENTE));
                     }
                     return Mono.just(employee);
                 })
