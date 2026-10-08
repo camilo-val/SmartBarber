@@ -18,6 +18,7 @@ repositories {
 }
 
 dependencies {
+	implementation "io.r2dbc:r2dbc-pool"
 	implementation 'com.auth0:java-jwt:4.6.1'
 	implementation 'com.google.firebase:firebase-admin:9.11.0'
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'

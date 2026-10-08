@@ -33,22 +33,20 @@ public class JwtFilter implements WebFilter {
                 .getPath()
                 .value();
 
-        if (path.startsWith("/auth/")) {
+        /*if (path.startsWith("/auth/") || path.startsWith("/reservations") || path.startsWith("/schedule-service/")) {
             return chain.filter(exchange);
-        }
+        }*/
         String authorization = exchange.getRequest()
                 .getHeaders()
                 .getFirst(HttpHeaders.AUTHORIZATION);
-
-        // Si no existe Authorization o no es Bearer,
-        // dejamos que Spring Security continúe con el flujo.
-        if (authorization == null ||
-                !authorization.startsWith("Bearer ")) {
+        System.out.println("Authorization: " + authorization);
+        if (authorization == null) {
 
             return chain.filter(exchange);
         }
 
-        String jwt = authorization.substring(7);
+        // Si no existe Authorization o no es Bearer,
+        // dejamos que Spring Security continúe con el flujo.
 
         /*
          * Primero validamos el JWT.
@@ -57,19 +55,7 @@ public class JwtFilter implements WebFilter {
          * los errores producidos al validar el JWT sean considerados
          * como 401.
          */
-        return validateTokenUseCase.authorization(jwt)
-                .onErrorResume(error -> {
-
-                    System.out.println(
-                            "Error validando JWT: " + error.getMessage()
-                    );
-
-                    /*exchange.getResponse()
-                            .setStatusCode(HttpStatus.UNAUTHORIZED);
-
-                    return exchange.getResponse().setComplete();*/
-                    return Mono.error(() -> new RuntimeException("Error procesando la data"));
-                })
+        return validateTokenUseCase.authorization(authorization)
                 .flatMap(token -> {
 
                     System.out.println("ROLEEEEE: " + token.name());

@@ -17,6 +17,7 @@ import java.util.Map;
 @Component
 public class FirebaseAuthAdapter implements FirebaseAuthPort {
     private static Map<String, Object> claims = new HashMap<>();
+
     @Override
     public Mono<Boolean> isValidToken(String idToken) {
         System.out.println("FirebaseAuthAdapter.isValidToken: " + idToken);
@@ -37,9 +38,9 @@ public class FirebaseAuthAdapter implements FirebaseAuthPort {
     }
 
     @Override
-    public Mono<Boolean> isExpiredToken(String idToken){
+    public Mono<Boolean> isExpiredToken(String idToken) {
         return Mono.just(this.claims)
-                .map(mapClaims ->{
+                .map(mapClaims -> {
                     Instant now = Instant.now().truncatedTo(ChronoUnit.SECONDS);
                     long date = (Long) mapClaims.get("exp");
                     Instant expirationDate = Instant.ofEpochSecond(date);
@@ -55,12 +56,13 @@ public class FirebaseAuthAdapter implements FirebaseAuthPort {
     }
 
 
-    private static FirebaseToken getInstance(String idToken){
+    private static FirebaseToken getInstance(String idToken) {
         try {
             return FirebaseAuth.getInstance().verifyIdToken(idToken);
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new TechnicalExceptions(
+                    TechnicalMessageExceptions.UNAUTHORIZED
+            );
         }
-        return null;
     }
 }
