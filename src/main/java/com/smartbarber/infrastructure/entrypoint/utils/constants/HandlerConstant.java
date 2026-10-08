@@ -13,6 +13,7 @@ public class HandlerConstant {
     public static final String BARBER_SERVICE = "barber-service";
     public static final String SUBSCRIPTION_SERVICE= "subscription-service";
     public static final String SUBSCRIPTION_BARBER_SERVICE= "subscription-barbershop-service";
+    public static final String RESERVATION = "reservation-service";
     public static final String BUSINESS = "business";
     public static final String TECHNICAL = "technical";
     public static final String ERROR = "error";

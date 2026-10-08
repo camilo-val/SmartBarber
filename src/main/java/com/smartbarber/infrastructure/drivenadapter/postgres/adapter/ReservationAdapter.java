@@ -42,6 +42,11 @@ public class ReservationAdapter implements ReservationRepositoryPort {
     }
 
     @Override
+    public Flux<Reservation> findAllBarberId(UUID barberId) {
+        return null;
+    }
+
+    @Override
     public Mono<Reservation> save(Reservation reservation) {
         System.out.println("Saving reservation: " + reservation);
         System.out.println("Mapped entity: " + mapper.toEntity(reservation));

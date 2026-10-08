@@ -29,7 +29,7 @@ public class ServiceReservationEntity {
     private int duration;
     @Column("fecha_creacion")
     private Instant createdAt;
-    @Column("fecha_actualizacion")
+    @Column("fecha_modificacion")
     private Instant updatedAt;
 
 }

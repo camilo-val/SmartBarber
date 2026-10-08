@@ -32,4 +32,12 @@ public interface ReservationData extends ReactiveCrudRepository<ReservationEntit
             )
             """)
     Mono<Boolean> existsByCustomerAndRange(UUID customerId, Instant startTime, Instant endTime);
+
+    @Query("""
+            SELECT *
+            FROM reserva r
+            JOIN empleado e ON r.id_empleado = e.id
+            WHERE e.id_barbero = :barberId
+            """)
+    Flux<ReservationEntity> findAllBarberId(UUID barberId);
 }
