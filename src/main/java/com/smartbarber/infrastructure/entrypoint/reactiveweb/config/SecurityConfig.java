@@ -34,8 +34,8 @@ public class SecurityConfig {
                 )
                 .authorizeExchange(exchange -> exchange
                         // Rutas públicas
-                        .pathMatchers("/auth/**", "/reservations","/auth/**",
-                                "/reservations",
+                        .pathMatchers("/auth/**",
+                                "/reservation-service/**",
                                 "/schedule-service/**")
                         .permitAll()
                         .pathMatchers(HttpMethod.GET, "/user-service/**")

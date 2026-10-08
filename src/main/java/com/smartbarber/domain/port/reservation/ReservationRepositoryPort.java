@@ -12,6 +12,7 @@ public interface ReservationRepositoryPort {
     Mono<Boolean> existsById(UUID reservationId);
     Flux<Reservation> findByEmployeeId(UUID employeeId);
     Flux<Reservation> findByCustomerId(UUID customerId);
+    Flux<Reservation> findAllBarberId(UUID barberId);
     Mono<Reservation> save(Reservation reservation);
     Mono<Boolean> existsByEmployeeAndRange(
             UUID employeeId,

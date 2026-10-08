@@ -30,14 +30,37 @@ public class CreateReservationUc {
     private final TransactionalOperator transactionalOperator;
 
     public Mono<Reservation> createReservation(ReservationCommand command) {
-        return validateReservation(command)
+        return loadServices(command.reservationServiceId())
+                .flatMap(services -> {
+                    Integer duration = getDuration(services);
+                    ReservationCommand newReservationCommand = ReservationCommand.builder()
+                            .id(command.id())
+                            .customerId(command.customerId())
+                            .employeeId(command.employeeId())
+                            .reservationServiceId(command.reservationServiceId())
+                            .reservationType(command.reservationType())
+                            .status(command.status())
+                            .startTime(command.startTime())
+                            .endTime(command.startTime().plus(duration, java.time.temporal.ChronoUnit.MINUTES))
+                            .notes(command.notes())
+                            .creationDate(command.creationDate())
+                            .updatedDate(command.updatedDate())
+                            .build();
+
+                    System.out.println("Start date: " + newReservationCommand.startTime() + " Final date: " + newReservationCommand.endTime());
+                    return validateReservation(newReservationCommand)
+                            .thenReturn(services);
+                }).flatMap(services -> createReservation(command, services))
+                .as(transactionalOperator::transactional);
+
+        /*return validateReservation(command)
                 .then(loadServices(command.reservationServiceId()))
                 .flatMap(services -> createReservation(command, services))
-                .as(transactionalOperator::transactional);
+                .as(transactionalOperator::transactional);*/
     }
 
     private Mono<Void> validateReservation(ReservationCommand command) {
-
+        System.out.println("Validating reservation for employee: " + command.startTime() + " and customer: " + command.endTime());
         Mono<Void> employeeValidation =
                 reservationRepositoryPort.existsByEmployeeAndRange(
                                 command.employeeId(),
@@ -124,5 +147,11 @@ public class CreateReservationUc {
                         )
                 )
                 .then();
+    }
+    private Integer getDuration(List<Service> services) {
+        Integer duration = services.stream()
+                .map(Service::getDuration)
+                .reduce(0, Integer::sum);
+        return duration;
     }
 }

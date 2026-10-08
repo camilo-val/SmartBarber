@@ -39,14 +39,16 @@ public class JwtFilter implements WebFilter {
         String authorization = exchange.getRequest()
                 .getHeaders()
                 .getFirst(HttpHeaders.AUTHORIZATION);
-        System.out.println("Authorization: " + authorization);
-        if (authorization == null) {
+
+        // Si no existe Authorization o no es Bearer,
+        // dejamos que Spring Security continúe con el flujo.
+        if (authorization == null ||
+                !authorization.startsWith("Bearer ")) {
 
             return chain.filter(exchange);
         }
 
-        // Si no existe Authorization o no es Bearer,
-        // dejamos que Spring Security continúe con el flujo.
+        String jwt = authorization.substring(7);
 
         /*
          * Primero validamos el JWT.
