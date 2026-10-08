@@ -1,5 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.user;
 
+import com.smartbarber.application.usecase.athentication.Authentication;
 import com.smartbarber.application.usecase.user.CreateUserUC;
 import com.smartbarber.application.usecase.user.SearchUserUC;
 import com.smartbarber.application.usecase.user.UpdateUserUC;
@@ -11,6 +12,7 @@ import com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.user.UserEnt
 import com.smartbarber.infrastructure.entrypoint.utils.validateRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -26,55 +28,22 @@ public class UserHandler {
     private final validateRequest validateRequest;
     private final SearchUserUC searchUserUC;
     private final UpdateUserUC updateUserUC;
-    private final FirebaseAuthPort firebaseAuthPort;
+    private final Authentication authenticationUc;
 
     public Mono<ServerResponse> createUser(ServerRequest request) {
-
-        log.info("Creating user request");
-
         String authorization = request.headers()
-                .firstHeader("Authorization");
+                .firstHeader(HttpHeaders.AUTHORIZATION);
+        System.out.println("Authorization: " + authorization);
 
-        log.info("Authorization header recibido: {}",
-                authorization != null ? "SI" : "NO");
-
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            log.error("Authorization Bearer no recibido correctamente");
-
-            return Mono.error(
-                    new TechnicalExceptions(
-                            TechnicalMessageExceptions.BAD_REQUEST
-                    )
-            );
-        }
-
-        String idToken = authorization.substring(7);
-
-        log.info("Token Firebase recibido. Longitud: {}", idToken.length());
-
-        return firebaseAuthPort.verifyToken(idToken)
-                .doOnNext(firebaseId ->
-                        log.info("Firebase UID verificado correctamente")
-                )
+        return authenticationUc.getUserUid(authorization)
                 .flatMap(firebaseId ->
                         request.bodyToMono(UserRqDto.class)
-                                .doOnNext(body ->
-                                        log.info("Body recibido: roleId={}", body.roleId())
-                                )
                                 .doOnNext(validateRequest::validate)
                                 .map(userRqDto ->
                                         mapper.toDomain(userRqDto, firebaseId)
                                 )
                 )
-                .doOnNext(user ->
-                        log.info("Usuario de dominio creado. RoleId={}",
-                                user.getRoleId())
-                )
                 .flatMap(createUserUC::crearUsuario)
-                .doOnNext(user ->
-                        log.info("Usuario creado correctamente. ID={}",
-                                user.getId())
-                )
                 .map(mapper::toResponse)
                 .flatMap(response ->
                         ServerResponse.created(request.uri())
@@ -86,9 +55,6 @@ public class UserHandler {
                                         TechnicalMessageExceptions.BAD_REQUEST
                                 )
                         )
-                )
-                .doOnError(error ->
-                        log.error("Error creating user", error)
                 );
     }
 

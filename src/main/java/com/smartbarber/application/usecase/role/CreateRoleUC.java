@@ -17,7 +17,7 @@ public class CreateRoleUC {
         return rolePort.existByTypeRol(role.getRoleType())
                 .flatMap(exist -> {
                     if (Boolean.TRUE.equals(exist)){
-                        Mono.error(new BusinessExceptions(RoleMessageExceptions.ROLE_ALREADY_EXIST));
+                        return Mono.error(() -> new BusinessExceptions(RoleMessageExceptions.ROLE_ALREADY_EXIST));
                     }
                     return Mono.just(role);
                 })

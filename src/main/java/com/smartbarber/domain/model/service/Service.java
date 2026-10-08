@@ -52,7 +52,7 @@ public class Service {
 
         if (Boolean.TRUE.equals(offert) && special_price == null) {
             throw new BusinessExceptions(
-                    ServiceMessageExceptions.DATOS_INVALIDOS
+                    ServiceMessageExceptions.INVALID_DATA
             );
         }
 
@@ -90,7 +90,7 @@ public class Service {
 
         if (id == null) {
             throw new BusinessExceptions(
-                    ServiceMessageExceptions.DATOS_INVALIDOS
+                    ServiceMessageExceptions.INVALID_DATA
             );
         }
 
@@ -98,7 +98,7 @@ public class Service {
 
         if (Boolean.TRUE.equals(offert) && special_price == null) {
             throw new BusinessExceptions(
-                    ServiceMessageExceptions.DATOS_INVALIDOS
+                    ServiceMessageExceptions.INVALID_DATA
             );
         }
 
@@ -125,7 +125,7 @@ public class Service {
                                   Boolean status, Boolean offert, Integer price, Integer special_price, Instant createAt,
                                   Instant updateAt){
         if (id == null){
-            throw new BusinessExceptions(ServiceMessageExceptions.DATOS_INVALIDOS);
+            throw new BusinessExceptions(ServiceMessageExceptions.INVALID_DATA);
         }
         validateInputs(name,description);
 
@@ -181,6 +181,23 @@ public class Service {
     public Instant getCreateAt() { return createAt; }
 
     public Instant getUpdateAt() { return updateAt; }
+
+    @Override
+    public String toString() {
+        return "Service{" +
+                "id=" + id +
+                ", barberiaId=" + barberiaId +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", duration=" + duration +
+                ", status=" + status +
+                ", offert=" + offert +
+                ", price=" + price +
+                ", special_price=" + special_price +
+                ", createAt=" + createAt +
+                ", updateAt=" + updateAt +
+                '}';
+    }
 }
 
 

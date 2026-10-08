@@ -22,23 +22,24 @@ public class Authentication {
     private final RolePort rolePort;
 
     public Mono<RoleType> authorization(String idToken){
-        System.out.println( "Empece: " + Instant.now().truncatedTo(ChronoUnit.SECONDS));
-        return Mono.zip(firebaseAuthPort.isExpiredToken(idToken),firebaseAuthPort.verifyToken(idToken) )
-                .map(tuple -> {
-                    Boolean isExpiredToken = tuple.getT1();
-                    String uidUser = tuple.getT2();
-                    if(isExpiredToken){
-                        System.out.println( "Dinalice: " + Instant.now().truncatedTo(ChronoUnit.SECONDS));
-
-                        return uidUser;
-
+        return firebaseAuthPort.isValidToken(idToken)
+                .flatMap(isValid ->{
+                    if (!isValid){
+                        return Mono.error(()->new BusinessExceptions(AuthorizationMessageExceptions.THE_TOKEN_IS_EXPIRED));
                     }
-                    throw new  BusinessExceptions(AuthorizationMessageExceptions.THE_TOKEN_IS_EXPIRED);
-                }).flatMap(userPort::findByFirebaseId)
-                .doOnNext( e ->         System.out.println( "Empece user: " + Instant.now().truncatedTo(ChronoUnit.SECONDS)))
-                .flatMap(user -> rolePort.findById(user.getRoleId()))
-                .doOnNext( e ->         System.out.println( "Empece role: " + Instant.now().truncatedTo(ChronoUnit.SECONDS)))
-                .map(Role::getRoleType);
+                            return Mono.zip(firebaseAuthPort.isExpiredToken(idToken),firebaseAuthPort.getUid(idToken) )
+                                    .map(tuple -> {
+                                        Boolean isExpiredToken = tuple.getT1();
+                                        String uidUser = tuple.getT2();
+                                        if(!isExpiredToken){
+                                            return uidUser;
+                                        }
+                                        throw new  BusinessExceptions(AuthorizationMessageExceptions.THE_TOKEN_IS_EXPIRED);
+                                    }).flatMap(userPort::findByFirebaseId)
+                                    .flatMap(user -> rolePort.findById(user.getRoleId()))
+                                    .map(Role::getRoleType);
+                        }
+                    );
 
 //        return firebaseAuthPort.isExpiredToken(idToken)
 //                .flatMap(isValidToken ->{
@@ -50,5 +51,10 @@ public class Authentication {
 //                            .flatMap(user -> rolePort.findById(user.getRoleId()))
 //                            .map(Role::getRoleType);
 //                });
+    }
+
+    public Mono<String> getUserUid(String idToken){
+        return firebaseAuthPort.isValidToken(idToken).
+                flatMap(mapClaims -> firebaseAuthPort.getUid(idToken));
     }
 }
