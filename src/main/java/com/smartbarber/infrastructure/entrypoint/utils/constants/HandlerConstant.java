@@ -4,6 +4,7 @@ public class HandlerConstant {
     private HandlerConstant() {
     }
 
+    public static final String SCHEDULE_SERVICE = "schedule-service";
     public static final String SERVICES_SERVICE = "services-service";
     public static final String ROLE_SERVICE = "role-service";
     public static final String EMPLOYEE_SERVICE = "employee-service";
