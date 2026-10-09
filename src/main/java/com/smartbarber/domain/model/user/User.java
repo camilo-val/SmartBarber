@@ -23,9 +23,9 @@ public class User {
         this.roleId = roleId;
     }
 
-    public static User createUser(UUID id , String firebaseId, Short roleId){
+    public static User createUserString (String firebaseId, Short roleId){
         return new User(
-                id,
+                null,
                 firebaseId,
                 "Activo",
                 Instant.now(),

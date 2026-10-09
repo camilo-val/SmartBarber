@@ -11,16 +11,14 @@ public interface UserEntryMapper {
     UserRsDto toResponse(User user);
 
     default User toDomain(UserRqDto rqDto, String firebaseId) {
-        return User.createUser(
-                null,
+        return User.createUserString(
                 firebaseId,
                 rqDto.roleId()
         );
     }
 
     default User toDomainForUpdate(UserRqDto rqDto) {
-        return User.createUser(
-                null,
+        return User.createUserString(
                 null,
                 rqDto.roleId()
         );
