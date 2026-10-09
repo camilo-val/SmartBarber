@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.*;
 
 import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.BARBER_SERVICE;
+import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.PUBLIC;
 
 @Configuration
 @AllArgsConstructor
@@ -15,7 +16,7 @@ public class BarbershopRouter {
 
     @Bean
     public RouterFunction<ServerResponse> routerBarbershop(){
-        return RouterFunctions.route(RequestPredicates.POST(BARBER_SERVICE + "/create-barber"), barbershopHandler::createBarbershop)
+        return RouterFunctions.route(RequestPredicates.POST(PUBLIC + BARBER_SERVICE + "/create-barber"), barbershopHandler::createBarbershop)
                 .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/name/{name}"), barbershopHandler::findBarbershopByNae)
                 .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/company-name/{companyName}"), barbershopHandler::findBarbershopByCompanyName)
                 .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/document/{document}"), barbershopHandler::findByBarbershopByDocument)

@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.*;
 
+import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.PUBLIC;
 import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.USER_SERVICE;
 
 
@@ -16,7 +17,7 @@ public class UserRuta {
 
     @Bean
     public RouterFunction<ServerResponse> userRutas(){
-        return RouterFunctions.route(RequestPredicates.POST(USER_SERVICE + "/crear-usuario"),userHandler::createUser)
+        return RouterFunctions.route(RequestPredicates.POST(PUBLIC + USER_SERVICE + "/crear-usuario"),userHandler::createUser)
                 .andRoute(RequestPredicates.GET(USER_SERVICE + "/id/{id}"),userHandler::SearchUserId)
                 .andRoute(RequestPredicates.PUT(USER_SERVICE + "/actualizar-usuario/{id}"),userHandler::updateUser);
     }

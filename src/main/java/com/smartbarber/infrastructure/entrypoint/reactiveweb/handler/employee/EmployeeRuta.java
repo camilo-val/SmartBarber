@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.*;
 
 import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.EMPLOYEE_SERVICE;
+import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.PUBLIC;
 
 @Configuration
 @AllArgsConstructor
@@ -15,7 +16,7 @@ public class EmployeeRuta {
 
     @Bean
     public RouterFunction<ServerResponse> employeeRutas(){
-        return RouterFunctions.route(RequestPredicates.POST(EMPLOYEE_SERVICE + "/crear-empleado"), employeeHandler::createEmployee)
+        return RouterFunctions.route(RequestPredicates.POST(PUBLIC + EMPLOYEE_SERVICE + "/crear-empleado"), employeeHandler::createEmployee)
                 .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/nombre/{nombre}"),employeeHandler::findEmployeeByName)
                 .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/documento/{documento}"),employeeHandler::findByEmployeeByDocument)
                 .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/id/{id}"),employeeHandler::findEmployeeById)

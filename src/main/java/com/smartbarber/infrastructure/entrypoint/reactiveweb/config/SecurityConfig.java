@@ -36,7 +36,8 @@ public class SecurityConfig {
                         // Rutas públicas
                         .pathMatchers("/auth/**",
                                 "/reservation-service/**",
-                                "/schedule-service/**")
+                                "/schedule-service/**",
+                                "/public/**")
                         .permitAll()
                         .pathMatchers(HttpMethod.GET, "/user-service/**")
                                 .hasRole(String.valueOf(RoleType.Cliente))
