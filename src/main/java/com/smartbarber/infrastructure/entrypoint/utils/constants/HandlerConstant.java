@@ -6,6 +6,7 @@ public class HandlerConstant {
 
     public static final String RESERVATION_REVIEW_SERVICE = "reservation-review-service";
     public static final String SCHEDULE_SERVICE = "schedule-service";
+    public static final String PUBLIC = "public/";
     public static final String SERVICES_SERVICE = "services-service";
     public static final String ROLE_SERVICE = "role-service";
     public static final String EMPLOYEE_SERVICE = "employee-service";

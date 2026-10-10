@@ -39,6 +39,7 @@ public class SecurityConfig {
                                 "/schedule-service/**",
                                 "/services-service/**",
                                 "/reservation-review-service/**")
+                                "/public/**")
                         .permitAll()
                         .pathMatchers(HttpMethod.GET, "/user-service/**")
                                 .hasRole(String.valueOf(RoleType.Cliente))
