@@ -22,4 +22,5 @@ public enum ServiceMessageExceptions implements ErrorMessage{
 
     @Override
     public String getMessage(){return mensaje;}
+
 }

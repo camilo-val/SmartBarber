@@ -8,5 +8,5 @@ public interface ServicePort {
     Mono<Service> findByName(String name);
     Mono<Service> save(Service service);
     Mono<Service> update(Integer id, Service service);
-    Mono<Boolean> existByName(String name);
+    Mono<Boolean> existByNameAndDescription(String name, String description);
 }

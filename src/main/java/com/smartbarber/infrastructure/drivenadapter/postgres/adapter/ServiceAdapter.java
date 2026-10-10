@@ -45,7 +45,13 @@ public class ServiceAdapter implements ServicePort{
     }
 
     @Override
-    public Mono<Boolean> existByName(String name) {
-        return serviceData.existsByName(name);
+    public Mono<Boolean> existByNameAndDescription(
+            String name,
+            String description
+    ) {
+        return serviceData.existsByNameAndDescription(
+                name,
+                description
+        );
     }
 }
