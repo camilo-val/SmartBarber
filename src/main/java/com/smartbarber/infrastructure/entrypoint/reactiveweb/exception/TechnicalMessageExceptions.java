@@ -13,8 +13,7 @@ public enum TechnicalMessageExceptions {
     SERVICE_UNAVAILABLE("TECH_003","service unavailable"),
     INTERNAL_SERVER_ERROR("TECH_004","internal server error"),
     UNEXPECTED_ERROR("TECH_005","unexpected error"),
-    UNAUTHORIZED("TECH_006","unauthorized"),
-    ;
+    UNAUTHORIZED("TECH_006","unauthorized");
 
     private final String code;
     private final String message;

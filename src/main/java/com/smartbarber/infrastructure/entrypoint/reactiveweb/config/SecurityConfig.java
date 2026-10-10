@@ -37,6 +37,8 @@ public class SecurityConfig {
                         .pathMatchers("/auth/**",
                                 "/reservation-service/**",
                                 "/schedule-service/**",
+                                "/services-service/**",
+                                "/reservation-review-service/**")
                                 "/public/**")
                         .permitAll()
                         .pathMatchers(HttpMethod.GET, "/user-service/**")

@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase.employee;
+package com.smartbarber.application.usecase.Employee;
 
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.port.EmployeePort;
