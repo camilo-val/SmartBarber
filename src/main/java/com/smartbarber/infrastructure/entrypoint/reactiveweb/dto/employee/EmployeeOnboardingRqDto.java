@@ -1,0 +1,34 @@
+package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee;
+
+import com.smartbarber.domain.enums.DocumentType;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
+
+import java.util.UUID;
+
+@Builder
+public record EmployeeOnboardingRqDto (
+        @NotNull(message = "El id del usuario es obligatorio")
+        UUID userId,
+        @NotNull(message = "El id de la barberia es obligatorio")
+        UUID barberiaId,
+        @NotBlank(message = "El nombre es obligatorio")
+        String name,
+        @NotBlank(message = "El documento es obligatorio")
+        String document,
+        @NotNull
+        DocumentType documentType,
+        @NotBlank(message = "El celuar es obligatorio")
+        @Pattern(regexp = "^[0-9]{10}$", message = "El celular no puede ser allfanumerico y debe tener 10 digitos")
+        String cell,
+        @NotBlank(message = "El Correo es obligatorio")
+        @Email(message = "El correo no tiene un formato válido")
+        String email,
+        @NotBlank(message = "La especialidad es obligatorio")
+        String specialty
+    ){
+
+}

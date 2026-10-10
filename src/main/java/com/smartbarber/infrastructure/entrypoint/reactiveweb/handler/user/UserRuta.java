@@ -17,6 +17,7 @@ public class UserRuta {
 
     @Bean
     public RouterFunction<ServerResponse> userRutas(){
+        System.out.println("Entree");
         return RouterFunctions.route(RequestPredicates.POST(PUBLIC + USER_SERVICE + "/crear-usuario"),userHandler::createUser)
                 .andRoute(RequestPredicates.GET(USER_SERVICE + "/id/{id}"),userHandler::SearchUserId)
                 .andRoute(RequestPredicates.PUT(USER_SERVICE + "/actualizar-usuario/{id}"),userHandler::updateUser);

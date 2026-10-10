@@ -1,6 +1,8 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee;
 
 import com.smartbarber.domain.enums.DocumentType;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.User.UserRqDto;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.User.UserRsDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,10 +14,6 @@ import java.util.UUID;
 @Builder
 public record EmployeeRqDto (
 
-        @NotNull(message = "El id del usuario es obligatorio")
-        UUID userId,
-        @NotNull(message = "El id de la barberia es obligatorio")
-        UUID barberiaId,
         @NotBlank(message = "El nombre es obligatorio")
         String name,
         @NotBlank(message = "El documento es obligatorio")
@@ -29,6 +27,8 @@ public record EmployeeRqDto (
         @Email(message = "El correo no tiene un formato válido")
         String email,
         @NotBlank(message = "La especialidad es obligatorio")
-        String specialty
+        String specialty,
+        @NotNull
+        UserRqDto user
 ){
 }

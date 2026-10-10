@@ -8,6 +8,7 @@ import com.smartbarber.domain.port.FirebaseAuthPort;
 import com.smartbarber.domain.port.RolePort;
 import com.smartbarber.domain.port.UserPort;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -16,12 +17,14 @@ import java.time.temporal.ChronoUnit;
 
 @RequiredArgsConstructor
 @Component
+@Log4j2
 public class Authentication {
     private final FirebaseAuthPort firebaseAuthPort;
     private final UserPort userPort;
     private final RolePort rolePort;
 
     public Mono<RoleType> authorization(String idToken){
+        System.out.println("Authentication.authorization: " + idToken);
         return firebaseAuthPort.isValidToken(idToken)
                 .flatMap(isValid ->{
                     if (!isValid){
@@ -37,7 +40,9 @@ public class Authentication {
                                         throw new  BusinessExceptions(AuthorizationMessageExceptions.THE_TOKEN_IS_EXPIRED);
                                     }).flatMap(userPort::findByFirebaseId)
                                     .flatMap(user -> rolePort.findById(user.getRoleId()))
-                                    .map(Role::getRoleType);
+                                    .doOnNext(role -> log.info("role: {}" ,role))
+                                    .map(Role::getRoleType)
+                                    .doOnNext(roleType -> log.info("roleType: {}" ,roleType));
                         }
                     );
 
@@ -54,6 +59,7 @@ public class Authentication {
     }
 
     public Mono<String> getUserUid(String idToken){
+        System.out.println("Authentication.getUserUid: " + idToken);
         return firebaseAuthPort.isValidToken(idToken).
                 flatMap(mapClaims -> firebaseAuthPort.getUid(idToken));
     }

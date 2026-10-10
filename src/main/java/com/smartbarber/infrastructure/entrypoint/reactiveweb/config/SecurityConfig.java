@@ -1,5 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.config;
 
+import com.smartbarber.application.usecase.athentication.Authentication;
 import com.smartbarber.domain.enums.RoleType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -38,11 +39,11 @@ public class SecurityConfig {
                                 "/reservation-service/**",
                                 "/schedule-service/**",
                                 "/services-service/**",
-                                "/reservation-review-service/**")
+                                "/reservation-review-service/**",
                                 "/public/**")
                         .permitAll()
                         .pathMatchers(HttpMethod.GET, "/user-service/**")
-                                .hasRole(String.valueOf(RoleType.Cliente))
+                                .hasRole(RoleType.BARBER.name())
                         //.permitAll()
                         .anyExchange()
                         .authenticated()

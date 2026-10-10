@@ -55,4 +55,13 @@ public class Role {
     public String getStatus() {
         return status;
     }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", roleType=" + roleType +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

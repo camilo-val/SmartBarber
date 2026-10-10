@@ -37,12 +37,12 @@ public class Barbershop {
         this.updateAt = updateAt;
     }
 
-    public static Barbershop createBarbershop(UUID id, String name, String description, String location,
+    public static Barbershop createBarbershop(String name, String description, String location,
                                               String phone, String document, DocumentType documentType,
                                               String companyName){
         validateInputs(name, description, location, phone, document, documentType, companyName);
         return new Barbershop(
-                id,
+                null,
                 name,
                 description,
                 location,
