@@ -1,5 +1,6 @@
 package com.smartbarber.application.usecase.user;
 
+import com.smartbarber.application.command.in.user.UserCommand;
 import com.smartbarber.domain.model.user.User;
 import com.smartbarber.domain.port.UserPort;
 import lombok.AllArgsConstructor;
@@ -15,16 +16,13 @@ public class UpdateUserUC {
 
     private final UserPort userPort;
 
-    public Mono<User> userUpdate(String id, User user) {
+    public Mono<User> userUpdate(String id, UserCommand user) {
 
         return userPort.findById(UUID.fromString(id))
-                .map(existingUser -> User.update(
-                        existingUser.getId(),
+                .map(existingUser -> existingUser.update(
                         existingUser.getFirebaseId(),
                         existingUser.getStatus(),
-                        existingUser.getCreateAt(),
-                        Instant.now(),
-                        user.getRoleId()
+                        user.roleId()
                 ))
                 .flatMap(updatedUser ->
                         userPort.update(UUID.fromString(id), updatedUser)

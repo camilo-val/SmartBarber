@@ -57,6 +57,11 @@ public class JwtFilter implements WebFilter {
          * los errores producidos al validar el JWT sean considerados
          * como 401.
          */
+
+        if(path.contains("/public")){
+            return chain.filter(exchange);
+        }
+
         return validateTokenUseCase.authorization(authorization)
                 .flatMap(token -> {
 

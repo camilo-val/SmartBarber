@@ -1,5 +1,6 @@
 package com.smartbarber.domain.model.user;
 
+import com.smartbarber.domain.enums.UserStatus;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.user.UserMessageExceptions;
 
@@ -9,12 +10,12 @@ import java.util.UUID;
 public class User {
     private final UUID id;
     private final String firebaseId;
-    private final String status;
+    private final UserStatus status;
     private final Instant createAt;
     private final Instant updateAt;
     private final Short roleId;
 
-    private User(UUID id, String firebaseId, String status, Instant createAt, Instant updateAt, Short roleId){
+    private User(UUID id, String firebaseId, UserStatus status, Instant createAt, Instant updateAt, Short roleId){
         this.id = id;
         this.firebaseId = firebaseId;
         this.status = status;
@@ -27,31 +28,31 @@ public class User {
         return new User(
                 null,
                 firebaseId,
-                "Activo",
+                UserStatus.ACTIVE,
                 Instant.now(),
                 null,
                 roleId
         );
     }
 
-    public static User update(UUID id, String firebaseId, String status, Instant createAt, Instant updateAt, Short roleId){
+    public User update(String firebaseId, UserStatus status, Short roleId){
         if (id == null) {
             throw new BusinessExceptions(
                     UserMessageExceptions.DATOS_INVALIDOS
             );
         }
         return new User(
-                id,
+                this.id,
                 firebaseId,
                 status,
-                createAt,
-                updateAt,
+                this.createAt,
+                this.updateAt,
                 roleId
         );
     }
 
-    public static User rebuild(UUID id, String firebaseId, String status, Instant createAt, Instant updateAt, Short roleId){
-        if (id == null || status == null || status.isBlank()){
+    public static User rebuild(UUID id, String firebaseId, UserStatus status, Instant createAt, Instant updateAt, Short roleId){
+        if (id == null || status == null){
             throw new BusinessExceptions(UserMessageExceptions.DATOS_INVALIDOS);
         }
         return new User(
@@ -70,7 +71,7 @@ public class User {
 
     public String getFirebaseId() { return firebaseId; }
 
-    public String getStatus() {
+    public UserStatus getStatus() {
         return status;
     }
 

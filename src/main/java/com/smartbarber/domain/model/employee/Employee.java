@@ -38,11 +38,11 @@ public class Employee {
         this.updateAt = updateAt;
     }
 
-    public static  Employee createEmployee(UUID id, UUID userId, UUID barberiaId, String document, DocumentType documentType,
+    public static  Employee createEmployee(UUID userId, UUID barberiaId, String document, DocumentType documentType,
                                   String name, String cell, String email, String specialty){
         validateInputs(document, documentType, name, cell, email, specialty);
         return new Employee(
-                id,
+                null,
                 userId,
                 barberiaId,
                 document,
@@ -56,9 +56,8 @@ public class Employee {
         );
     }
 
-    public static Employee update(UUID id, UUID userId, UUID barberiaId, String document, DocumentType documentType,
-                                      String name, String cell, String email, String specialty,
-                                      Instant createAt) {
+    public Employee update(UUID id, UUID barberiaId, String document, DocumentType documentType,
+                                      String name, String cell, String email, String specialty) {
 
         if (id == null) {
             throw new BusinessExceptions(
@@ -69,7 +68,7 @@ public class Employee {
         validateInputs(document, documentType, name, cell, email, specialty);
         return new Employee(
                 id,
-                userId,
+                this.userId,
                 barberiaId,
                 document,
                 documentType,
@@ -77,7 +76,7 @@ public class Employee {
                 cell,
                 email,
                 specialty,
-                createAt,
+                this.createAt,
                 Instant.now()
         );
     }

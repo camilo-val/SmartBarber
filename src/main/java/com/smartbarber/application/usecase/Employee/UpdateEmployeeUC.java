@@ -1,5 +1,6 @@
 package com.smartbarber.application.usecase.employee;
 
+import com.smartbarber.application.command.in.employee.EmployeeCommand;
 import com.smartbarber.domain.port.EmployeePort;
 import com.smartbarber.domain.model.employee.Employee;
 import lombok.AllArgsConstructor;
@@ -13,13 +14,18 @@ import java.util.UUID;
 public class UpdateEmployeeUC {
     private final EmployeePort employeePort;
 
-    public Mono<Employee> employeeUpdate(String id, Employee employee){
+    public Mono<Employee> employeeUpdate(String id, EmployeeCommand employee){
 
         return employeePort.findById(UUID.fromString(id))
-                .map( employeeDB -> Employee.update(employeeDB.getId(), employeeDB.getUserId(),
-                        employeeDB.getBarberiaId(), employee.getDocument(), employee.getDocumentType(),
-                        employee.getName(), employee.getCell(), employee.getEmail(), employee.getSpecialty(),
-                        employeeDB.getCreateAt()))
+                .map( employeeDB -> employeeDB.update(
+                                employee.id(),
+                                employee.barberiaId(),
+                                employee.document(),
+                                employee.documentType(),
+                                employee.name(),
+                                employee.cell(),
+                                employee.email(),
+                                employee.specialty()))
                 .flatMap( employeeUpdate -> employeePort.update(UUID.fromString(id), employeeUpdate));
     }
 }

@@ -18,6 +18,7 @@ public class BarbershopRouter {
     public RouterFunction<ServerResponse> routerBarbershop(){
         System.out.println("Router Barbershop");
         return RouterFunctions.route(RequestPredicates.POST(PUBLIC + BARBER_SERVICE + "/create-barber"), barbershopHandler::createBarbershop)
+                .andRoute(RequestPredicates.POST(PUBLIC + BARBER_SERVICE + "/onboarding"), barbershopHandler::onBoardingBarber)
                 .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/name/{name}"), barbershopHandler::findBarbershopByNae)
                 .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/company-name/{companyName}"), barbershopHandler::findBarbershopByCompanyName)
                 .andRoute(RequestPredicates.GET(BARBER_SERVICE + "/document/{document}"), barbershopHandler::findByBarbershopByDocument)

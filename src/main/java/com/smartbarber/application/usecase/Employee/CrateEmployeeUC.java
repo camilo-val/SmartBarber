@@ -1,5 +1,6 @@
 package com.smartbarber.application.usecase.employee;
 
+import com.smartbarber.application.command.in.employee.EmployeeCommand;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.port.EmployeePort;
 import com.smartbarber.domain.exceptions.employee.MessageExceptionsEmployee;
@@ -14,13 +15,22 @@ public class CrateEmployeeUC {
 
     private final EmployeePort employeePort;
 
-    public Mono<Employee> crearEmpleado(Employee employee){
-        return employeePort.existsByDocument(employee.getDocument())
+    public Mono<Employee> crearEmpleado(EmployeeCommand employee){
+        return employeePort.existsByDocument(employee.document())
                 .flatMap(exist -> {
                     if (Boolean.TRUE.equals(exist)){
                         return Mono.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_EXISTENTE));
                     }
-                    return Mono.just(employee);
+                    return Mono.just(Employee.createEmployee(
+                            employee.userId(),
+                            employee.barberiaId(),
+                            employee.document(),
+                            employee.documentType(),
+                            employee.name(),
+                            employee.cell(),
+                            employee.email(),
+                            employee.specialty()
+                    ));
                 })
                 .flatMap(employeePort::save);
     }

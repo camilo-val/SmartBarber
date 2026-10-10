@@ -1,5 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.user;
 
+import com.smartbarber.application.command.in.user.UserCommand;
 import com.smartbarber.domain.model.user.User;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.User.UserRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.User.UserRsDto;
@@ -10,17 +11,19 @@ public interface UserEntryMapper {
 
     UserRsDto toResponse(User user);
 
-    default User toDomain(UserRqDto rqDto, String firebaseId) {
-        return User.createUserString(
-                firebaseId,
-                rqDto.roleId()
-        );
+    default UserCommand toDomain(UserRqDto rqDto, String firebaseId) {
+        return UserCommand.builder()
+                .id(null)
+                .firebaseId(firebaseId)
+                .roleId(rqDto.roleId())
+                .build();
     }
 
-    default User toDomainForUpdate(UserRqDto rqDto) {
-        return User.createUserString(
-                null,
-                rqDto.roleId()
-        );
+    default UserCommand toDomainForUpdate(UserRqDto rqDto) {
+        return UserCommand.builder()
+                .id(null)
+                .firebaseId(null)
+                .roleId(rqDto.roleId())
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.User;
 
+import com.smartbarber.domain.enums.UserStatus;
 import lombok.Builder;
 
 import java.time.Instant;
@@ -10,7 +11,7 @@ import java.util.UUID;
 public record UserRsDto (
         UUID id,
         String firebaseId,
-        String status,
+        UserStatus status,
         Instant createAt,
         Instant updateAt,
         Short roleId

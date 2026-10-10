@@ -22,6 +22,7 @@ public class Authentication {
     private final RolePort rolePort;
 
     public Mono<RoleType> authorization(String idToken){
+        System.out.println("Authentication.authorization: " + idToken);
         return firebaseAuthPort.isValidToken(idToken)
                 .flatMap(isValid ->{
                     if (!isValid){
@@ -54,6 +55,7 @@ public class Authentication {
     }
 
     public Mono<String> getUserUid(String idToken){
+        System.out.println("Authentication.getUserUid: " + idToken);
         return firebaseAuthPort.isValidToken(idToken).
                 flatMap(mapClaims -> firebaseAuthPort.getUid(idToken));
     }

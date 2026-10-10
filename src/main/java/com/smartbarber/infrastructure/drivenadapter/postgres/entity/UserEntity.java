@@ -1,5 +1,6 @@
 package com.smartbarber.infrastructure.drivenadapter.postgres.entity;
 
+import com.smartbarber.domain.enums.UserStatus;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
@@ -20,7 +21,7 @@ public class UserEntity {
     @Column("uid_firebase")
     private String firebaseId;
     @Column("estado")
-    private String status;
+    private UserStatus status;
     @Column("fecha_creacion")
     private Instant createAt;
     @Column("fecha_modificacion")
