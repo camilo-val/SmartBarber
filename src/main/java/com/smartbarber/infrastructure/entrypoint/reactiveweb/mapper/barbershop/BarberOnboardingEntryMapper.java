@@ -82,6 +82,7 @@ public interface BarberOnboardingEntryMapper {
                                                 .firebaseId(domain.getUser().firebaseId())
                                                 .status(domain.getUser().status())
                                                 .roleId(domain.getUser().roleId())
+                                                .createAt(domain.getUser().createAt())
                                                 .build()
                                 )
                                 .build()

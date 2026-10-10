@@ -11,6 +11,7 @@ import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.Technical
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.barbershop.BarberOnboardingEntryMapper;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.barbershop.BarbershopEntryMapper;
+import com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant;
 import com.smartbarber.infrastructure.entrypoint.utils.validateRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +49,10 @@ public class BarbershopHandler {
         return request.bodyToMono(BarbershopOnBoardingRqDto.class)
                 .doOnNext(validateRequest::validate)
                 .flatMap(body
-                        -> authenticationUc.getUserUid(request.headers().header(AUTHORIZATION).getFirst())
+                        -> authenticationUc.getUserUid(request.headers().header(HandlerConstant.IDTOKEN).getFirst())
                 .map(uid -> barberOnboardingMapper.toCommand(body, uid)))
                 .flatMap(onboardingBarberShopUc::execute)
+                .doOnNext(response -> log.info("onBoardingBarberUc.execute: {}", response))
                 .map(barberOnboardingMapper::toResponse)
                 .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response))
                 .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)) );

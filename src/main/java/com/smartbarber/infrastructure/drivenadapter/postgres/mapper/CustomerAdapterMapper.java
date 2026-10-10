@@ -1,19 +1,19 @@
 package com.smartbarber.infrastructure.drivenadapter.postgres.mapper;
 
 import com.smartbarber.domain.enums.DocumentType;
-import com.smartbarber.domain.model.client.Client;
-import com.smartbarber.infrastructure.drivenadapter.postgres.entity.ClientEntity;
+import com.smartbarber.domain.model.customer.Customer;
+import com.smartbarber.infrastructure.drivenadapter.postgres.entity.CustomerEntity;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel =  "spring")
-public interface ClientAdapterMapper {
-    ClientEntity toEntity(Client client);
-    default Client toDomain(ClientEntity entity){
+public interface CustomerAdapterMapper {
+    CustomerEntity toEntity(Customer customer);
+    default Customer toDomain(CustomerEntity entity){
         if (entity == null){
             return null;
         }
 
-        return Client.rebuild(
+        return Customer.rebuild(
                 entity.getId(),
                 entity.getUserId(),
                 entity.getDocument(),

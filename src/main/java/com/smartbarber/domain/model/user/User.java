@@ -84,5 +84,17 @@ public class User {
     }
 
     public Short getRoleId(){return roleId;}
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firebaseId='" + firebaseId + '\'' +
+                ", status=" + status +
+                ", createAt=" + createAt +
+                ", updateAt=" + updateAt +
+                ", roleId=" + roleId +
+                '}';
+    }
 }
 

@@ -14,6 +14,7 @@ public enum TechnicalMessageExceptions {
     INTERNAL_SERVER_ERROR("TECH_004","internal server error"),
     UNEXPECTED_ERROR("TECH_005","unexpected error"),
     UNAUTHORIZED("TECH_006","unauthorized"),
+    FORBIDDEN("TECH_007","forbidden"),
     ;
 
     private final String code;

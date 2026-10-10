@@ -1,4 +1,4 @@
-package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.client;
+package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.customer;
 
 import com.smartbarber.domain.enums.DocumentType;
 import jakarta.validation.constraints.Email;
@@ -10,7 +10,7 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record ClientRqDto(
+public record CustomerRqDto(
 
         @NotNull(message = "El id del usuario es obligatorio")
         UUID userId,

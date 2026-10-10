@@ -1,13 +1,13 @@
-package com.smartbarber.domain.model.client;
+package com.smartbarber.domain.model.customer;
 
 import com.smartbarber.domain.enums.DocumentType;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
-import com.smartbarber.domain.exceptions.client.ClientMessageExceptions;
+import com.smartbarber.domain.exceptions.customer.CustomerMessageExceptions;
 
 import java.time.Instant;
 import java.util.UUID;
 
-public class Client {
+public class Customer {
 
     private final UUID id;
     private final UUID userId;
@@ -19,9 +19,9 @@ public class Client {
     private final Instant createAt;
     private final Instant updateAt;
 
-    private Client(UUID id, UUID userId, String document, DocumentType documentType,
-                   String name, String cell, String email, Instant createAt,
-                   Instant updateAt){
+    private Customer(UUID id, UUID userId, String document, DocumentType documentType,
+                     String name, String cell, String email, Instant createAt,
+                     Instant updateAt){
 
         this.id = id;
         this.userId = userId;
@@ -34,11 +34,13 @@ public class Client {
         this.updateAt = updateAt;
     }
 
-    public static Client createClient(UUID id, UUID userId, String document, DocumentType documentType,
-                               String name, String cell, String email){
+    public static Customer createCustomer(UUID userId, String document, DocumentType documentType,
+                                          String name, String cell, String email){
         validateInputs(document, documentType, name, cell, email);
-        return new Client(
-                id,
+        System.out.println("Customer.createCustomer userId: " + userId + " document: " + document + " documentType: " + documentType +
+        " name: " + name + " cell: " + cell + " email: " + email);
+        return new Customer(
+                null,
                 userId,
                 document,
                 documentType,
@@ -50,17 +52,17 @@ public class Client {
         );
     }
 
-    public static Client update(UUID id, UUID userId, String document, DocumentType documentType,
-                                    String name, String cell, String email, Instant createAt) {
+    public static Customer update(UUID id, UUID userId, String document, DocumentType documentType,
+                                  String name, String cell, String email, Instant createAt) {
 
         if (id == null) {
             throw new BusinessExceptions(
-                    ClientMessageExceptions.DATOS_INVALIDOS
+                    CustomerMessageExceptions.INVALID_DATA
             );
         }
 
         validateInputs(document, documentType, name, cell, email);
-        return new Client(
+        return new Customer(
                 id,
                 userId,
                 document,
@@ -73,16 +75,16 @@ public class Client {
         );
     }
 
-    public static Client rebuild(UUID id, UUID userId, String document, DocumentType documentType,
-                                     String name, String cell, String email, Instant createAt,
-                                     Instant updateAt){
+    public static Customer rebuild(UUID id, UUID userId, String document, DocumentType documentType,
+                                   String name, String cell, String email, Instant createAt,
+                                   Instant updateAt){
 
         if (id == null){
-            throw new BusinessExceptions(ClientMessageExceptions.DATOS_INVALIDOS);
+            throw new BusinessExceptions(CustomerMessageExceptions.INVALID_DATA);
         }
         validateInputs(document, documentType, name, cell, email);
 
-        return new Client(
+        return new Customer(
                 id,
                 userId,
                 document,
@@ -105,7 +107,7 @@ public class Client {
                 || isNullOrBlank(email);
 
         if (esInvalido || (documentType == DocumentType.NIT)){
-            throw new BusinessExceptions(ClientMessageExceptions.DATOS_INVALIDOS);
+            throw new BusinessExceptions(CustomerMessageExceptions.INVALID_DATA);
         }
     }
 
@@ -144,4 +146,18 @@ public class Client {
         return updateAt;
     }
 
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", document='" + document + '\'' +
+                ", documentType=" + documentType +
+                ", name='" + name + '\'' +
+                ", cell='" + cell + '\'' +
+                ", email='" + email + '\'' +
+                ", createAt=" + createAt +
+                ", updateAt=" + updateAt +
+                '}';
+    }
 }

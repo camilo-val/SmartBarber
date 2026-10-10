@@ -8,6 +8,7 @@ import com.smartbarber.domain.port.FirebaseAuthPort;
 import com.smartbarber.domain.port.RolePort;
 import com.smartbarber.domain.port.UserPort;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -16,6 +17,7 @@ import java.time.temporal.ChronoUnit;
 
 @RequiredArgsConstructor
 @Component
+@Log4j2
 public class Authentication {
     private final FirebaseAuthPort firebaseAuthPort;
     private final UserPort userPort;
@@ -38,7 +40,9 @@ public class Authentication {
                                         throw new  BusinessExceptions(AuthorizationMessageExceptions.THE_TOKEN_IS_EXPIRED);
                                     }).flatMap(userPort::findByFirebaseId)
                                     .flatMap(user -> rolePort.findById(user.getRoleId()))
-                                    .map(Role::getRoleType);
+                                    .doOnNext(role -> log.info("role: {}" ,role))
+                                    .map(Role::getRoleType)
+                                    .doOnNext(roleType -> log.info("roleType: {}" ,roleType));
                         }
                     );
 

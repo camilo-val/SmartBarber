@@ -159,4 +159,21 @@ public class Employee {
     public Instant getUpdateAt() {
         return updateAt;
     }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", barberiaId=" + barberiaId +
+                ", document='" + document + '\'' +
+                ", documentType=" + documentType +
+                ", name='" + name + '\'' +
+                ", cell='" + cell + '\'' +
+                ", email='" + email + '\'' +
+                ", specialty='" + specialty + '\'' +
+                ", createAt=" + createAt +
+                ", updateAt=" + updateAt +
+                '}';
+    }
 }

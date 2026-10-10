@@ -7,13 +7,12 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
 @Table(name = "cliente")
 @ToString
-public class ClientEntity {
+public class CustomerEntity {
     @Id
     @Column("id_cliente")
     private UUID id;

@@ -2,6 +2,10 @@ package com.smartbarber.infrastructure.entrypoint.reactiveweb.config;
 
 import com.smartbarber.application.usecase.athentication.Authentication;
 import com.smartbarber.domain.enums.RoleType;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Slf4j
 @Component
 public class JwtFilter implements WebFilter {
 
@@ -27,88 +32,75 @@ public class JwtFilter implements WebFilter {
     @Override
     public Mono<Void> filter(
             ServerWebExchange exchange,
-            WebFilterChain chain) {
-
+            WebFilterChain chain
+    ) {
         String path = exchange.getRequest()
                 .getPath()
                 .value();
 
-        /*if (path.startsWith("/auth/") || path.startsWith("/reservations") || path.startsWith("/schedule-service/")) {
+        // Las rutas públicas no necesitan JWT
+        if (isPublicPath(path)) {
             return chain.filter(exchange);
-        }*/
+        }
+
         String authorization = exchange.getRequest()
                 .getHeaders()
                 .getFirst(HttpHeaders.AUTHORIZATION);
 
-        // Si no existe Authorization o no es Bearer,
-        // dejamos que Spring Security continúe con el flujo.
-        if (authorization == null ||
-                !authorization.startsWith("Bearer ")) {
-
-            return chain.filter(exchange);
-        }
-
-        String jwt = authorization.substring(7);
-
-        /*
-         * Primero validamos el JWT.
-         *
-         * El onErrorResume está ANTES del flatMap para que solamente
-         * los errores producidos al validar el JWT sean considerados
-         * como 401.
-         */
-
-        if(path.contains("/public")){
+        // Sin token, Spring Security decidirá si permite el acceso
+        if (authorization == null
+                || !authorization.startsWith("Bearer ")
+                || authorization.length() <= 7) {
             return chain.filter(exchange);
         }
 
         return validateTokenUseCase.authorization(authorization)
+
+                // Solo los errores de validación se convierten en 401
+                .onErrorResume(TechnicalExceptions.class, error -> {
+                    log.error(error.getMessage(), error);
+                    return Mono.error(() -> new TechnicalExceptions(TechnicalMessageExceptions.UNAUTHORIZED));
+                })
+
                 .flatMap(token -> {
 
-                    System.out.println("ROLEEEEE: " + token.name());
 
-                    /*
-                     * El JWT es válido, pero el usuario no tiene
-                     * el rol permitido.
-                     */
-                            ;
-                    if (!"Cliente".equals(token.name()) && !"Barbero".equals(token.name()) && !"Administrador".equals(token.name())) {
-
-                        exchange.getResponse()
-                                .setStatusCode(HttpStatus.FORBIDDEN);
-
-                        return exchange.getResponse().setComplete();
+                    // Lista de roles válidos para la aplicación
+                    if (!List.of(
+                            RoleType.CUSTOMER,
+                            RoleType.BARBER,
+                            RoleType.ADMIN
+                    ).contains(token)) {
+                        return Mono.error(() -> new TechnicalExceptions(TechnicalMessageExceptions.FORBIDDEN));
                     }
 
-                    System.out.println("Valide exitoso");
-
-                    /*
-                     * Creamos la Authentication de Spring Security.
-                     *
-                     * IMPORTANTE:
-                     * Esta NO es tu Authentication UC.
-                     * Por eso utilizamos el nombre completo de la clase.
-                     */
-                    org.springframework.security.core.Authentication authentication =
+                    var authentication =
                             new UsernamePasswordAuthenticationToken(
                                     token,
                                     null,
                                     List.of(
                                             new SimpleGrantedAuthority(
-                                                    "ROLE_" + token.name()
+                                                    "ROLE_" + token
                                             )
                                     )
                             );
 
-                    /*
-                     * Guardamos la autenticación en el contexto reactivo
-                     * de Spring Security antes de continuar con la petición.
-                     */
                     return chain.filter(exchange)
                             .contextWrite(
                                     ReactiveSecurityContextHolder
                                             .withAuthentication(authentication)
                             );
                 });
+    }
+
+    private boolean isPublicPath(String path) {
+        return path.startsWith("/auth/")
+                || path.equals("/auth")
+                || path.startsWith("/reservation-service/")
+                || path.equals("/reservation-service")
+                || path.startsWith("/schedule-service/")
+                || path.equals("/schedule-service")
+                || path.startsWith("/public/")
+                || path.equals("/public");
     }
 }

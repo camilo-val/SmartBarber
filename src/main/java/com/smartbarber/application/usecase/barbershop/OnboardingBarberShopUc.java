@@ -16,12 +16,15 @@ import com.smartbarber.domain.port.BarberShopRepositoryPort;
 import com.smartbarber.domain.port.EmployeePort;
 import com.smartbarber.domain.port.UserPort;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Component
+@Log4j2
 public class OnboardingBarberShopUc {
     private final BarberShopRepositoryPort barberShopRepositoryPort;
     private final UserPort userPort;
@@ -45,8 +48,10 @@ public class OnboardingBarberShopUc {
                             command.barbershop().document(),
                             command.barbershop().documentType(),
                             command.barbershop().companyName()))
+                        .doOnNext(barbershop -> log.info("OnboardingBarberShopUc.execute barbershop: {}" ,barbershop))
                         .flatMap(barbershop ->
                             userPort.save(User.createUserString(command.user().firebaseId(), command.user().roleId()))
+                                    .doOnNext(user -> log.info("OnboardingBarberShopUc.execute user: {}" , user))
                                     .flatMap(user -> employeePort.save(Employee.createEmployee(
                                             user.getId(),
                                             barbershop.getId(),
