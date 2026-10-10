@@ -1,8 +1,8 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.employee;
 
-import com.smartbarber.application.usecase.employee.UpdateEmployeeUC;
-import com.smartbarber.application.usecase.employee.CrateEmployeeUC;
-import com.smartbarber.application.usecase.employee.SearchEmployeeUC;
+import com.smartbarber.application.usecase.Employee.UpdateEmployeeUC;
+import com.smartbarber.application.usecase.Employee.CrateEmployeeUC;
+import com.smartbarber.application.usecase.Employee.SearchEmployeeUC;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee.EmployeeRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;

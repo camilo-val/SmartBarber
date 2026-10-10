@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase.employee;
+package com.smartbarber.application.usecase.Employee;
 
 import com.smartbarber.application.command.in.employee.EmployeeCommand;
 import com.smartbarber.domain.port.EmployeePort;

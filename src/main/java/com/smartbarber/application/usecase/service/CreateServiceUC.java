@@ -15,13 +15,17 @@ public class CreateServiceUC {
     private final ServicePort servicePort;
 
     public Mono<Service> crearServicio(Service service) {
-        return servicePort.existByName(service.getName())
-                .flatMap(exist -> {
-
-                    if (Boolean.TRUE.equals(exist)){
-                        return Mono.error(() -> new BusinessExceptions(
-                                ServiceMessageExceptions.SERVICE_NOT_FOUND
-                        ));
+        return servicePort.existByNameAndDescription(
+                        service.getName(),
+                        service.getDescription()
+                )
+                .flatMap(exists -> {
+                    if (Boolean.TRUE.equals(exists)) {
+                        return Mono.error(
+                                new BusinessExceptions(
+                                        ServiceMessageExceptions.SERVICE_ALREADY_EXISTS
+                                )
+                        );
                     }
 
                     return Mono.just(service);

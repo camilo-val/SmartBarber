@@ -6,8 +6,13 @@ import reactor.core.publisher.Mono;
 
 public interface ServiceData extends ReactiveCrudRepository<ServiceEntity, Integer> {
 
+    Mono<ServiceEntity> findById(Integer id);
+
     Mono<ServiceEntity> findByName(String name);
 
-    Mono<Boolean> existsByName(String name);
+    Mono<Boolean> existsByNameAndDescription(
+            String name,
+            String description
+    );
 }
 
