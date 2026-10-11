@@ -4,27 +4,27 @@ import com.smartbarber.domain.exceptions.ErrorMessage;
 
 public enum MessageExceptionsEmployee implements ErrorMessage {
 
-    EMPLOYEE_INVALIDO("EY_001", "invalid employee"),
-    EMPLOYEE_EXISTENTE("CT_002", "employee already exists"),
-    DATOS_INVALIDOS("CT_003","invalid data"),
-    EMPLOYEE_NO_EXISTE("CT_004", "employee not found");
+    INVALID_EMPLOYEE("EY_001", "invalid employee"),
+    EMPLOYEE_ALREADY_EXISTS("CT_002", "employee already exists"),
+    INVALID_DATA("CT_003","invalid data"),
+    EMPLOYEE_NOT_FOUND("CT_004", "employee not found");
 
-    private final String codigo;
-    private final String mensaje;
+    private final String code;
+    private final String messgae;
 
-    MessageExceptionsEmployee(String codigo, String mensaje) {
-        this.codigo = codigo;
-        this.mensaje = mensaje;
+    MessageExceptionsEmployee(String code, String messgae) {
+        this.code = code;
+        this.messgae = messgae;
     }
 
 
     @Override
     public String getCode() {
-        return codigo;
+        return code;
     }
 
     @Override
     public String getMessage() {
-        return mensaje;
+        return messgae;
     }
 }

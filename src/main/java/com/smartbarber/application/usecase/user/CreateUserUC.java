@@ -23,13 +23,13 @@ public class CreateUserUC {
 
                     if (Boolean.TRUE.equals(exists)) {
                         return Mono.error(() -> new BusinessExceptions(
-                                UserMessageExceptions.USUARIO_EXISTENTE
+                                UserMessageExceptions.USER_ALREADY_EXISTS
                         ));
                     }
 
                     return rolePort.findById(user.roleId())
                             .switchIfEmpty(Mono.error(() -> new BusinessExceptions(
-                                    UserMessageExceptions.ROL_NO_EXISTE
+                                    UserMessageExceptions.ROLE_NOT_FOUND
                             )))
                             .thenReturn(User.createUserString(user.firebaseId(), user.roleId()));
                 })

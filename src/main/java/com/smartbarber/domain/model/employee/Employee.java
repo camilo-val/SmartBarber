@@ -40,7 +40,10 @@ public class Employee {
 
     public static  Employee createEmployee(UUID userId, UUID barberiaId, String document, DocumentType documentType,
                                   String name, String cell, String email, String specialty){
+        System.out.println("Creando empleado con userId: " + userId + ", barberiaId: " + barberiaId + ", document: " + document + ", documentType: " + documentType +
+                ", name: " + name + ", cell: " + cell + ", email: " + email + ", specialty: " + specialty);
         validateInputs(document, documentType, name, cell, email, specialty);
+
         return new Employee(
                 null,
                 userId,
@@ -61,7 +64,7 @@ public class Employee {
 
         if (id == null) {
             throw new BusinessExceptions(
-                    MessageExceptionsEmployee.DATOS_INVALIDOS
+                    MessageExceptionsEmployee.INVALID_DATA
             );
         }
 
@@ -87,7 +90,7 @@ public class Employee {
 
         if (id == null) {
             throw new BusinessExceptions(
-                    MessageExceptionsEmployee.DATOS_INVALIDOS
+                    MessageExceptionsEmployee.INVALID_DATA
             );
         }
 
@@ -118,7 +121,7 @@ public class Employee {
                 || isNullOrBlank(specialty);
 
         if (esInvalido || (documentType == DocumentType.NIT)){
-            throw new BusinessExceptions(MessageExceptionsEmployee.DATOS_INVALIDOS);
+            throw new BusinessExceptions(MessageExceptionsEmployee.INVALID_DATA);
         }
     }
 

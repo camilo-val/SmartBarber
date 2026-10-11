@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase.Employee;
+package com.smartbarber.application.usecase.employee;
 
 import com.smartbarber.application.command.in.employee.EmployeeCommand;
 import com.smartbarber.domain.port.EmployeePort;
@@ -18,7 +18,7 @@ public class UpdateEmployeeUC {
 
         return employeePort.findById(UUID.fromString(id))
                 .map( employeeDB -> employeeDB.update(
-                                employee.id(),
+                                UUID.fromString(id),
                                 employee.barberiaId(),
                                 employee.document(),
                                 employee.documentType(),

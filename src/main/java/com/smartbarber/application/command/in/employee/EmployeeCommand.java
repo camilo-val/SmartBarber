@@ -1,5 +1,6 @@
 package com.smartbarber.application.command.in.employee;
 
+import com.smartbarber.application.command.in.user.UserCommand;
 import com.smartbarber.domain.enums.DocumentType;
 import lombok.Builder;
 

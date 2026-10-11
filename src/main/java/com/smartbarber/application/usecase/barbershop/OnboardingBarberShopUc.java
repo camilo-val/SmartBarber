@@ -91,7 +91,7 @@ public class OnboardingBarberShopUc {
         return userPort.existByFirebaseId(uid)
                 .flatMap(existsUser -> {
                     if (existsUser) {
-                        return Mono.error(() -> new BusinessExceptions(UserMessageExceptions.USUARIO_EXISTENTE));
+                        return Mono.error(() -> new BusinessExceptions(UserMessageExceptions.USER_NOT_FOUND));
                     }
                     return Mono.empty();
                 });
@@ -100,7 +100,7 @@ public class OnboardingBarberShopUc {
         return employeePort.existsByDocument(document)
                 .flatMap(existsEmployee -> {
                     if (existsEmployee) {
-                        return Mono.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_EXISTENTE));
+                        return Mono.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_ALREADY_EXISTS));
                     }
                     return Mono.empty();
                 });
