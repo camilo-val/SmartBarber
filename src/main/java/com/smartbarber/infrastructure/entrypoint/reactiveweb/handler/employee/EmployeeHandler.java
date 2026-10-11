@@ -1,8 +1,9 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.employee;
 
-import com.smartbarber.application.usecase.Employee.UpdateEmployeeUC;
-import com.smartbarber.application.usecase.Employee.CrateEmployeeUC;
-import com.smartbarber.application.usecase.Employee.SearchEmployeeUC;
+import com.smartbarber.application.usecase.athentication.Authentication;
+import com.smartbarber.application.usecase.employee.UpdateEmployeeUC;
+import com.smartbarber.application.usecase.employee.CreateEmployeeUC;
+import com.smartbarber.application.usecase.employee.SearchEmployeeUC;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee.EmployeeRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
@@ -15,21 +16,26 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @Component
 @AllArgsConstructor
 @Slf4j
 public class EmployeeHandler {
     private final EmployeeEntryMapper mapper;
-    private final CrateEmployeeUC crateEmployeeUC;
+    private final CreateEmployeeUC createEmployeeUC;
     private final  validateRequest validateRequest;
     private final UpdateEmployeeUC updateEmployeeUC;
     private final SearchEmployeeUC searchEmployeeUC;
+    private final Authentication authenticationUc;
 
     public Mono<ServerResponse> createEmployee(ServerRequest request){
         return request.bodyToMono(EmployeeRqDto.class)
                 .doOnNext(validateRequest::validate)
-                .map(mapper::toDomain)
-                .flatMap(crateEmployeeUC::crearEmpleado)
+                .flatMap(requestBody ->
+                        authenticationUc.getUserUid(request.headers().header(AUTHORIZATION).getFirst())
+                                .map(uid -> mapper.toDomain(requestBody, uid)))
+                .flatMap(createEmployeeUC::createEmployee)
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response))
                 .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));

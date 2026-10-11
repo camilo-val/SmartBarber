@@ -20,6 +20,6 @@ public class SearchUserUC {
     public Mono<User> buscarPorId(String id){
         return userPort.findById(UUID.fromString(id))
                 .doOnNext( user -> log.info("Datos encontrados {}", user))
-                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(UserMessageExceptions.USUARIO_NO_EXISTE)));
+                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(UserMessageExceptions.USER_NOT_FOUND)));
     }
 }
