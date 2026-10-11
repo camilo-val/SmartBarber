@@ -1,13 +1,15 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.employee;
 
 import com.smartbarber.application.usecase.athentication.Authentication;
-import com.smartbarber.application.usecase.employee.UpdateEmployeeUC;
 import com.smartbarber.application.usecase.employee.CreateEmployeeUC;
 import com.smartbarber.application.usecase.employee.SearchEmployeeUC;
+import com.smartbarber.application.usecase.employee.UpdateEmployeeUC;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee.EmployeeOnboardingRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee.EmployeeRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.employee.EmployeeEntryMapper;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.employee.EmployeeOnboardingMapper;
 import com.smartbarber.infrastructure.entrypoint.utils.validateRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 public class EmployeeHandler {
     private final EmployeeEntryMapper mapper;
+    private final EmployeeOnboardingMapper onboardingMapper;
     private final CreateEmployeeUC createEmployeeUC;
     private final  validateRequest validateRequest;
     private final UpdateEmployeeUC updateEmployeeUC;
@@ -32,11 +35,22 @@ public class EmployeeHandler {
     public Mono<ServerResponse> createEmployee(ServerRequest request){
         return request.bodyToMono(EmployeeRqDto.class)
                 .doOnNext(validateRequest::validate)
-                .flatMap(requestBody ->
-                        authenticationUc.getUserUid(request.headers().header(AUTHORIZATION).getFirst())
-                                .map(uid -> mapper.toDomain(requestBody, uid)))
+                .map(mapper::toDomain)
                 .flatMap(createEmployeeUC::createEmployee)
                 .map(mapper::toResponse)
+                .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response))
+                .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));
+    }
+
+    public Mono<ServerResponse> onBoarding(ServerRequest request){
+        return request.bodyToMono(EmployeeOnboardingRqDto.class)
+                .doOnNext(validateRequest::validate)
+                .flatMap(requestBody ->
+                        authenticationUc.getUserUid(request.headers().header(AUTHORIZATION).getFirst())
+                                .map(uid -> onboardingMapper.toDomain(requestBody, uid)))
+                .flatMap(createEmployeeUC::createEmployeeOnboarding)
+                .doOnNext(e -> log.info("Employee created with id: {}", e))
+                .map(onboardingMapper::toResponse)
                 .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response))
                 .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));
     }

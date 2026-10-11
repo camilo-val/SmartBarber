@@ -10,7 +10,7 @@ import java.util.UUID;
 @Builder
 public record EmployeeCommand (
         UUID id,
-        UserCommand user,
+        UUID userId,
         UUID barberiaId,
         String document,
         DocumentType documentType,
