@@ -91,7 +91,7 @@ public class OnboardingBarberShopUc {
         return userPort.existByFirebaseId(uid)
                 .flatMap(existsUser -> {
                     if (existsUser) {
-                        return Mono.error(() -> new BusinessExceptions(UserMessageExceptions.USER_NOT_FOUND));
+                        return Mono.error(() -> new BusinessExceptions(UserMessageExceptions.USER_ALREADY_EXISTS));
                     }
                     return Mono.empty();
                 });
