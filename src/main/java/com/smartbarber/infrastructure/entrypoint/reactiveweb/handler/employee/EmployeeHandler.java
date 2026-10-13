@@ -18,6 +18,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
@@ -85,4 +87,13 @@ public class EmployeeHandler {
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.accepted().bodyValue(response));
     }
+
+    public Mono<ServerResponse> findEmployeeByBarbershop(ServerRequest request){
+        return searchEmployeeUC.findByBarberId(UUID.fromString(request.pathVariable("barberId")))
+                .map(mapper::toResponse)
+                .collectList()
+                .flatMap( response -> ServerResponse.ok().bodyValue(response))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
 }

@@ -7,6 +7,7 @@ import com.smartbarber.infrastructure.drivenadapter.postgres.mapper.EmployeeAdap
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -32,6 +33,12 @@ public class EmployeeAdapter  implements EmployeePort{
     @Override
     public Mono<Employee> findByDocument(String document){
         return employeeData.findByDocument(document)
+                .map(mapper::toDomain);
+    }
+
+    @Override
+    public Flux<Employee> findAllBarberId(UUID barberId) {
+        return employeeData.findAllByBarberiaId(barberId)
                 .map(mapper::toDomain);
     }
 

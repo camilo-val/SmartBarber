@@ -53,7 +53,7 @@ public class Schedule {
         );
 
         return new Schedule(
-                id,
+                null,
                 empleadoId,
                 startTime,
                 endTime,
@@ -135,6 +135,7 @@ public class Schedule {
             Boolean vacation
     ) {
 
+        System.out.println("Validating inputs: " + startTime + ", " + endTime + ", " + lunchStartTime + ", " + lunchEndTime + ", " + vacation);
         if (vacation == null) {
             throw new BusinessExceptions(
                     ScheduleMessageExceptions.INVALID_DATA
