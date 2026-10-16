@@ -8,16 +8,19 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 
+import java.time.Instant;
 import java.util.UUID;
 @Builder
 public record EmployeeOnboardingRsDto(
+        UUID id,
         String name,
         String document,
         DocumentType documentType,
         String cell,
         String email,
         String specialty,
-        UserRsDto user
+        UserRsDto user,
+        Instant createAt
     ){
 
 }

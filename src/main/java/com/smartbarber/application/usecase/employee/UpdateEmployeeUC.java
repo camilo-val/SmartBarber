@@ -18,7 +18,7 @@ public class UpdateEmployeeUC {
 
         return employeePort.findById(UUID.fromString(id))
                 .map( employeeDB -> employeeDB.update(
-                                employee.id(),
+                                UUID.fromString(id),
                                 employee.barberiaId(),
                                 employee.document(),
                                 employee.documentType(),

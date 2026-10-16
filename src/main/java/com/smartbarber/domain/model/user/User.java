@@ -38,7 +38,7 @@ public class User {
     public User update(String firebaseId, UserStatus status, Short roleId){
         if (id == null) {
             throw new BusinessExceptions(
-                    UserMessageExceptions.DATOS_INVALIDOS
+                    UserMessageExceptions.INVALID_USER
             );
         }
         return new User(
@@ -53,7 +53,7 @@ public class User {
 
     public static User rebuild(UUID id, String firebaseId, UserStatus status, Instant createAt, Instant updateAt, Short roleId){
         if (id == null || status == null){
-            throw new BusinessExceptions(UserMessageExceptions.DATOS_INVALIDOS);
+            throw new BusinessExceptions(UserMessageExceptions.INVALID_USER);
         }
         return new User(
                 id,

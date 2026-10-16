@@ -17,6 +17,7 @@ public class EmployeeRuta {
     @Bean
     public RouterFunction<ServerResponse> employeeRutas(){
         return RouterFunctions.route(RequestPredicates.POST(PUBLIC + EMPLOYEE_SERVICE + "/crear-empleado"), employeeHandler::createEmployee)
+                .andRoute(RequestPredicates.POST(PUBLIC + EMPLOYEE_SERVICE + "/onboarding"), employeeHandler::onBoarding)
                 .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/nombre/{nombre}"),employeeHandler::findEmployeeByName)
                 .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/documento/{documento}"),employeeHandler::findByEmployeeByDocument)
                 .andRoute(RequestPredicates.GET(EMPLOYEE_SERVICE + "/id/{id}"),employeeHandler::findEmployeeById)

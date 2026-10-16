@@ -40,7 +40,10 @@ public class Employee {
 
     public static  Employee createEmployee(UUID userId, UUID barberiaId, String document, DocumentType documentType,
                                   String name, String cell, String email, String specialty){
+        System.out.println("Creando empleado con userId: " + userId + ", barberiaId: " + barberiaId + ", document: " + document + ", documentType: " + documentType +
+                ", name: " + name + ", cell: " + cell + ", email: " + email + ", specialty: " + specialty);
         validateInputs(document, documentType, name, cell, email, specialty);
+
         return new Employee(
                 null,
                 userId,
