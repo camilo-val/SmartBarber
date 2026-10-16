@@ -18,6 +18,7 @@ public class ServiceRuta {
         return RouterFunctions.route(RequestPredicates.POST(SERVICES_SERVICE + "/crear-servicio"),serviceHandler::createService)
                 .andRoute(RequestPredicates.GET(SERVICES_SERVICE + "/name/{name}"),serviceHandler::findServiceByName)
                 .andRoute(RequestPredicates.GET(SERVICES_SERVICE + "/id/{id}"),serviceHandler::findServiceById)
-                .andRoute(RequestPredicates.PUT(SERVICES_SERVICE + "/actualizar-service/{id}"),serviceHandler::updateService);
+                .andRoute(RequestPredicates.PUT(SERVICES_SERVICE + "/actualizar-service/{id}"),serviceHandler::updateService)
+                .andRoute(RequestPredicates.GET(SERVICES_SERVICE + "/barberia/{barberiaId}"), serviceHandler::findServicesByBarberiaId);
     }
 }

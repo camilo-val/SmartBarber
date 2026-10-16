@@ -61,4 +61,20 @@ public class ServiceHandler {
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.accepted().bodyValue(response));
     }
+
+    public Mono<ServerResponse> findServicesByBarberiaId(
+            ServerRequest request
+    ) {
+        return Mono.fromCallable(() ->
+                        java.util.UUID.fromString(
+                                request.pathVariable("barberiaId")
+                        ))
+                .flatMapMany(searchServiceUC::findByBarberiaId)
+                .map(mapper::toResponse)
+                .collectList()
+                .flatMap(services ->
+                        ServerResponse.ok().bodyValue(services)
+                );
+    }
+
 }

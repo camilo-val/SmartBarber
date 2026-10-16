@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+import reactor.core.publisher.Flux;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -49,5 +52,13 @@ public class ServiceAdapter implements ServicePort {
             String description
     ) {
         return serviceData.existsByNameAndDescription(name, description);
+
     }
+
+    @Override
+    public Flux<Service> findByBarberiaId(UUID barberiaId) {
+        return serviceData.findAllByBarberiaId(barberiaId)
+                .map(mapper::toDomain);
+    }
+
 }

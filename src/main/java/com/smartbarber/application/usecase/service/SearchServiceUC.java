@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+import reactor.core.publisher.Flux;
+
 @Component
 @RequiredArgsConstructor
 public class SearchServiceUC {
@@ -31,4 +34,9 @@ public class SearchServiceUC {
                         )
                 ));
     }
+
+    public Flux<Service> findByBarberiaId(UUID barberiaId) {
+        return servicePort.findByBarberiaId(barberiaId);
+    }
+
 }
