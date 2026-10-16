@@ -14,25 +14,34 @@ public class Service {
     private final String description;
     private final Integer duration;
     private final Boolean status;
-    private final Boolean offert;
+    private final Boolean offer;
     private final Integer price;
-    private final Integer special_price;
+    private final Integer specialPrice;
     private final Instant createAt;
     private final Instant updateAt;
 
-    private Service(Integer id, UUID barberiaId, String name, String description, Integer duration,
-                    Boolean status, Boolean offert, Integer price, Integer special_price, Instant createAt,
-                    Instant updateAt){
-
+    private Service(
+            Integer id,
+            UUID barberiaId,
+            String name,
+            String description,
+            Integer duration,
+            Boolean status,
+            Boolean offer,
+            Integer price,
+            Integer specialPrice,
+            Instant createAt,
+            Instant updateAt
+    ) {
         this.id = id;
         this.barberiaId = barberiaId;
         this.name = name;
         this.description = description;
         this.duration = duration;
         this.status = status;
-        this.offert = offert;
+        this.offer = offer;
         this.price = price;
-        this.special_price = special_price;
+        this.specialPrice = specialPrice;
         this.createAt = createAt;
         this.updateAt = updateAt;
     }
@@ -44,21 +53,12 @@ public class Service {
             String description,
             Integer duration,
             Integer price,
-            Boolean offert,
-            Integer special_price
+            Boolean offer,
+            Integer specialPrice
     ) {
+        validateInputs(barberiaId, name, description, duration, price, offer, specialPrice);
 
-        validateInputs(name, description);
-
-        if (Boolean.TRUE.equals(offert) && special_price == null) {
-            throw new BusinessExceptions(
-                    ServiceMessageExceptions.INVALID_DATA
-            );
-        }
-
-        if (Boolean.FALSE.equals(offert)) {
-            special_price = null;
-        }
+        Integer validatedSpecialPrice = validateOffer(price, offer, specialPrice);
 
         return new Service(
                 id,
@@ -67,9 +67,9 @@ public class Service {
                 description,
                 duration,
                 true,
-                offert,
+                offer,
                 price,
-                special_price,
+                validatedSpecialPrice,
                 Instant.now(),
                 null
         );
@@ -82,29 +82,18 @@ public class Service {
             String description,
             Integer duration,
             Boolean status,
-            Boolean offert,
+            Boolean offer,
             Integer price,
-            Integer special_price,
+            Integer specialPrice,
             Instant createAt
     ) {
-
-        if (id == null) {
-            throw new BusinessExceptions(
-                    ServiceMessageExceptions.INVALID_DATA
-            );
+        if (id == null || createAt == null) {
+            throw new BusinessExceptions(ServiceMessageExceptions.INVALID_DATA);
         }
 
-        validateInputs(name, description);
+        validateInputs(barberiaId, name, description, duration, price, offer, specialPrice);
 
-        if (Boolean.TRUE.equals(offert) && special_price == null) {
-            throw new BusinessExceptions(
-                    ServiceMessageExceptions.INVALID_DATA
-            );
-        }
-
-        if (Boolean.FALSE.equals(offert)) {
-            special_price = null;
-        }
+        Integer validatedSpecialPrice = validateOffer(price, offer, specialPrice);
 
         return new Service(
                 id,
@@ -113,21 +102,34 @@ public class Service {
                 description,
                 duration,
                 status,
-                offert,
+                offer,
                 price,
-                special_price,
+                validatedSpecialPrice,
                 createAt,
                 Instant.now()
         );
     }
 
-    public static Service rebuild(Integer id, UUID barberiaId, String name, String description, Integer duration,
-                                  Boolean status, Boolean offert, Integer price, Integer special_price, Instant createAt,
-                                  Instant updateAt){
-        if (id == null){
+    public static Service rebuild(
+            Integer id,
+            UUID barberiaId,
+            String name,
+            String description,
+            Integer duration,
+            Boolean status,
+            Boolean offer,
+            Integer price,
+            Integer specialPrice,
+            Instant createAt,
+            Instant updateAt
+    ) {
+        if (id == null || createAt == null) {
             throw new BusinessExceptions(ServiceMessageExceptions.INVALID_DATA);
         }
-        validateInputs(name,description);
+
+        validateInputs(barberiaId, name, description, duration, price, offer, specialPrice);
+
+        Integer validatedSpecialPrice = validateOffer(price, offer, specialPrice);
 
         return new Service(
                 id,
@@ -136,68 +138,68 @@ public class Service {
                 description,
                 duration,
                 status,
-                offert,
+                offer,
                 price,
-                special_price,
+                validatedSpecialPrice,
                 createAt,
                 updateAt
         );
     }
 
-    private static void validateInputs(String name, String description) {
-
-        boolean invalid = isNullOrBlank(name)
-                || isNullOrBlank(description);
+    private static void validateInputs(
+            UUID barberiaId,
+            String name,
+            String description,
+            Integer duration,
+            Integer price,
+            Boolean offer,
+            Integer specialPrice
+    ) {
+        boolean invalid = barberiaId == null
+                || isNullOrBlank(name)
+                || isNullOrBlank(description)
+                || duration == null
+                || duration <= 0
+                || price == null
+                || price < 0
+                || offer == null;
 
         if (invalid) {
-            throw new BusinessExceptions(
-                    ServiceMessageExceptions.SERVICE_INVALID
-            );
+            throw new BusinessExceptions(ServiceMessageExceptions.INVALID_DATA);
         }
     }
 
-    private static boolean isNullOrBlank(String texto){
-        return texto == null || texto.isBlank();
+    private static Integer validateOffer(
+            Integer price,
+            Boolean offer,
+            Integer specialPrice
+    ) {
+        if (Boolean.TRUE.equals(offer)) {
+            if (specialPrice == null
+                    || specialPrice < 0
+                    || specialPrice >= price) {
+                throw new BusinessExceptions(ServiceMessageExceptions.INVALID_DATA);
+            }
+
+            return specialPrice;
+        }
+
+        return null;
+    }
+
+    private static boolean isNullOrBlank(String value) {
+        return value == null || value.isBlank();
     }
 
     public Integer getId() { return id; }
-
     public UUID getBarberiaId() { return barberiaId; }
-
     public String getName() { return name; }
-
     public String getDescription() { return description; }
-
     public Integer getDuration() { return duration; }
-
     public Boolean getStatus() { return status; }
-
-    public Boolean getOffert() { return offert; }
-
+    public Boolean getOffer() { return offer; }
     public Integer getPrice() { return price; }
-
-    public Integer getSpecial_price() { return special_price; }
-
+    public Integer getSpecialPrice() { return specialPrice; }
     public Instant getCreateAt() { return createAt; }
-
     public Instant getUpdateAt() { return updateAt; }
-
-    @Override
-    public String toString() {
-        return "Service{" +
-                "id=" + id +
-                ", barberiaId=" + barberiaId +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", duration=" + duration +
-                ", status=" + status +
-                ", offert=" + offert +
-                ", price=" + price +
-                ", special_price=" + special_price +
-                ", createAt=" + createAt +
-                ", updateAt=" + updateAt +
-                '}';
-    }
 }
-
-

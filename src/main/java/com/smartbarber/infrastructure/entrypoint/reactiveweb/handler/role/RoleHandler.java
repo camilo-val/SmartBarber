@@ -1,8 +1,8 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.role;
 
 import com.smartbarber.application.usecase.role.CreateRoleUC;
-import com.smartbarber.application.usecase.role.SearchRoleUC;
 import com.smartbarber.application.usecase.role.RoleUpdateUC;
+import com.smartbarber.application.usecase.role.SearchRoleUC;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.role.RoleRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
@@ -19,37 +19,46 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 @Slf4j
 public class RoleHandler {
+
     private final RoleEntryMapper mapper;
     private final CreateRoleUC createRoleUC;
     private final validateRequest validateRequest;
     private final SearchRoleUC searchRoleUC;
-    private final RoleUpdateUC RoleUpdateUC;
+    private final RoleUpdateUC roleUpdateUC;
 
-    public Mono<ServerResponse> createRole(ServerRequest request){
+    public Mono<ServerResponse> createRole(ServerRequest request) {
         return request.bodyToMono(RoleRqDto.class)
                 .doOnNext(validateRequest::validate)
-                .map(mapper::toDomain)
-                .flatMap(createRoleUC::crearRol)
+                .map(mapper::toCommand)
+                .flatMap(createRoleUC::createRole)
                 .map(mapper::toResponse)
-                .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response))
-                .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)) );
+                .flatMap(response ->
+                        ServerResponse.created(request.uri()).bodyValue(response)
+                )
+                .switchIfEmpty(Mono.error(
+                        new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)
+                ));
     }
 
-    public Mono<ServerResponse> findRoleById(ServerRequest request){
-        return searchRoleUC.buscarPorId(Short.valueOf(request.pathVariable("id")))
+    public Mono<ServerResponse> findRoleById(ServerRequest request) {
+        return searchRoleUC.findById(Short.valueOf(request.pathVariable("id")))
                 .map(mapper::toResponse)
-                .flatMap(response -> ServerResponse.ok().bodyValue(response))
-                .switchIfEmpty(ServerResponse.notFound().build());
+                .flatMap(response -> ServerResponse.ok().bodyValue(response));
     }
 
-    public Mono<ServerResponse> updateRole(ServerRequest request){
+    public Mono<ServerResponse> updateRole(ServerRequest request) {
         return request.bodyToMono(RoleRqDto.class)
                 .doOnNext(validateRequest::validate)
-                .map(mapper::toDomain)
-                .flatMap(role -> RoleUpdateUC
-                        .roleUpdate(Short.valueOf(request.pathVariable("id")), role))
+                .map(mapper::toCommand)
+                .flatMap(command ->
+                        roleUpdateUC.updateRole(
+                                Short.valueOf(request.pathVariable("id")),
+                                command
+                        )
+                )
                 .map(mapper::toResponse)
-                .flatMap(response -> ServerResponse.accepted().bodyValue(response));
-
+                .flatMap(response ->
+                        ServerResponse.accepted().bodyValue(response)
+                );
     }
 }

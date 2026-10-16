@@ -4,9 +4,8 @@ import com.smartbarber.infrastructure.drivenadapter.postgres.entity.ServiceEntit
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 
-public interface ServiceData extends ReactiveCrudRepository<ServiceEntity, Integer> {
-
-    Mono<ServiceEntity> findById(Integer id);
+public interface ServiceData
+        extends ReactiveCrudRepository<ServiceEntity, Integer> {
 
     Mono<ServiceEntity> findByName(String name);
 

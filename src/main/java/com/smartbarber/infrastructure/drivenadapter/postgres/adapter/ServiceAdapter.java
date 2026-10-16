@@ -1,45 +1,44 @@
 package com.smartbarber.infrastructure.drivenadapter.postgres.adapter;
 
-import com.smartbarber.domain.port.ServicePort;
 import com.smartbarber.domain.model.service.Service;
+import com.smartbarber.domain.port.ServicePort;
 import com.smartbarber.infrastructure.drivenadapter.postgres.data.ServiceData;
 import com.smartbarber.infrastructure.drivenadapter.postgres.mapper.ServiceAdapterMapper;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
-public class ServiceAdapter implements ServicePort{
+public class ServiceAdapter implements ServicePort {
+
     private final ServiceData serviceData;
     private final ServiceAdapterMapper mapper;
+
     @Override
-    public Mono<Service> findById(Integer id){
+    public Mono<Service> findById(Integer id) {
         return serviceData.findById(id)
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Service> findByName(String name){
+    public Mono<Service> findByName(String name) {
         return serviceData.findByName(name)
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Service> save(Service service){
+    public Mono<Service> save(Service service) {
         return serviceData.save(mapper.toEntity(service))
-                .doOnNext( e -> log.info("Data registrada {}", e.toString()))
-                .doOnSuccess( entityGuardada ->
-                        log.info("Proceso de guardado finalizado correctamente"))
-                .doOnError( error ->
-                        log.error("Error guardando barbería", error))
+                .doOnError(error ->
+                        log.error("Error saving service", error))
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Service> update(Integer id, Service service){
+    public Mono<Service> update(Integer id, Service service) {
         return serviceData.save(mapper.toEntity(service))
                 .map(mapper::toDomain);
     }
@@ -49,9 +48,6 @@ public class ServiceAdapter implements ServicePort{
             String name,
             String description
     ) {
-        return serviceData.existsByNameAndDescription(
-                name,
-                description
-        );
+        return serviceData.existsByNameAndDescription(name, description);
     }
 }
