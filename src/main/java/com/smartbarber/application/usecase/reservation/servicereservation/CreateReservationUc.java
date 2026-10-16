@@ -52,11 +52,6 @@ public class CreateReservationUc {
                             .thenReturn(services);
                 }).flatMap(services -> createReservation(command, services))
                 .as(transactionalOperator::transactional);
-
-        /*return validateReservation(command)
-                .then(loadServices(command.reservationServiceId()))
-                .flatMap(services -> createReservation(command, services))
-                .as(transactionalOperator::transactional);*/
     }
 
     private Mono<Void> validateReservation(ReservationCommand command) {
@@ -117,6 +112,7 @@ public class CreateReservationUc {
                 .reduce(0, Integer::sum);
 
         Reservation reservation = Reservation.createReservation(
+                command.barbershopId(),
                 command.customerId(),
                 command.employeeId(),
                 duration,

@@ -21,6 +21,7 @@ public class ReservationResponse {
     private final String notes;
     private final Instant creationDate;
     private final Instant updatedDate;
+    private final Instant queueEntryTime;
     private final List<ServiceReservationResponse> serviceReservations;
 
     private ReservationResponse(Reservation reservation, List<ServiceReservationResponse> serviceReservations) {
@@ -35,6 +36,7 @@ public class ReservationResponse {
         this.notes = reservation.getNotes();
         this.creationDate = reservation.getCreationDate();
         this.updatedDate = reservation.getUpdatedDate();
+        this.queueEntryTime = reservation.getQueueEntryTime();
         this.serviceReservations = serviceReservations;
     }
 
@@ -87,6 +89,10 @@ public class ReservationResponse {
 
     public Instant getUpdatedDate() {
         return updatedDate;
+    }
+
+    public Instant getQueueEntryTime() {
+        return queueEntryTime;
     }
 
     public List<ServiceReservationResponse> getServiceReservations() {

@@ -11,6 +11,7 @@ import java.util.UUID;
 @Builder
 public record ReservationCommand (
         UUID id,
+        UUID barbershopId,
         UUID customerId,
         UUID employeeId,
         List<Integer> reservationServiceId,
@@ -20,7 +21,8 @@ public record ReservationCommand (
         Instant endTime,
         String notes,
         Instant creationDate,
-        Instant updatedDate
+        Instant updatedDate,
+        Instant queueEntryTime
 ){
 
 }

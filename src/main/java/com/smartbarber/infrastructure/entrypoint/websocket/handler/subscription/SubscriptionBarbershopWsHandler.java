@@ -1,4 +1,4 @@
-package com.smartbarber.infrastructure.entrypoint.websocket.handler;
+package com.smartbarber.infrastructure.entrypoint.websocket.handler.subscription;
 import com.smartbarber.application.usecase.subscriptionbarber.FindSubscriptionBarberUC;
 import com.smartbarber.application.usecase.transaction.WaitMessageResponseUC;
 import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;

@@ -61,7 +61,7 @@ public class Employee {
 
         if (id == null) {
             throw new BusinessExceptions(
-                    MessageExceptionsEmployee.DATOS_INVALIDOS
+                    MessageExceptionsEmployee.INVALID_DATA
             );
         }
 
@@ -87,7 +87,7 @@ public class Employee {
 
         if (id == null) {
             throw new BusinessExceptions(
-                    MessageExceptionsEmployee.DATOS_INVALIDOS
+                    MessageExceptionsEmployee.INVALID_DATA
             );
         }
 
@@ -118,7 +118,7 @@ public class Employee {
                 || isNullOrBlank(specialty);
 
         if (esInvalido || (documentType == DocumentType.NIT)){
-            throw new BusinessExceptions(MessageExceptionsEmployee.DATOS_INVALIDOS);
+            throw new BusinessExceptions(MessageExceptionsEmployee.INVALID_DATA);
         }
     }
 
