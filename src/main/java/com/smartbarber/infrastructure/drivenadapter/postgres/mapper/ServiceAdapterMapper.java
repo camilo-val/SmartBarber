@@ -4,11 +4,13 @@ import com.smartbarber.domain.model.service.Service;
 import com.smartbarber.infrastructure.drivenadapter.postgres.entity.ServiceEntity;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel =  "spring")
+@Mapper(componentModel = "spring")
 public interface ServiceAdapterMapper {
+
     ServiceEntity toEntity(Service service);
-    default Service toDomain(ServiceEntity entity){
-        if (entity == null){
+
+    default Service toDomain(ServiceEntity entity) {
+        if (entity == null) {
             return null;
         }
 
@@ -19,9 +21,9 @@ public interface ServiceAdapterMapper {
                 entity.getDescription(),
                 entity.getDuration(),
                 entity.getStatus(),
-                entity.getOffert(),
+                entity.getOffer(),
                 entity.getPrice(),
-                entity.getSpecial_price(),
+                entity.getSpecialPrice(),
                 entity.getCreateAt(),
                 entity.getUpdateAt()
         );

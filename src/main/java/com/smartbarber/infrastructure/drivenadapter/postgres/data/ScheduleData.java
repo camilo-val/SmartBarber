@@ -6,9 +6,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
-public interface ScheduleData extends ReactiveCrudRepository<ScheduleEntity, Integer> {
-
-    Mono<ScheduleEntity> findById(Integer id);
+public interface ScheduleData
+        extends ReactiveCrudRepository<ScheduleEntity, Integer> {
 
     Mono<ScheduleEntity> findByEmpleadoId(UUID empleadoId);
 

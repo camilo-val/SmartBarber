@@ -27,14 +27,20 @@ public class SchedulerHandler {
     private final UpdateScheduleUC updateScheduleUC;
     private final SearchScheduleUC searchScheduleUC;
 
-    public Mono<ServerResponse> createSchedule(ServerRequest request){
+
+    public Mono<ServerResponse> createSchedule(ServerRequest request) {
         return request.bodyToMono(ScheduleRqDto.class)
                 .doOnNext(validateRequest::validate)
-                .map(mapper::toDomain)
-                .flatMap(createScheduleUC::crearHorario)
+                .map(mapper::toCommand)
+                .flatMap(createScheduleUC::createSchedule)
                 .map(mapper::toResponse)
-                .flatMap( response -> ServerResponse.created(request.uri()).bodyValue(response))
-                .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));
+                .flatMap(response ->
+                        ServerResponse.created(request.uri()).bodyValue(response))
+                .switchIfEmpty(Mono.error(
+                        new TechnicalExceptions(
+                                TechnicalMessageExceptions.BAD_REQUEST
+                        )
+                ));
     }
 
     public Mono<ServerResponse> findScheduleById(ServerRequest request){
@@ -51,13 +57,17 @@ public class SchedulerHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> updateSchedule(ServerRequest request){
-        return request.bodyToMono(ScheduleRqDto.class)
-                .doOnNext(validateRequest::validate)
-                .map(mapper::toDomain)
-                .flatMap(schedule -> updateScheduleUC
-                        .scheduleUpdate(request.pathVariable("id"), schedule))
-                        .map(mapper::toResponse)
-                        .flatMap( response -> ServerResponse.accepted().bodyValue(response));
+
+    public Mono<ServerResponse> updateSchedule(ServerRequest request) {
+        return Mono.fromCallable(() ->
+                        Integer.valueOf(request.pathVariable("id")))
+                .flatMap(id -> request.bodyToMono(ScheduleRqDto.class)
+                        .doOnNext(validateRequest::validate)
+                        .map(mapper::toCommand)
+                        .flatMap(command ->
+                                updateScheduleUC.updateSchedule(id, command)))
+                .map(mapper::toResponse)
+                .flatMap(response ->
+                        ServerResponse.accepted().bodyValue(response));
     }
 }

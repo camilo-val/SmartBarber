@@ -11,13 +11,39 @@ import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerC
 
 @Configuration
 public class ReservationRouter {
+
     @Bean
-    public RouterFunction<ServerResponse> reservationRoutes(ReservationHandler reservationHandler) {
+    public RouterFunction<ServerResponse> reservationRoutes(
+            ReservationHandler reservationHandler
+    ) {
         return RouterFunctions.route(
-                RequestPredicates.POST(RESERVATION + "/create"), reservationHandler::createReservation)
-                .andRoute(RequestPredicates.GET(RESERVATION + "/{id}"), reservationHandler::getReservationById)
-                .andRoute(RequestPredicates.GET(RESERVATION + "/employee/{employeeId}"), reservationHandler::getReservationByEmployeeId)
-                .andRoute(RequestPredicates.GET(RESERVATION + "/customer/{customerId}"), reservationHandler::getReservationByCustomerId)
-                .andRoute(RequestPredicates.GET(RESERVATION + "/barber/{barberId}"), reservationHandler::getReservationByBarberId);
+                        RequestPredicates.POST(RESERVATION + "/create"),
+                        reservationHandler::createReservation
+                )
+                .andRoute(
+                        RequestPredicates.GET(RESERVATION + "/{id}"),
+                        reservationHandler::getReservationById
+                )
+                .andRoute(
+                        RequestPredicates.GET(RESERVATION + "/employee/{employeeId}"),
+                        reservationHandler::getReservationByEmployeeId
+                )
+                .andRoute(
+                        RequestPredicates.GET(RESERVATION + "/customer/{customerId}"),
+                        reservationHandler::getReservationByCustomerId
+                )
+                .andRoute(
+                        RequestPredicates.GET(RESERVATION + "/barber/{barberId}"),
+                        reservationHandler::getReservationByBarberId
+                )
+                .andRoute(
+                        RequestPredicates.PATCH(RESERVATION + "/{id}/confirm"),
+                        reservationHandler::confirmReservation
+                )
+                .andRoute(
+                        RequestPredicates.PATCH(RESERVATION + "/{id}/cancel"),
+                        reservationHandler::cancelReservation
+                );
     }
 }
+

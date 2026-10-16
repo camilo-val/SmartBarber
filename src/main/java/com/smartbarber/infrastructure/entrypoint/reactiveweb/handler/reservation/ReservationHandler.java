@@ -1,6 +1,7 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.reservation;
 
 import com.smartbarber.application.command.in.reservation.ReservationCommand;
+import com.smartbarber.application.usecase.reservation.servicereservation.ChangeReservationStatusUc;
 import com.smartbarber.application.usecase.reservation.servicereservation.CreateReservationUc;
 import com.smartbarber.application.usecase.reservation.servicereservation.FindReservationUc;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
@@ -16,14 +17,20 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class ReservationHandler {
+
     private final CreateReservationUc createReservationUc;
     private final FindReservationUc findReservationUc;
+    private final ChangeReservationStatusUc changeReservationStatusUc;
 
     public Mono<ServerResponse> createReservation(ServerRequest request) {
         return request.bodyToMono(ReservationCommand.class)
                 .flatMap(createReservationUc::createReservation)
                 .flatMap(reservation -> ServerResponse.ok().bodyValue(reservation))
-                .switchIfEmpty(Mono.error(() -> new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));
+                .switchIfEmpty(Mono.error(
+                        () -> new TechnicalExceptions(
+                                TechnicalMessageExceptions.BAD_REQUEST
+                        )
+                ));
     }
 
     public Mono<ServerResponse> getReservationById(ServerRequest request) {
@@ -36,20 +43,34 @@ public class ReservationHandler {
         String id = request.pathVariable("employeeId");
         return findReservationUc.findByEmployeeId(UUID.fromString(id))
                 .collectList()
-                .flatMap(reservation -> ServerResponse.ok().bodyValue(reservation));
+                .flatMap(reservations -> ServerResponse.ok().bodyValue(reservations));
     }
 
     public Mono<ServerResponse> getReservationByCustomerId(ServerRequest request) {
         String id = request.pathVariable("customerId");
         return findReservationUc.findByCustomerId(UUID.fromString(id))
                 .collectList()
-                .flatMap(reservation -> ServerResponse.ok().bodyValue(reservation));
+                .flatMap(reservations -> ServerResponse.ok().bodyValue(reservations));
     }
 
     public Mono<ServerResponse> getReservationByBarberId(ServerRequest request) {
         String id = request.pathVariable("barberId");
         return findReservationUc.findAllBarberId(UUID.fromString(id))
                 .collectList()
+                .flatMap(reservations -> ServerResponse.ok().bodyValue(reservations));
+    }
+
+    public Mono<ServerResponse> confirmReservation(ServerRequest request) {
+        UUID reservationId = UUID.fromString(request.pathVariable("id"));
+
+        return changeReservationStatusUc.confirmReservation(reservationId)
+                .flatMap(reservation -> ServerResponse.ok().bodyValue(reservation));
+    }
+
+    public Mono<ServerResponse> cancelReservation(ServerRequest request) {
+        UUID reservationId = UUID.fromString(request.pathVariable("id"));
+
+        return changeReservationStatusUc.cancelReservation(reservationId)
                 .flatMap(reservation -> ServerResponse.ok().bodyValue(reservation));
     }
 }
