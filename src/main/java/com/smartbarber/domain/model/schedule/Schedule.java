@@ -43,8 +43,8 @@ public class Schedule {
             LocalTime lunchEndTime,
             Boolean vacation
     ) {
+
         validateInputs(
-                empleadoId,
                 startTime,
                 endTime,
                 lunchStartTime,
@@ -53,7 +53,7 @@ public class Schedule {
         );
 
         return new Schedule(
-                id,
+                null,
                 empleadoId,
                 startTime,
                 endTime,
@@ -72,14 +72,8 @@ public class Schedule {
             LocalTime lunchEndTime,
             Boolean vacation
     ) {
-        if (id == null) {
-            throw new BusinessExceptions(
-                    ScheduleMessageExceptions.INVALID_DATA
-            );
-        }
 
         validateInputs(
-                empleadoId,
                 startTime,
                 endTime,
                 lunchStartTime,
@@ -107,6 +101,7 @@ public class Schedule {
             LocalTime lunchEndTime,
             Boolean vacation
     ) {
+
         if (id == null) {
             throw new BusinessExceptions(
                     ScheduleMessageExceptions.INVALID_DATA
@@ -114,7 +109,6 @@ public class Schedule {
         }
 
         validateInputs(
-                empleadoId,
                 startTime,
                 endTime,
                 lunchStartTime,
@@ -134,20 +128,22 @@ public class Schedule {
     }
 
     private static void validateInputs(
-            UUID empleadoId,
             LocalTime startTime,
             LocalTime endTime,
             LocalTime lunchStartTime,
             LocalTime lunchEndTime,
             Boolean vacation
     ) {
-        if (empleadoId == null || vacation == null) {
+
+        System.out.println("Validating inputs: " + startTime + ", " + endTime + ", " + lunchStartTime + ", " + lunchEndTime + ", " + vacation);
+        if (vacation == null) {
             throw new BusinessExceptions(
                     ScheduleMessageExceptions.INVALID_DATA
             );
         }
 
         if (Boolean.TRUE.equals(vacation)) {
+
             boolean hasSchedule = startTime != null
                     || endTime != null
                     || lunchStartTime != null
@@ -168,23 +164,6 @@ public class Schedule {
                 || lunchEndTime == null;
 
         if (missingSchedule) {
-            throw new BusinessExceptions(
-                    ScheduleMessageExceptions.INVALID_DATA
-            );
-        }
-
-        boolean invalidWorkingHours = !startTime.isBefore(endTime);
-
-        boolean invalidLunchOrder =
-                !lunchStartTime.isBefore(lunchEndTime);
-
-        boolean lunchOutsideWorkingHours =
-                lunchStartTime.isBefore(startTime)
-                        || lunchEndTime.isAfter(endTime);
-
-        if (invalidWorkingHours
-                || invalidLunchOrder
-                || lunchOutsideWorkingHours) {
             throw new BusinessExceptions(
                     ScheduleMessageExceptions.INVALID_DATA
             );

@@ -20,7 +20,6 @@ import java.time.Instant;
 import java.util.Map;
 
 import static com.smartbarber.infrastructure.entrypoint.utils.constants.HandlerConstant.*;
-
 @Component
 @Order(-2)
 @RequiredArgsConstructor

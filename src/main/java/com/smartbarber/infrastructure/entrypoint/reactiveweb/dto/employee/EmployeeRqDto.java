@@ -13,7 +13,8 @@ import java.util.UUID;
 
 @Builder
 public record EmployeeRqDto (
-
+        @NotNull(message = "El id de la barberia es obligatorio")
+        UUID barberiaId,
         @NotBlank(message = "El nombre es obligatorio")
         String name,
         @NotBlank(message = "El documento es obligatorio")
@@ -29,6 +30,6 @@ public record EmployeeRqDto (
         @NotBlank(message = "La especialidad es obligatorio")
         String specialty,
         @NotNull
-        UserRqDto user
+        UUID userId
 ){
 }

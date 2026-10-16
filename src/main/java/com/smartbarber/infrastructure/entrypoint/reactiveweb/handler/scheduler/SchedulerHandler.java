@@ -30,6 +30,10 @@ public class SchedulerHandler {
 
     public Mono<ServerResponse> createSchedule(ServerRequest request) {
         return request.bodyToMono(ScheduleRqDto.class)
+                .map(e -> {
+                    log.info("Request body: {}", e);
+                    return e;
+                })
                 .doOnNext(validateRequest::validate)
                 .map(mapper::toCommand)
                 .flatMap(createScheduleUC::createSchedule)

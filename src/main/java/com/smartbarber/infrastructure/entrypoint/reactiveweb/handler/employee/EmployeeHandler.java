@@ -1,12 +1,15 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.employee;
 
-import com.smartbarber.application.usecase.Employee.UpdateEmployeeUC;
-import com.smartbarber.application.usecase.Employee.CrateEmployeeUC;
-import com.smartbarber.application.usecase.Employee.SearchEmployeeUC;
+import com.smartbarber.application.usecase.athentication.Authentication;
+import com.smartbarber.application.usecase.employee.CreateEmployeeUC;
+import com.smartbarber.application.usecase.employee.SearchEmployeeUC;
+import com.smartbarber.application.usecase.employee.UpdateEmployeeUC;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee.EmployeeOnboardingRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee.EmployeeRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.employee.EmployeeEntryMapper;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.mapper.employee.EmployeeOnboardingMapper;
 import com.smartbarber.infrastructure.entrypoint.utils.validateRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,22 +18,41 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @Component
 @AllArgsConstructor
 @Slf4j
 public class EmployeeHandler {
     private final EmployeeEntryMapper mapper;
-    private final CrateEmployeeUC crateEmployeeUC;
+    private final EmployeeOnboardingMapper onboardingMapper;
+    private final CreateEmployeeUC createEmployeeUC;
     private final  validateRequest validateRequest;
     private final UpdateEmployeeUC updateEmployeeUC;
     private final SearchEmployeeUC searchEmployeeUC;
+    private final Authentication authenticationUc;
 
     public Mono<ServerResponse> createEmployee(ServerRequest request){
         return request.bodyToMono(EmployeeRqDto.class)
                 .doOnNext(validateRequest::validate)
                 .map(mapper::toDomain)
-                .flatMap(crateEmployeeUC::crearEmpleado)
+                .flatMap(createEmployeeUC::createEmployee)
                 .map(mapper::toResponse)
+                .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response))
+                .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));
+    }
+
+    public Mono<ServerResponse> onBoarding(ServerRequest request){
+        return request.bodyToMono(EmployeeOnboardingRqDto.class)
+                .doOnNext(validateRequest::validate)
+                .flatMap(requestBody ->
+                        authenticationUc.getUserUid(request.headers().header(AUTHORIZATION).getFirst())
+                                .map(uid -> onboardingMapper.toDomain(requestBody, uid)))
+                .flatMap(createEmployeeUC::createEmployeeOnboarding)
+                .doOnNext(e -> log.info("Employee created with id: {}", e))
+                .map(onboardingMapper::toResponse)
                 .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response))
                 .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));
     }
@@ -65,4 +87,13 @@ public class EmployeeHandler {
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.accepted().bodyValue(response));
     }
+
+    public Mono<ServerResponse> findEmployeeByBarbershop(ServerRequest request){
+        return searchEmployeeUC.findByBarberId(UUID.fromString(request.pathVariable("barberId")))
+                .map(mapper::toResponse)
+                .collectList()
+                .flatMap( response -> ServerResponse.ok().bodyValue(response))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase.Employee;
+package com.smartbarber.application.usecase.employee;
 
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.port.EmployeePort;
@@ -7,6 +7,7 @@ import com.smartbarber.domain.model.employee.Employee;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -20,18 +21,24 @@ public class SearchEmployeeUC {
     public Mono<Employee> buscarPorNombre(String name){
         return employeePort.findByName(name)
                 .doOnNext(employee -> log.info("Datos encontrados por nombre {}", employee))
-                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
+                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_NOT_FOUND)));
     }
 
     public Mono<Employee> buscarPorDocuemnto(String document){
         return employeePort.findByDocument(document)
                 .doOnNext(employee -> log.info("Datos encontrados por documento {}", employee))
-                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
+                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_NOT_FOUND)));
     }
 
     public Mono<Employee> buscarPorId(String id){
         return employeePort.findById(UUID.fromString(id))
                 .doOnNext(employee -> log.info("Datos encontrados {}", employee))
-                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_NO_EXISTE)));
+                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_NOT_FOUND)));
+    }
+
+    public Flux<Employee> findByBarberId(UUID barberId){
+        return employeePort.findAllBarberId(barberId)
+                .doOnNext(employee -> log.info("Datos encontrados {}", employee))
+                .switchIfEmpty(Flux.error(() -> new BusinessExceptions(MessageExceptionsEmployee.EMPLOYEE_NOT_FOUND)));
     }
 }

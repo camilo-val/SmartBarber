@@ -1,6 +1,7 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.barbershop;
 
 import com.smartbarber.domain.enums.DocumentType;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee.EmployeeOnboardingRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.employee.EmployeeRqDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,6 @@ public record BarbershopOnBoardingRqDto (
         DocumentType documentType,
         String companyName,
         @NotNull
-        EmployeeRqDto employee
+        EmployeeOnboardingRqDto employee
 ){
 }
