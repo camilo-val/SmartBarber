@@ -1,4 +1,4 @@
-package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.queue;
+/*package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.queue;
 
 import com.smartbarber.application.usecase.queue.CloseQueueUC;
 import com.smartbarber.application.usecase.queue.NextCustomerUC;
@@ -64,4 +64,4 @@ public class VirtualQueueHandler {
                                 .build()
                 );
     }
-}
+}*/

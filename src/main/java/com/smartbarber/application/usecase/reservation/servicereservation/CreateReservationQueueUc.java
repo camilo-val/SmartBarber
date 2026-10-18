@@ -108,8 +108,8 @@ public class CreateReservationQueueUc {
             List<Service> services) {
         Integer duration = getDuration(services);
         Reservation reservation = Reservation.createReservationQueue(
-                command.barbershopId(),
                 command.customerId(),
+                command.barbershopId(),
                 command.employeeId(),
                 duration,
                 command.startTime(),

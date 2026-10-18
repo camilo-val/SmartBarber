@@ -2,19 +2,24 @@ package com.smartbarber.infrastructure.drivenadapter.postgres.entity;
 
 import com.smartbarber.domain.enums.ReservationStatus;
 import com.smartbarber.domain.enums.ReservationType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
 import java.util.UUID;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Table(name = "reserva")
 @ToString
+@Table("reserva")
 public class ReservationEntity {
 
     @Id

@@ -16,6 +16,7 @@ public interface ReservationAdapterMapper {
         
         return Reservation.rebuild(
                 entity.getId(),
+                entity.getBarbershopId(),
                 entity.getCustomerId(),
                 entity.getEmployeeId(),
                 entity.getReservationType(),
@@ -25,7 +26,8 @@ public interface ReservationAdapterMapper {
                 entity.getEndTime(),
                 entity.getNotes(),
                 entity.getCreationDate(),
-                entity.getUpdatedDate()
+                entity.getUpdatedDate(),
+                entity.getQueueEntryTime()
         );
     }
 }

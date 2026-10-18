@@ -89,16 +89,15 @@ public class Reservation {
             Instant startTime,
             Instant endTime,
             String notes) {
-        dataValidate(barbershopId, customerId, employeeId, ReservationType.SERVICE_RESERVATION, startTime, endTime);
+        dataValidate(barbershopId, customerId, employeeId, ReservationType.VIRTUAL_QUEUE, startTime, endTime);
         hoursValidate(startTime, endTime);
-        Instant startTimeQueue = Instant.now().plus(Duration.ofMinutes(15));
         return new Reservation(
                 null,
                 customerId,
                 barbershopId,
                 employeeId,
-                ReservationType.SERVICE_RESERVATION,
-                ReservationStatus.PENDING,
+                ReservationType.VIRTUAL_QUEUE,
+                ReservationStatus.WAITING,
                 duration,
                 startTime,
                 endTime,

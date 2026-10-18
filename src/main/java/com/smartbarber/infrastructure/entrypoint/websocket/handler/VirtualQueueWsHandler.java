@@ -1,4 +1,4 @@
-package com.smartbarber.infrastructure.entrypoint.websocket.handler;
+/*package com.smartbarber.infrastructure.entrypoint.websocket.handler;
 
 import com.smartbarber.application.usecase.queue.SubscribeQueueUC;
 import com.smartbarber.infrastructure.entrypoint.utils.commons.ObjectMessageMapper;
@@ -51,4 +51,4 @@ public class VirtualQueueWsHandler
                 .getFirst("barbershopId");
     }
 
-}
+}*/

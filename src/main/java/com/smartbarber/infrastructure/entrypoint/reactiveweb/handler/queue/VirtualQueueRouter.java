@@ -1,4 +1,4 @@
-package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.queue;
+/*package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.queue;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,4 +35,4 @@ public class VirtualQueueRouter {
 
                 .build();
     }
-}
+}*/

@@ -18,52 +18,81 @@ public class ReservationAdapter implements ReservationRepositoryPort {
 
     private final ReservationData data;
     private final ReservationAdapterMapper mapper;
+
     @Override
-    public Mono<Reservation> findById(UUID reservationId) {
-        return data.findById(reservationId)
-                .map(mapper::toDomain);
+    public Mono<Reservation> findById(UUID id) {
+        return data.findById(id).map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Boolean> existsById(UUID reservationId) {
-        return data.existsById(reservationId);
+    public Mono<Boolean> existsById(UUID id) {
+        return data.existsById(id);
     }
 
     @Override
     public Flux<Reservation> findByEmployeeId(UUID employeeId) {
-        return data.findByEmployeeId(employeeId)
-                .map(mapper::toDomain);
+        return data.findByEmployeeId(employeeId).map(mapper::toDomain);
     }
 
     @Override
     public Flux<Reservation> findByCustomerId(UUID customerId) {
-        return data.findByCustomerId(customerId)
-                .map(mapper::toDomain);
+        return data.findByCustomerId(customerId).map(mapper::toDomain);
     }
 
     @Override
     public Flux<Reservation> findAllBarberId(UUID barberId) {
-        return null;
+        // Ajusta esta consulta a las relaciones reales de tu esquema.
+        return data.findAllBarberId(barberId).map(mapper::toDomain);
     }
 
     @Override
     public Mono<Reservation> save(Reservation reservation) {
-        System.out.println("Saving reservation: " + reservation);
-        System.out.println("Mapped entity: " + mapper.toEntity(reservation));
         return data.save(mapper.toEntity(reservation))
-                .doOnNext(res -> System.out.println("Reservation saved: " + res))
-                .doOnError(error -> System.err.println("Error saving reservation: " + error.getMessage()))
                 .map(mapper::toDomain);
     }
 
     @Override
-    public Mono<Boolean> existsByEmployeeAndRange(UUID employeeId, Instant startTime, Instant endTime) {
-        System.out.println("Checking if reservation exists for employee: " + employeeId + " between " + startTime + " and " + endTime);
-        return data.existsByEmployeeAndRange(employeeId, startTime, endTime);
+    public Mono<Boolean> existsByEmployeeAndRange(
+            UUID employeeId,
+            Instant startTime,
+            Instant endTime
+    ) {
+        return data.existsByEmployeeAndRange(
+                employeeId, startTime, endTime
+        );
     }
 
     @Override
-    public Mono<Boolean> existsByCustomerAndRange(UUID customerId, Instant startTime, Instant endTime) {
-        return data.existsByCustomerAndRange(customerId, startTime, endTime);
+    public Mono<Boolean> existsByCustomerAndRange(
+            UUID customerId,
+            Instant startTime,
+            Instant endTime
+    ) {
+        return data.existsByCustomerAndRange(
+                customerId, startTime, endTime
+        );
+    }
+
+    @Override
+    public Flux<Reservation> findWaitingQueueByEmployeeId(UUID employeeId) {
+        return data.findWaitingQueueByEmployeeId(employeeId)
+                .map(mapper::toDomain);
+    }
+
+    @Override
+    public Mono<Reservation> findCurrentQueueTurn(UUID employeeId) {
+        return data.findCurrentQueueTurn(employeeId)
+                .map(mapper::toDomain);
+    }
+
+    @Override
+    public Mono<Long> countPreviousWaitingTurns(
+            UUID employeeId,
+            Instant entryTime,
+            UUID reservationId
+    ) {
+        return data.countPreviousWaitingTurns(
+                employeeId, entryTime, reservationId
+        );
     }
 }

@@ -8,18 +8,38 @@ import java.time.Instant;
 import java.util.UUID;
 
 public interface ReservationRepositoryPort {
-    Mono<Reservation> findById(UUID reservationId);
-    Mono<Boolean> existsById(UUID reservationId);
+
+    Mono<Reservation> findById(UUID id);
+
+    Mono<Boolean> existsById(UUID id);
+
     Flux<Reservation> findByEmployeeId(UUID employeeId);
+
     Flux<Reservation> findByCustomerId(UUID customerId);
+
     Flux<Reservation> findAllBarberId(UUID barberId);
+
     Mono<Reservation> save(Reservation reservation);
+
     Mono<Boolean> existsByEmployeeAndRange(
             UUID employeeId,
             Instant startTime,
-            Instant endTime);
+            Instant endTime
+    );
+
     Mono<Boolean> existsByCustomerAndRange(
             UUID customerId,
             Instant startTime,
-            Instant endTime);
+            Instant endTime
+    );
+
+    Flux<Reservation> findWaitingQueueByEmployeeId(UUID employeeId);
+
+    Mono<Reservation> findCurrentQueueTurn(UUID employeeId);
+
+    Mono<Long> countPreviousWaitingTurns(
+            UUID employeeId,
+            Instant entryTime,
+            UUID reservationId
+    );
 }

@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase.queue;
+/*package com.smartbarber.application.usecase.queue;
 
 import com.smartbarber.domain.model.queue.event.UserEvent;
 import com.smartbarber.domain.port.queue.UserEventPublisherPort;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-@Component
+//@Component
 public class OpenQueueUC {
 
     private final QueueManagementPort queuePort;
@@ -29,4 +29,4 @@ public class OpenQueueUC {
                         )
                 );
     }
-}
+}*/

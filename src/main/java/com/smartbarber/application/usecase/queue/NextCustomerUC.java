@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase.queue;
+/*package com.smartbarber.application.usecase.queue;
 
 import com.smartbarber.domain.model.queue.event.UserEvent;
 import com.smartbarber.domain.port.queue.UserEventPublisherPort;
@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RequiredArgsConstructor
-@Component
+//@Component
 public class NextCustomerUC {
 
     private final QueueManagementPort queuePort;
@@ -42,4 +42,4 @@ public class NextCustomerUC {
                     return Mono.empty();
                 });
     }
-}
+}*/

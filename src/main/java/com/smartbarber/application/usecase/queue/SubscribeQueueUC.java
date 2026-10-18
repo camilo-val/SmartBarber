@@ -1,4 +1,4 @@
-package com.smartbarber.application.usecase.queue;
+/*package com.smartbarber.application.usecase.queue;
 
 import com.smartbarber.domain.model.queue.event.UserEvent;
 import com.smartbarber.domain.port.queue.QueueSubscriptionPort;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
 @RequiredArgsConstructor
-@Component
+//@Component
 public class SubscribeQueueUC {
 
     private final QueueSubscriptionPort port;
@@ -21,4 +21,4 @@ public class SubscribeQueueUC {
         );
     }
 
-}
+}*/
