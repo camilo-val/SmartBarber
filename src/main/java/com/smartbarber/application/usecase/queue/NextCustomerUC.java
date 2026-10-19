@@ -1,45 +1,70 @@
-/*package com.smartbarber.application.usecase.queue;
 
-import com.smartbarber.domain.model.queue.event.UserEvent;
-import com.smartbarber.domain.port.queue.UserEventPublisherPort;
-import com.smartbarber.domain.port.queue.QueueManagementPort;
+package com.smartbarber.application.usecase.queue;
+
+import com.smartbarber.domain.model.reservation.Reservation;
+import com.smartbarber.domain.port.queue.BarberQueuePort;
+import com.smartbarber.domain.port.reservation.ReservationRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
+import java.util.UUID;
 
+@Component
 @RequiredArgsConstructor
-//@Component
 public class NextCustomerUC {
 
-    private final QueueManagementPort queuePort;
-    private final UserEventPublisherPort publisher;
+    private final BarberQueuePort barberQueuePort;
+    private final ReservationRepositoryPort reservationRepositoryPort;
+    private final QueueBroadcastService queueBroadcastService;
+    private final TransactionalOperator transactionalOperator;
 
-    public Mono<Void> execute(
-            String barberShopId
-    ) {
+    public Mono<Reservation> execute(UUID employeeId) {
+        Mono<Reservation> operation = barberQueuePort
+                .findByEmployeeIdForUpdate(employeeId)
+                .switchIfEmpty(Mono.error(
+                        new IllegalStateException(
+                                "La cola del barbero no está configurada"
+                        )
+                ))
+                .flatMap(queue ->
+                        reservationRepositoryPort
+                                .findCurrentQueueTurn(employeeId)
+                                .hasElement()
+                                .flatMap(hasCurrent -> {
+                                    if (hasCurrent) {
+                                        return Mono.error(
+                                                new IllegalStateException(
+                                                        "El barbero ya tiene un turno en atención"
+                                                )
+                                        );
+                                    }
 
-        return queuePort
-                .nextReservation(
-                        barberShopId
-                )
-                .flatMap(reservationId -> {
-
-                    publisher.publish(
-                            barberShopId,
-                            UserEvent.builder()
-                                    .type("YOUR_TURN")
-                                    .payload(
-                                            Map.of(
-                                                    "reservationId",
-                                                    reservationId
+                                    return reservationRepositoryPort
+                                            .findWaitingQueueByEmployeeId(
+                                                    employeeId
                                             )
-                                    )
-                                    .build()
-                    );
+                                            .next()
+                                            .switchIfEmpty(Mono.error(
+                                                    new IllegalStateException(
+                                                            "No hay clientes esperando"
+                                                    )
+                                            ))
+                                            .flatMap(waiting ->
+                                                    reservationRepositoryPort
+                                                            .save(waiting
+                                                                    .iniciarAtencionDesdeCola())
+                                            );
+                                })
+                );
 
-                    return Mono.empty();
-                });
+        return operation
+                .as(transactionalOperator::transactional)
+                .flatMap(reservation ->
+                        queueBroadcastService
+                                .publish(employeeId, "QUEUE_UPDATED")
+                                .thenReturn(reservation)
+                );
     }
-}*/
+}

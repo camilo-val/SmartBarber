@@ -31,6 +31,8 @@ public class SubscriptionBarbershopWsHandler implements WebSocketHandler {
     @Override
     public Mono<Void> handle(WebSocketSession session) {
 
+        log.info("ENTREEEEEE WSSSSSS");
+
         UUID orderId = extractOrderId(session);
         connectionManager.registerSession(orderId, session);
        return session.send(

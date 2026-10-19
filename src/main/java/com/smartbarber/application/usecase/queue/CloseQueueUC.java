@@ -1,32 +1,45 @@
-/*package com.smartbarber.application.usecase.queue;
 
-import com.smartbarber.domain.model.queue.event.UserEvent;
-import com.smartbarber.domain.port.queue.UserEventPublisherPort;
-import com.smartbarber.domain.port.queue.QueueManagementPort;
+package com.smartbarber.application.usecase.queue;
+
+import com.smartbarber.domain.port.queue.BarberQueuePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
+@Component
 @RequiredArgsConstructor
-//@Component
 public class CloseQueueUC {
 
-    private final QueueManagementPort queuePort;
-    private final UserEventPublisherPort publisher;
+    private final BarberQueuePort barberQueuePort;
+    private final QueueBroadcastService queueBroadcastService;
+    private final TransactionalOperator transactionalOperator;
 
-    public Mono<Void> execute(
-            String barberShopId
-    ) {
-
-        return queuePort
-                .close(barberShopId)
-                .doOnSuccess(unused ->
-                        publisher.publish(
-                                barberShopId,
-                                UserEvent.builder()
-                                        .type("QUEUE_CLOSED")
-                                        .build()
+    public Mono<Void> execute(UUID employeeId) {
+        return barberQueuePort.findByEmployeeIdForUpdate(employeeId)
+                .switchIfEmpty(Mono.error(
+                        new IllegalStateException(
+                                "La cola del barbero no está configurada"
                         )
-                );
+                ))
+                .flatMap(queue ->
+                        barberQueuePort.updateAcceptingClients(
+                                employeeId,
+                                false
+                        )
+                )
+                .flatMap(rows -> rows > 0
+                                ? Mono.<Void>empty()
+                                : Mono.error(new IllegalStateException(
+                                "No fue posible cerrar la cola"
+                        ))
+                )
+                .as(transactionalOperator::transactional)
+                .then(queueBroadcastService.publish(
+                        employeeId,
+                        "QUEUE_CLOSED"
+                ));
     }
-}*/
+}

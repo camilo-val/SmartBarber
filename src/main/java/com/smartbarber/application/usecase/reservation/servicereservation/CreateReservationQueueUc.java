@@ -1,15 +1,18 @@
+
 package com.smartbarber.application.usecase.reservation.servicereservation;
 
 import com.smartbarber.application.command.in.reservation.ReservationCommand;
+import com.smartbarber.application.usecase.queue.QueueBroadcastService;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
-import com.smartbarber.domain.exceptions.reservation.ReservationMessageExceptions;
 import com.smartbarber.domain.exceptions.service.ServiceMessageExceptions;
 import com.smartbarber.domain.model.reservation.Reservation;
 import com.smartbarber.domain.model.reservation.ServiceReservation;
 import com.smartbarber.domain.model.service.Service;
 import com.smartbarber.domain.port.ServicePort;
+import com.smartbarber.domain.port.queue.BarberQueuePort;
 import com.smartbarber.domain.port.reservation.ReservationRepositoryPort;
 import com.smartbarber.domain.port.reservation.ServiceReservationPort;
+import com.smartbarber.infrastructure.drivenadapter.postgres.entity.BarberQueueEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -18,6 +21,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -27,109 +32,138 @@ public class CreateReservationQueueUc {
     private final ServiceReservationPort serviceReservationPort;
     private final ReservationRepositoryPort reservationRepositoryPort;
     private final ServicePort servicePort;
+    private final BarberQueuePort barberQueuePort;
+    private final QueueBroadcastService queueBroadcastService;
     private final TransactionalOperator transactionalOperator;
 
     public Mono<Reservation> createReservation(ReservationCommand command) {
-        return loadServices(command.reservationServiceId())
-                .flatMap(services -> {
-                    Integer duration = getDuration(services);
-                    ReservationCommand newReservationCommand = ReservationCommand.builder()
-                            .id(command.id())
-                            .customerId(command.customerId())
-                            .employeeId(command.employeeId())
-                            .reservationServiceId(command.reservationServiceId())
-                            .reservationType(command.reservationType())
-                            .status(command.status())
-                            .startTime(command.startTime())
-                            .endTime(command.startTime().plus(duration, java.time.temporal.ChronoUnit.MINUTES))
-                            .notes(command.notes())
-                            .creationDate(command.creationDate())
-                            .updatedDate(command.updatedDate())
-                            .build();
+        validateCommand(command);
 
-                    System.out.println("Start date: " + newReservationCommand.startTime() + " Final date: " + newReservationCommand.endTime());
-                    return validateReservation(newReservationCommand)
-                            .thenReturn(services);
-                }).flatMap(services -> createReservation(command, services))
-                .as(transactionalOperator::transactional);
+        Mono<Reservation> operation = barberQueuePort
+                .findByEmployeeIdForUpdate(command.employeeId())
+                .switchIfEmpty(Mono.error(new IllegalStateException(
+                        "El barbero no tiene una cola configurada. Debe abrirla primero."
+                )))
+                .flatMap(queue -> validateQueue(queue, command)
+                        .then(loadServices(command.reservationServiceId()))
+                        .flatMap(services -> {
+                            validateServicesBelongToBarbershop(
+                                    services,
+                                    command.barbershopId()
+                            );
+
+                            int duration = getDuration(services);
+
+                            Reservation reservation =
+                                    Reservation.createReservationQueue(
+                                            command.customerId(),
+                                            command.barbershopId(),
+                                            command.employeeId(),
+                                            duration,
+                                            command.notes()
+                                    );
+
+                            return reservationRepositoryPort.save(reservation)
+                                    .flatMap(saved ->
+                                            createServiceReservations(saved, services)
+                                                    .thenReturn(saved)
+                                    );
+                        }));
+
+        return operation.as(transactionalOperator::transactional)
+                .flatMap(saved ->
+                        queueBroadcastService
+                                .publish(command.employeeId(), "QUEUE_UPDATED")
+                                .thenReturn(saved)
+                )
+                .doOnSuccess(saved -> {
+                    if (saved != null) {
+                        log.info(
+                                "Cliente agregado a cola virtual. reservationId={}, employeeId={}",
+                                saved.getId(),
+                                saved.getEmployeeId()
+                        );
+                    }
+                });
     }
 
-    private Mono<Void> validateReservation(ReservationCommand command) {
-        System.out.println("Validating reservation for employee: " + command.startTime() + " and customer: " + command.endTime());
-        Mono<Void> employeeValidation =
-                reservationRepositoryPort.existsByEmployeeAndRange(
-                                command.employeeId(),
-                                command.startTime(),
-                                command.endTime()).doOnNext(res -> log.info("Employee validation passed: {}", res))
-                        .flatMap(exists -> exists
-                                ? Mono.error(() -> new BusinessExceptions(
-                                ReservationMessageExceptions.EMPLOYEE_NOT_AVAILABLE))
-                                : Mono.empty());
+    private void validateCommand(ReservationCommand command) {
+        if (command == null
+                || command.customerId() == null
+                || command.employeeId() == null
+                || command.barbershopId() == null
+                || command.reservationServiceId() == null
+                || command.reservationServiceId().isEmpty()) {
 
-        Mono<Void> customerValidation =
-                reservationRepositoryPort.existsByCustomerAndRange(
-                                command.customerId(),
-                                command.startTime(),
-                                command.endTime()).doOnNext(res -> log.info("client validation passed: {}", res))
-                        .flatMap(exists -> exists
-                                ? Mono.error(() -> new BusinessExceptions(
-                                ReservationMessageExceptions.RESERVATION_ALREADY_EXISTS))
-                                : Mono.empty()).doOnNext(res -> log.info("Customer validation passed: {}", res)).then();
+            throw new IllegalArgumentException(
+                    "Debes indicar cliente, barbero, barbería y al menos un servicio"
+            );
+        }
+    }
 
-        return Mono.when(employeeValidation, customerValidation);
+    private Mono<Void> validateQueue(
+            BarberQueueEntity queue,
+            ReservationCommand command
+    ) {
+        if (!Boolean.TRUE.equals(queue.getAcceptingClients())) {
+            return Mono.error(new IllegalStateException(
+                    "El barbero no está aceptando clientes"
+            ));
+        }
+
+        if (!Objects.equals(
+                queue.getBarbershopId(),
+                command.barbershopId()
+        )) {
+            return Mono.error(new IllegalArgumentException(
+                    "El barbero no pertenece a la barbería indicada"
+            ));
+        }
+
+        return Mono.empty();
     }
 
     private Mono<List<Service>> loadServices(List<Integer> serviceIds) {
-
-        if (serviceIds.isEmpty()) {
-            return Mono.error(
-                    new BusinessExceptions(
-                            ServiceMessageExceptions.SERVICE_NOT_FOUND
-                    )
-            );
-        }
-
         return Flux.fromIterable(serviceIds)
-                .flatMap(id ->
+                .concatMap(id ->
                         servicePort.findById(id)
-                                .switchIfEmpty(
-                                        Mono.error(
-                                                new BusinessExceptions(
-                                                        ServiceMessageExceptions.SERVICE_NOT_FOUND
-                                                )
+                                .switchIfEmpty(Mono.error(
+                                        new BusinessExceptions(
+                                                ServiceMessageExceptions.SERVICE_NOT_FOUND
                                         )
-                                )
+                                ))
                 )
                 .collectList();
     }
 
-    private Mono<Reservation> createReservation(
-            ReservationCommand command,
-            List<Service> services) {
-        Integer duration = getDuration(services);
-        Reservation reservation = Reservation.createReservationQueue(
-                command.customerId(),
-                command.barbershopId(),
-                command.employeeId(),
-                duration,
-                command.startTime(),
-                command.startTime().plus(duration, java.time.temporal.ChronoUnit.MINUTES),
-                command.notes()
+    private void validateServicesBelongToBarbershop(
+            List<Service> services,
+            UUID barbershopId
+    ) {
+        boolean invalid = services.stream().anyMatch(service ->
+                !Boolean.TRUE.equals(service.getStatus())
+                        || !Objects.equals(
+                        service.getBarberiaId(),
+                        barbershopId
+                )
+                        || service.getDuration() == null
+                        || service.getDuration() <= 0
         );
-        return reservationRepositoryPort.save(reservation)
-                .doOnNext(res -> log.info("1 Reservation saved: {}", res))
-                .flatMap(savedReservation ->
-                        createServiceReservations(savedReservation, services)
-                                .doOnNext(res -> log.info("Reservation saved: {}", res))
-                                .then(Mono.just(savedReservation))
-                ).doOnNext(res -> log.info("Final Reservation saved: {}", res));
+
+        if (invalid) {
+            throw new IllegalArgumentException(
+                    "Uno o más servicios no están activos, "
+                            + "no pertenecen a la barbería o tienen duración inválida"
+            );
+        }
     }
 
     private Mono<Void> createServiceReservations(
             Reservation reservation,
-            List<Service> services) {
+            List<Service> services
+    ) {
         return Flux.fromIterable(services)
-                .flatMap(service ->
+                .concatMap(service ->
                         serviceReservationPort.save(
                                 ServiceReservation.createServiceReservation(
                                         reservation.getId(),
@@ -140,7 +174,8 @@ public class CreateReservationQueueUc {
                 )
                 .then();
     }
-    private Integer getDuration(List<Service> services) {
+
+    private int getDuration(List<Service> services) {
         return services.stream()
                 .map(Service::getDuration)
                 .reduce(0, Integer::sum);

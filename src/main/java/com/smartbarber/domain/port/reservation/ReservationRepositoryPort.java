@@ -1,3 +1,4 @@
+
 package com.smartbarber.domain.port.reservation;
 
 import com.smartbarber.domain.model.reservation.Reservation;
@@ -41,5 +42,14 @@ public interface ReservationRepositoryPort {
             UUID employeeId,
             Instant entryTime,
             UUID reservationId
+    );
+
+    Mono<Instant> findNextScheduledReservationStart(
+            UUID employeeId,
+            Instant from
+    );
+
+    Mono<Integer> sumWaitingQueueDuration(
+            UUID employeeId
     );
 }

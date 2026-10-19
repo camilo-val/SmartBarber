@@ -1,54 +1,59 @@
-/*package com.smartbarber.infrastructure.entrypoint.websocket.handler;
+
+package com.smartbarber.infrastructure.entrypoint.websocket.handler;
 
 import com.smartbarber.application.usecase.queue.SubscribeQueueUC;
 import com.smartbarber.infrastructure.entrypoint.utils.commons.ObjectMessageMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketSession;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
-public class VirtualQueueWsHandler
-        implements WebSocketHandler {
+@Slf4j
+public class VirtualQueueWsHandler implements WebSocketHandler {
 
-    private final SubscribeQueueUC useCase;
-    private final ObjectMessageMapper mapper;
+    private final SubscribeQueueUC subscribeQueueUC;
+    private final ObjectMessageMapper objectMessageMapper;
 
     @Override
-    public Mono<Void> handle(
-            WebSocketSession session
-    ) {
+    public Mono<Void> handle(WebSocketSession session) {
+        UUID employeeId;
 
-        String barberShopId =
-                getBarberShopId(session);
+        try {
+            employeeId = extractEmployeeId(session);
+        } catch (RuntimeException exception) {
+            log.warn(
+                    "Conexión WebSocket de cola rechazada: employeeId inválido"
+            );
+            return session.close();
+        }
 
         return session.send(
-
-                useCase.execute(
-                                barberShopId
-                        )
-                        .map(mapper::writeValueAsString)
+                subscribeQueueUC.execute(employeeId.toString())
+                        .map(objectMessageMapper::writeValueAsString)
                         .map(session::textMessage)
-
         );
     }
 
-    private String getBarberShopId(
-            WebSocketSession session
-    ) {
-
-        return UriComponentsBuilder
-                .fromUri(
-                        session
-                                .getHandshakeInfo()
-                                .getUri()
-                )
+    private UUID extractEmployeeId(WebSocketSession session) {
+        String employeeId = UriComponentsBuilder
+                .fromUri(session.getHandshakeInfo().getUri())
                 .build()
                 .getQueryParams()
-                .getFirst("barbershopId");
-    }
+                .getFirst("employeeId");
 
-}*/
+        if (employeeId == null || employeeId.isBlank()) {
+            throw new IllegalArgumentException(
+                    "employeeId es obligatorio"
+            );
+        }
+
+        return UUID.fromString(employeeId);
+    }
+}

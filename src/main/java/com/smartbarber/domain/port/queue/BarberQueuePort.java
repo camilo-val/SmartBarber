@@ -1,3 +1,4 @@
+
 package com.smartbarber.domain.port.queue;
 
 import com.smartbarber.infrastructure.drivenadapter.postgres.entity.BarberQueueEntity;
@@ -12,6 +13,11 @@ public interface BarberQueuePort {
     Mono<BarberQueueEntity> findByEmployeeIdForUpdate(UUID employeeId);
 
     Mono<BarberQueueEntity> save(BarberQueueEntity queue);
+
+    Mono<Void> ensureExists(
+            UUID employeeId,
+            UUID barbershopId
+    );
 
     Mono<Integer> updateAcceptingClients(
             UUID employeeId,

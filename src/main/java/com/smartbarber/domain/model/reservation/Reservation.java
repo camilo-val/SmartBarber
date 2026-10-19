@@ -86,11 +86,20 @@ public class Reservation {
             UUID barbershopId,
             UUID employeeId,
             Integer duration,
-            Instant startTime,
-            Instant endTime,
-            String notes) {
-        dataValidate(barbershopId, customerId, employeeId, ReservationType.VIRTUAL_QUEUE, startTime, endTime);
-        hoursValidate(startTime, endTime);
+            String notes
+    ) {
+        if (customerId == null
+                || barbershopId == null
+                || employeeId == null
+                || duration == null
+                || duration <= 0) {
+            throw new IllegalArgumentException(
+                    "Los datos de la reserva virtual no son válidos"
+            );
+        }
+
+        Instant now = Instant.now();
+
         return new Reservation(
                 null,
                 customerId,
@@ -99,12 +108,40 @@ public class Reservation {
                 ReservationType.VIRTUAL_QUEUE,
                 ReservationStatus.WAITING,
                 duration,
-                startTime,
-                endTime,
-                notes,
-                Instant.now(),
                 null,
-                Instant.now()
+                null,
+                notes,
+                now,
+                null,
+                now
+        );
+    }
+
+    public Reservation iniciarAtencionDesdeCola() {
+        if (reservationType != ReservationType.VIRTUAL_QUEUE
+                || status != ReservationStatus.WAITING) {
+
+            throw new BusinessExceptions(
+                    ReservationMessageExceptions.INVALID_RESERVATION_STATUS
+            );
+        }
+
+        Instant now = Instant.now();
+
+        return new Reservation(
+                this.id,
+                this.customerId,
+                this.barbershopId,
+                this.employeeId,
+                this.reservationType,
+                ReservationStatus.IN_PROGRESS,
+                this.duration,
+                now,
+                null,
+                this.notes,
+                this.creationDate,
+                now,
+                this.queueEntryTime
         );
     }
 
@@ -127,6 +164,16 @@ public class Reservation {
 
         if (id == null || estado == null) {
             throw new BusinessExceptions(ReservationMessageExceptions.INVALID_RESERVATION_DATA);
+        }
+
+        if (reservationType == ReservationType.VIRTUAL_QUEUE) {
+            if (queueEntryTime == null) {
+                throw new BusinessExceptions(
+                        ReservationMessageExceptions.INVALID_RESERVATION_DATA
+                );
+            }
+        } else {
+            hoursValidate(startTime, endTime);
         }
 
         return new Reservation(
@@ -251,7 +298,9 @@ public class Reservation {
                 ReservationStatus.COMPLETED,
                 this.duration,
                 this.startTime,
-                this.endTime,
+                this.reservationType == ReservationType.VIRTUAL_QUEUE
+                        ? Instant.now()
+                        : this.endTime,
                 this.notes,
                 this.creationDate,
                 Instant.now(),
@@ -280,18 +329,52 @@ public class Reservation {
         );
     }
 
+
     private static void dataValidate(
             UUID barbershopId,
             UUID customerId,
             UUID employeeId,
             ReservationType reservationType,
             Instant startTime,
-            Instant endTime) {
-        if (barbershopId == null || customerId == null || employeeId == null ||
-                reservationType == null || startTime == null || endTime == null) {
-            throw new BusinessExceptions(ReservationMessageExceptions.INVALID_RESERVATION_DATA);
+            Instant endTime
+    ) {
+        if (barbershopId == null
+                || customerId == null
+                || employeeId == null
+                || reservationType == null) {
+
+            throw new BusinessExceptions(
+                    ReservationMessageExceptions.INVALID_RESERVATION_DATA
+            );
+        }
+
+        if (reservationType != ReservationType.VIRTUAL_QUEUE
+                && (startTime == null || endTime == null)) {
+
+            throw new BusinessExceptions(
+                    ReservationMessageExceptions.INVALID_RESERVATION_DATA
+            );
         }
     }
+
+    private static void queueDataValidate(
+            UUID barbershopId,
+            UUID customerId,
+            UUID employeeId,
+            Integer duration
+    ) {
+        if (barbershopId == null
+                || customerId == null
+                || employeeId == null
+                || duration == null
+                || duration <= 0) {
+
+            throw new BusinessExceptions(
+                    ReservationMessageExceptions.INVALID_RESERVATION_DATA
+            );
+        }
+    }
+
 
     private static void hoursValidate(Instant startTime, Instant endTime) {
         if (startTime.isAfter(endTime) || startTime.equals(endTime)) {

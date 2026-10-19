@@ -1,3 +1,4 @@
+
 package com.smartbarber.infrastructure.drivenadapter.postgres.data;
 
 import com.smartbarber.infrastructure.drivenadapter.postgres.entity.ReservationEntity;
@@ -91,5 +92,15 @@ public interface ReservationData
             @Param("endTime") Instant endTime
     );
 
-    Flux<ReservationEntity> findAllBarberId(UUID barberId);
+    @Query("""
+        SELECT r.*
+        FROM public.reserva r
+        INNER JOIN public.empleado e
+            ON e.id_empleado = r.id_empleado
+        WHERE e.user_id = :barberId
+        ORDER BY r.fecha_creacion DESC
+        """)
+    Flux<ReservationEntity> findAllBarberId(
+            @Param("barberId") UUID barberId
+    );
 }

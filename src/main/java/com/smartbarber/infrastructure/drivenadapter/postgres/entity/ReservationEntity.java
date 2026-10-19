@@ -1,3 +1,4 @@
+
 package com.smartbarber.infrastructure.drivenadapter.postgres.entity;
 
 import com.smartbarber.domain.enums.ReservationStatus;
