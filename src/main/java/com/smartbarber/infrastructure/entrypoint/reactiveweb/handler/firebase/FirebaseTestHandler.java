@@ -19,7 +19,7 @@ public class FirebaseTestHandler {
         String authorization = request.headers()
                 .firstHeader(HttpHeaders.AUTHORIZATION);
 
-        return authentication.authorizationSession(authorization)
+        return authentication.authorization(authorization)
                 .flatMap(uid -> ServerResponse.ok()
                         .bodyValue(uid))
                /* .onErrorResume(error ->
