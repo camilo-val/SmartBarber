@@ -41,7 +41,9 @@ public class SecurityConfig {
                                 "/reservation-service/**",
                                 "/schedule-service/**",
                                 "/services-service/**",
+                                "/customer-service/**",
                                 "/reservation-review-service/**",
+                                "/notification-service/**",
                                 "/public/**")
                         .permitAll()
                         .pathMatchers(

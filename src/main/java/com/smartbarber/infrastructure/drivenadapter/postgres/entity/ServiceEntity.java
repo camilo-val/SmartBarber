@@ -28,11 +28,11 @@ public class ServiceEntity {
     @Column("estado")
     private Boolean status;
     @Column("oferta")
-    private Boolean offert;
+    private Boolean offer;
     @Column("precio")
     private Integer price;
     @Column("precio_oferta")
-    private Integer special_price;
+    private Integer specialPrice;
     @Column("fecha_creacion")
     private Instant createAt;
     @Column("fecha_modificacion")

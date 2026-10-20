@@ -29,34 +29,52 @@ public class ServiceHandler {
     public Mono<ServerResponse> createService(ServerRequest request){
         return request.bodyToMono(ServiceRqDto.class)
                 .doOnNext(validateRequest::validate)
-                .map(mapper::toDomain)
-                .flatMap(createServiceUC::crearServicio)
+                .map(mapper::toCommand)
+                .flatMap(createServiceUC::createService)
                 .map(mapper::toResponse)
                 .flatMap( response -> ServerResponse.created(request.uri()).bodyValue(response))
                 .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)));
     }
 
-    public Mono<ServerResponse> findServiceByName(ServerRequest request){
-        return searchServiceUC.buscarPorNombre(request.pathVariable("name"))
+
+    public Mono<ServerResponse> findServiceByName(ServerRequest request) {
+        return searchServiceUC.findByName(request.pathVariable("name"))
                 .map(mapper::toResponse)
-                .flatMap( response -> ServerResponse.ok().bodyValue(response))
-                .switchIfEmpty(ServerResponse.notFound().build());
+                .flatMap(response -> ServerResponse.ok().bodyValue(response));
     }
 
-    public Mono<ServerResponse> findServiceById(ServerRequest request){
-        return searchServiceUC.buscarPorId(Integer.valueOf(request.pathVariable("id")))
+    public Mono<ServerResponse> findServiceById(ServerRequest request) {
+        return Mono.fromCallable(() ->
+                        Integer.valueOf(request.pathVariable("id")))
+                .flatMap(searchServiceUC::findById)
                 .map(mapper::toResponse)
-                .flatMap( response -> ServerResponse.ok().bodyValue(response))
-                .switchIfEmpty(ServerResponse.notFound().build());
+                .flatMap(response -> ServerResponse.ok().bodyValue(response));
     }
 
-    public Mono<ServerResponse> updateService(ServerRequest request){
-        return request.bodyToMono(ServiceRqDto.class)
-                .doOnNext(validateRequest::validate)
-                .map(mapper::toDomain)
-                .flatMap(service -> updateServiceUC
-                        .serviceUpdate(request.pathVariable("id"), service))
-                        .map(mapper::toResponse)
-                        .flatMap( response -> ServerResponse.accepted().bodyValue(response));
+    public Mono<ServerResponse> updateService(ServerRequest request) {
+        return Mono.fromCallable(() ->
+                        Integer.valueOf(request.pathVariable("id")))
+                .flatMap(id -> request.bodyToMono(ServiceRqDto.class)
+                        .doOnNext(validateRequest::validate)
+                        .map(mapper::toCommand)
+                        .flatMap(service -> updateServiceUC.updateService(id, service)))
+                .map(mapper::toResponse)
+                .flatMap(response -> ServerResponse.accepted().bodyValue(response));
     }
+
+    public Mono<ServerResponse> findServicesByBarberiaId(
+            ServerRequest request
+    ) {
+        return Mono.fromCallable(() ->
+                        java.util.UUID.fromString(
+                                request.pathVariable("barberiaId")
+                        ))
+                .flatMapMany(searchServiceUC::findByBarberiaId)
+                .map(mapper::toResponse)
+                .collectList()
+                .flatMap(services ->
+                        ServerResponse.ok().bodyValue(services)
+                );
+    }
+
 }

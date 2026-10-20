@@ -5,6 +5,7 @@ import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.Role.RoleMessageExceptions;
 
 public class Role {
+
     private final Short id;
     private final RoleType roleType;
     private final String status;
@@ -15,7 +16,8 @@ public class Role {
         this.status = status;
     }
 
-    public static Role createRol(Short id, RoleType roleType) {
+    public static Role createRole(Short id, RoleType roleType) {
+        validateRoleType(roleType);
 
         return new Role(
                 id,
@@ -24,33 +26,63 @@ public class Role {
         );
     }
 
-    public static Role update(Short id, RoleType roleType, String status) {
+    public static Role update(
+            Short id,
+            RoleType roleType,
+            String status
+    ) {
         if (id == null) {
             throw new BusinessExceptions(
                     RoleMessageExceptions.INVALID_DATA
             );
         }
 
-        return new Role(
-                id,
-                roleType,
-                status
-        );
-    }
-
-    public static Role rebuild(Short id, RoleType roleType, String status) {
-        if (id == null || status == null || status.isBlank()) {
-            throw new BusinessExceptions(RoleMessageExceptions.INVALID_DATA);
-        }
+        validateRoleType(roleType);
+        validateStatus(status);
 
         return new Role(id, roleType, status);
     }
 
-    private static boolean isNullOrBlank(String text) { return text == null || text.isBlank(); }
+    public static Role rebuild(
+            Short id,
+            RoleType roleType,
+            String status
+    ) {
+        if (id == null) {
+            throw new BusinessExceptions(
+                    RoleMessageExceptions.INVALID_DATA
+            );
+        }
 
-    public Short getId() { return id; }
+        validateRoleType(roleType);
+        validateStatus(status);
 
-    public RoleType getRoleType() { return roleType; }
+        return new Role(id, roleType, status);
+    }
+
+    private static void validateRoleType(RoleType roleType) {
+        if (roleType == null) {
+            throw new BusinessExceptions(
+                    RoleMessageExceptions.INVALID_ROLE
+            );
+        }
+    }
+
+    private static void validateStatus(String status) {
+        if (status == null || status.isBlank()) {
+            throw new BusinessExceptions(
+                    RoleMessageExceptions.INVALID_DATA
+            );
+        }
+    }
+
+    public Short getId() {
+        return id;
+    }
+
+    public RoleType getRoleType() {
+        return roleType;
+    }
 
     public String getStatus() {
         return status;
