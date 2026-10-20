@@ -60,4 +60,10 @@ public class CustomerAdapter implements CustomerPort {
     public Mono<Boolean> existsByDocument(String document) {
         return customerData.existsByDocument(document);
     }
+
+    @Override
+    public Mono<Customer> findByUserId(UUID userId) {
+        return customerData.findByUserId(userId)
+                .map(mapper::toDomain);
+    }
 }

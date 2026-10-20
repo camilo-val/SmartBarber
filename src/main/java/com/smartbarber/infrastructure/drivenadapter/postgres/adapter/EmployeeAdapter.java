@@ -43,6 +43,12 @@ public class EmployeeAdapter  implements EmployeePort{
     }
 
     @Override
+    public Mono<Employee> findByUserId(UUID userId) {
+        return employeeData.findByUserId(userId)
+                .map(mapper::toDomain);
+    }
+
+    @Override
     public Mono<Employee> save(Employee employee){
         return employeeData.save(mapper.toEntity(employee))
                 .doOnNext(e -> log.info("Data registrada {}", e.toString()))

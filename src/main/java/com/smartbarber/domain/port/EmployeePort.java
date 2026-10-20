@@ -11,6 +11,7 @@ public interface EmployeePort {
     Mono<Employee> findByName(String name);
     Mono<Employee> findByDocument(String document);
     Flux <Employee> findAllBarberId(UUID barberId);
+    Mono<Employee> findByUserId(UUID userId);
     Mono<Employee> save(Employee employee);
     Mono<Employee> update( UUID id, Employee employee);
     Mono<Void> eliminarEmpleado(UUID id);

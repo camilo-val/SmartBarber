@@ -9,7 +9,8 @@ import java.util.UUID;
 @Builder
 public record CustomerCommand(
         UUID id,
-        UUID userId,
+        UUID
+        userId,
         String document,
         DocumentType documentType,
         String name,

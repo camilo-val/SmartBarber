@@ -1,0 +1,45 @@
+package com.smartbarber.domain.model;
+
+import com.smartbarber.domain.model.barbershop.Barbershop;
+import com.smartbarber.domain.model.customer.Customer;
+import com.smartbarber.domain.model.employee.Employee;
+import com.smartbarber.domain.model.user.User;
+
+
+public class Authentication {
+    private final Barbershop barbershop;
+    private final Employee employee;
+    private final Customer customer;
+    private final User user;
+
+    public Authentication(Barbershop barbershop, Employee employee, Customer customer, User user) {
+        this.barbershop = barbershop;
+        this.employee = employee;
+        this.customer = customer;
+        this.user = user;
+    }
+
+    public static Authentication mapCustomer(Customer customer, User user){
+        return new Authentication(null, null, customer, user);
+    }
+
+    public static Authentication mapEmployee(Barbershop barbershop, Employee employee, User user){
+        return new Authentication(barbershop, employee, null, user);
+    }
+
+    public Barbershop getBarbershop() {
+        return barbershop;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public User getUser() {
+        return user;
+    }
+}

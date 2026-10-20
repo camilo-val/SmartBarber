@@ -15,6 +15,7 @@ public enum TechnicalMessageExceptions {
     UNEXPECTED_ERROR("TECH_005","unexpected error"),
     UNAUTHORIZED("TECH_006","unauthorized"),
     FORBIDDEN("TECH_007","forbidden"),
+    THE_TOKEN_IS_EXPIRED("TECH_008","the token is expired")
     ;
 
     private final String code;

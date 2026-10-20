@@ -1,13 +1,11 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.config;
 
-import com.smartbarber.application.usecase.athentication.Authentication;
+import com.smartbarber.application.usecase.athentication.AuthenticationUC;
 import com.smartbarber.domain.enums.RoleType;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -23,9 +21,9 @@ import java.util.List;
 @Component
 public class JwtFilter implements WebFilter {
 
-    private final Authentication validateTokenUseCase;
+    private final AuthenticationUC validateTokenUseCase;
 
-    public JwtFilter(Authentication validateTokenUseCase) {
+    public JwtFilter(AuthenticationUC validateTokenUseCase) {
         this.validateTokenUseCase = validateTokenUseCase;
     }
 
