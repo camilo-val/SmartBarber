@@ -30,7 +30,7 @@ public class BarbershopHandler {
     private final CreateBarbershopUC createBarbershopUC;
     private final validateRequest validateRequest;
     private final FindBarbershopUC findBarbershopUC;
-    private final BarbershopUpdateUC BarbershopUpdateUC;
+    private final BarbershopUpdateUC barbershopUpdateUC;
     private final OnboardingBarberShopUc onboardingBarberShopUc;
     private final Authentication authenticationUc;
 
@@ -58,30 +58,38 @@ public class BarbershopHandler {
     }
 
 
-    public Mono<ServerResponse> findBarbershopByNae(ServerRequest request){
-        return findBarbershopUC.buscarPorNombre(request.pathVariable("name"))
+    public Mono<ServerResponse> findBarbershopByName(ServerRequest request){
+        return findBarbershopUC.findByName(request.pathVariable("name"))
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
 
     }
 
+    public Mono<ServerResponse> findAllBarberShop(ServerRequest request){
+        return findBarbershopUC.findAll()
+                .map(mapper::toResponse)
+                .collectList()
+                .flatMap(response -> ServerResponse.ok().bodyValue(response));
+
+    }
+
     public Mono<ServerResponse> findBarbershopByCompanyName(ServerRequest request){
-        return findBarbershopUC.buscarPorRazonSocial(request.pathVariable("companyName"))
+        return findBarbershopUC.findByCompanyName(request.pathVariable("companyName"))
                 .map(mapper::toResponse)
                 .collectList()
                 .flatMap(response -> ServerResponse.ok().bodyValue(response));
     }
 
     public Mono<ServerResponse> findByBarbershopByDocument(ServerRequest request){
-        return findBarbershopUC.bucarPorDocumento(request.pathVariable("document"))
+        return findBarbershopUC.findByDocument(request.pathVariable("document"))
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> findBarbershopById(ServerRequest request){
-        return findBarbershopUC.buscarPorId(request.pathVariable("id"))
+        return findBarbershopUC.findById(request.pathVariable("id"))
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.ok().bodyValue(response))
                 .switchIfEmpty(ServerResponse.notFound().build());
@@ -91,7 +99,7 @@ public class BarbershopHandler {
         return request.bodyToMono(BarbershopRqDto.class)
                 .doOnNext(validateRequest::validate)
                 .map(mapper::toDomain)
-                .flatMap(barberia -> BarbershopUpdateUC
+                .flatMap(barberia -> barbershopUpdateUC
                         .barberUpdate(request.pathVariable("id"), barberia))
                 .map(mapper::toResponse)
                 .flatMap(response -> ServerResponse.accepted().bodyValue(response));

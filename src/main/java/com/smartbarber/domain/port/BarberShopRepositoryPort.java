@@ -11,6 +11,7 @@ public interface BarberShopRepositoryPort {
     Mono<Barbershop> findByName(String name);
     Flux<Barbershop> findByCompanyName(String companyName);
     Mono<Barbershop> findByDocument(String document);
+    Flux<Barbershop> findAll();
     Mono<Barbershop> save(Barbershop barbershop);
     Mono<Barbershop> update(UUID id, Barbershop barbershop);
     Mono<Void> deleteBarbershop(UUID id);

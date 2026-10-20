@@ -48,6 +48,11 @@ public class BarbershopAdapter implements BarberShopRepositoryPort {
                 .map(mapper::toDomain);
     }
 
+    @Override
+    public Flux<Barbershop> findAll() {
+        return barbershopData.findAll().map(mapper::toDomain);
+    }
+
     @Transactional
     @Override
     public Mono<Barbershop> save(Barbershop barbershop) {

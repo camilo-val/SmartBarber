@@ -18,25 +18,31 @@ import java.util.UUID;
 public class FindBarbershopUC {
     private final BarberShopRepositoryPort barberShopRepositoryPort;
 
-    public Mono<Barbershop> buscarPorNombre(String nombre) {
+    public Flux<Barbershop> findAll() {
+        return barberShopRepositoryPort.findAll()
+                .doOnNext(barberia -> log.info("Datos encontrados {}",  barberia))
+                .switchIfEmpty(Mono.error(new BusinessExceptions(BarberShopMessageExceptions.BARBER_NOT_FOUND)));
+    }
+
+    public Mono<Barbershop> findByName(String nombre) {
         return barberShopRepositoryPort.findByName(nombre)
                 .doOnNext(barberia -> log.info("Datos encontrados {}",  barberia))
                 .switchIfEmpty(Mono.error(new BusinessExceptions(BarberShopMessageExceptions.BARBER_NOT_FOUND)));
     }
 
-    public Flux<Barbershop> buscarPorRazonSocial(String razonSocial) {
+    public Flux<Barbershop> findByCompanyName(String razonSocial) {
         return barberShopRepositoryPort.findByCompanyName(razonSocial)
                 .doOnNext(barberia -> log.info("Datos encontrados {}",  barberia))
                 .switchIfEmpty(Mono.error(new BusinessExceptions(BarberShopMessageExceptions.BARBER_NOT_FOUND)));
     }
 
-    public Mono<Barbershop> bucarPorDocumento(String documento) {
+    public Mono<Barbershop> findByDocument(String documento) {
         return barberShopRepositoryPort.findByDocument(documento)
                 .doOnNext(barberia -> log.info("Datos encontrados {}",  barberia))
                 .switchIfEmpty(Mono.error(new BusinessExceptions(BarberShopMessageExceptions.BARBER_NOT_FOUND)));
     }
 
-    public Mono<Barbershop> buscarPorId(String id) {
+    public Mono<Barbershop> findById(String id) {
         return barberShopRepositoryPort.findById(UUID.fromString(id))
                 .doOnNext(barberia -> log.info("Datos encontrados {}",  barberia))
                 .switchIfEmpty(Mono.error(new BusinessExceptions(BarberShopMessageExceptions.BARBER_NOT_FOUND)));
