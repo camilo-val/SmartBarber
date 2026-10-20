@@ -158,22 +158,40 @@ public class Reservation {
             String notes,
             Instant creationDate,
             Instant updatedDate,
-            Instant queueEntryTime) {
-        dataValidate(barbershopId, customerId, employeeId, reservationType, startTime, endTime);
-        hoursValidate(startTime, endTime);
+            Instant queueEntryTime
+    ) {
+        dataValidate(
+                barbershopId,
+                customerId,
+                employeeId,
+                reservationType,
+                startTime,
+                endTime
+        );
 
         if (id == null || estado == null) {
-            throw new BusinessExceptions(ReservationMessageExceptions.INVALID_RESERVATION_DATA);
+            throw new BusinessExceptions(
+                    ReservationMessageExceptions.INVALID_RESERVATION_DATA
+            );
         }
 
         if (reservationType == ReservationType.VIRTUAL_QUEUE) {
-            if (queueEntryTime == null) {
+
+            if (queueEntryTime == null || duration == null || duration <= 0) {
                 throw new BusinessExceptions(
                         ReservationMessageExceptions.INVALID_RESERVATION_DATA
                 );
             }
+
         } else {
+
             hoursValidate(startTime, endTime);
+
+            if (duration == null || duration <= 0) {
+                throw new BusinessExceptions(
+                        ReservationMessageExceptions.INVALID_RESERVATION_DATA
+                );
+            }
         }
 
         return new Reservation(
