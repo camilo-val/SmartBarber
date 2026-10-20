@@ -3,6 +3,7 @@ package com.smartbarber.infrastructure.drivenadapter.postgres.data;
 import com.smartbarber.domain.enums.SubscriptionBarberStatus;
 import com.smartbarber.infrastructure.drivenadapter.postgres.entity.SubscriptionBarbershopEntity;
 import org.springframework.data.r2dbc.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,7 +20,8 @@ public interface SubscriptionBarbershopData extends ReactiveCrudRepository<Subsc
             where id_barberia = :barberId
             and estado in ('ACTIVE','PENDING');
             """)
-    Mono<Boolean> countByBarberIdAndStatusIn(UUID barberId);
+    Mono<Boolean> countByBarberIdAndStatusIn(
+            @Param("barberId") UUID barberId);
 
     @Query("""
             SELECT COUNT(*) = 1
@@ -27,7 +29,7 @@ public interface SubscriptionBarbershopData extends ReactiveCrudRepository<Subsc
             where id_barberia = :barberId
             and estado in ('ACTIVE')
             """)
-    Mono<Boolean> countActiveSubscriptionsByBarberId(UUID barberId);
+    Mono<Boolean> countActiveSubscriptionsByBarberId(@Param("barberId") UUID barberId);
 
     @Query("""
             SELECT * FROM suscripcion_barberia
@@ -35,8 +37,8 @@ public interface SubscriptionBarbershopData extends ReactiveCrudRepository<Subsc
             AND fecha_expiracion >= :initialDate
             AND fecha_expiracion <= :finalDate
             """)
-    Flux<SubscriptionBarbershopEntity> findByStatusAndAutomaticRenew(Instant initialDate, Instant finalDate,
-                                                                     Boolean automaticRenew);
+    Flux<SubscriptionBarbershopEntity> findByStatusAndAutomaticRenew(@Param("initialDate") Instant initialDate, @Param("finalDate") Instant finalDate,
+                                                                     @Param("automaticRenew") Boolean automaticRenew);
 
     @Query("""
             SELECT *
@@ -44,7 +46,7 @@ public interface SubscriptionBarbershopData extends ReactiveCrudRepository<Subsc
             WHERE fecha_expiracion <= :expirationDate
             AND estado = 'ACTIVE'
             """)
-    Flux<SubscriptionBarbershopEntity> findByExpirationDate(Instant expirationDate);
+    Flux<SubscriptionBarbershopEntity> findByExpirationDate(@Param("expirationDate") Instant expirationDate);
 
 
 
@@ -54,7 +56,7 @@ public interface SubscriptionBarbershopData extends ReactiveCrudRepository<Subsc
             where id_barberia = :barberId
             and estado in ('APPROVED','PENDING');
             """)
-    Mono<Boolean> existsSubscriptionsPendingOrApproved(UUID barberId);
+    Mono<Boolean> existsSubscriptionsPendingOrApproved(@Param("barberId") UUID barberId);
 
 
 }

@@ -44,6 +44,7 @@ public class CreateReservationUc {
     private final EmailService emailService;
 
     public Mono<Reservation> createReservation(ReservationCommand command) {
+        System.out.println("Reservation command: " + command);
         return loadServices(command.reservationServiceId())
                 .flatMap(services -> {
                     Integer duration = getDuration(services);
@@ -51,6 +52,7 @@ public class CreateReservationUc {
                     ReservationCommand newReservationCommand =
                             ReservationCommand.builder()
                                     .id(command.id())
+                                    .barbershopId(command.barbershopId())
                                     .customerId(command.customerId())
                                     .employeeId(command.employeeId())
                                     .reservationServiceId(command.reservationServiceId())
@@ -115,12 +117,15 @@ public class CreateReservationUc {
 
         Reservation reservation = Reservation.createReservation(
                 command.customerId(),
+                command.barbershopId(),
                 command.employeeId(),
                 duration,
                 command.startTime(),
                 command.startTime().plus(duration, ChronoUnit.MINUTES),
                 command.notes()
         );
+
+        System.out.println("DOMAIN: " + reservation.toString());
 
         return reservationRepositoryPort.save(reservation)
                 .doOnNext(saved -> log.info("Reservation saved: {}", saved.getId()))

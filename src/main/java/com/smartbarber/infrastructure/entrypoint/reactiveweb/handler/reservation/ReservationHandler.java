@@ -23,14 +23,16 @@ public class ReservationHandler {
     private final ChangeReservationStatusUc changeReservationStatusUc;
 
     public Mono<ServerResponse> createReservation(ServerRequest request) {
+        System.out.println("ASDASDSADS");
         return request.bodyToMono(ReservationCommand.class)
+                .doOnNext(reservationCommand -> System.out.println("ReservationHandler.createReservation: " + reservationCommand))
                 .flatMap(createReservationUc::createReservation)
                 .flatMap(reservation -> ServerResponse.ok().bodyValue(reservation))
-                .switchIfEmpty(Mono.error(
+                /*.switchIfEmpty(Mono.error(
                         () -> new TechnicalExceptions(
                                 TechnicalMessageExceptions.BAD_REQUEST
                         )
-                ));
+                ))*/;
     }
 
     public Mono<ServerResponse> getReservationById(ServerRequest request) {

@@ -1,4 +1,4 @@
-package com.smartbarber.infrastructure.entrypoint.websocket.handler;
+package com.smartbarber.infrastructure.entrypoint.websocket.handler.subscription;
 import com.smartbarber.application.usecase.subscriptionbarber.FindSubscriptionBarberUC;
 import com.smartbarber.application.usecase.transaction.WaitMessageResponseUC;
 import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;
@@ -30,6 +30,8 @@ public class SubscriptionBarbershopWsHandler implements WebSocketHandler {
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
+
+        log.info("ENTREEEEEE WSSSSSS");
 
         UUID orderId = extractOrderId(session);
         connectionManager.registerSession(orderId, session);

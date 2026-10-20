@@ -35,7 +35,9 @@ public class SecurityConfig {
                 )
                 .authorizeExchange(exchange -> exchange
                         // Rutas públicas
-                        .pathMatchers("/auth/**",
+                        .pathMatchers(
+                                "/ws/payment/**",
+                                "/auth/**",
                                 "/reservation-service/**",
                                 "/schedule-service/**",
                                 "/services-service/**",
@@ -44,6 +46,28 @@ public class SecurityConfig {
                                 "/notification-service/**",
                                 "/public/**")
                         .permitAll()
+                        .pathMatchers(
+                                HttpMethod.POST,
+                                "/api/v1/queue/join"
+                        )
+                        .hasRole(RoleType.CUSTOMER.name())
+                        .pathMatchers(
+                                HttpMethod.POST,
+                                "/api/v1/queue/*/open",
+                                "/api/v1/queue/*/close",
+                                "/api/v1/queue/*/next",
+                                "/api/v1/queue/*/complete"
+                        )
+                        .hasRole(RoleType.BARBER.name())
+                        .pathMatchers(
+                                HttpMethod.GET,
+                                "/api/v1/queue/**"
+                        )
+                        .hasAnyRole(
+                                RoleType.CUSTOMER.name(),
+                                RoleType.BARBER.name(),
+                                RoleType.ADMIN.name()
+                        )
                         .pathMatchers(HttpMethod.GET, "/user-service/**")
                                 .hasRole(RoleType.BARBER.name())
                         //.permitAll()
