@@ -49,7 +49,8 @@ public interface ReservationRepositoryPort {
             Instant from
     );
 
-    Mono<Integer> sumWaitingQueueDuration(
-            UUID employeeId
+    Mono<Integer> calculateRemainingQueueDuration(
+            UUID employeeId,
+            Instant currentTime
     );
 }

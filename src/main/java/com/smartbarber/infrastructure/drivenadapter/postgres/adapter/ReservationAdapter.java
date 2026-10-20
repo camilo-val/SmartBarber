@@ -95,4 +95,14 @@ public class ReservationAdapter implements ReservationRepositoryPort {
                 employeeId, entryTime, reservationId
         );
     }
+
+    @Override
+    public Mono<Instant> findNextScheduledReservationStart(UUID employeeId, Instant from) {
+        return data.findNextScheduledReservationStart(employeeId, from);
+    }
+
+    @Override
+    public Mono<Integer> calculateRemainingQueueDuration(UUID employeeId, Instant currentTime) {
+        return data.calculateRemainingQueueDuration(employeeId, currentTime);
+    }
 }

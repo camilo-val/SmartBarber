@@ -103,4 +103,58 @@ public interface ReservationData
     Flux<ReservationEntity> findAllBarberId(
             @Param("barberId") UUID barberId
     );
+    @Query("""
+            SELECT MIN(RS.fecha_inicio_reserva)
+            FORM public.reserva r 
+            INNER JOIN public.reserva_servicio rs
+            ON rs.id_reserva = r.id_reserva
+            WHERE r.id_empleado = :employeeId
+            AND r.tipo_reserva <> 'VRITUAL_QUEUE'
+            AND r.estado IN ('PENDING', 'CONFIRMED')
+            AND rs.fecha_inicio_reserva > :from
+            """)
+    Mono<Instant> findNextScheduledReservationStart(
+            @Param("employeeId") UUID employeeId,
+            @Param("from") Instant from
+    );
+
+    @Query("""
+   SELECT COALESCE(
+       SUM(
+           CASE
+               WHEN r.estado = 'WAITING'
+               THEN COALESCE(r.duracion, 0)
+
+               WHEN r.estado = 'IN_PROGRESS'
+               THEN GREATEST(
+                   0,
+                   CEIL(
+                       EXTRACT(
+                           EPOCH FROM (
+                               COALESCE(
+                                   r.fecha_inicio_real,
+                                   :currentTime
+                               )
+                               + COALESCE(r.duracion, 0)
+                                   * INTERVAL '1 minute'
+                               - :currentTime
+                           )
+                       ) / 60.0
+                   )::INTEGER
+               )
+
+               ELSE 0
+           END
+       ),
+       0
+   )::INTEGER
+   FROM public.reserva r
+   WHERE r.id_empleado = :employeeId
+     AND r.tipo_reserva = 'VIRTUAL_QUEUE'
+     AND r.estado IN ('WAITING', 'IN_PROGRESS')
+   """)
+    Mono<Integer> calculateRemainingQueueDuration(
+            @Param("employeeId") UUID employeeId,
+            @Param("currentTime") Instant currentTime
+    );
 }
