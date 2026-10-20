@@ -1,3 +1,4 @@
+
 package com.smartbarber.infrastructure.entrypoint.websocket.config;
 
 import org.springframework.stereotype.Component;
@@ -7,21 +8,26 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class WebsocketManager{
-    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+public class WebsocketManager {
 
-    public void createSession(WebSocketSession session , String uid){
-        if (session != null && uid != null) {
-            WebsocketManager manager = new WebsocketManager();
-            manager.sessions.put(uid, session);
+    private final Map<String, WebSocketSession> sessions =
+            new ConcurrentHashMap<>();
+
+    public void createSession(
+            WebSocketSession session,
+            String uid
+    ) {
+        if (session != null && uid != null && !uid.isBlank()) {
+            sessions.put(uid, session);
         }
     }
 
-    public WebSocketSession getSession(String uid){
-        if (uid != null) {
-            return sessions.get(uid);
+    public WebSocketSession getSession(String uid) {
+        if (uid == null) {
+            return null;
         }
-        return null;
+
+        return sessions.get(uid);
     }
 
     public void removeSession(String uid) {
@@ -29,5 +35,4 @@ public class WebsocketManager{
             sessions.remove(uid);
         }
     }
-
 }
