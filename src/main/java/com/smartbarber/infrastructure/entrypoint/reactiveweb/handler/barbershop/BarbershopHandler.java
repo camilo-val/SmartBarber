@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.barbershop;
 
-import com.smartbarber.application.usecase.athentication.Authentication;
+import com.smartbarber.application.usecase.athentication.AuthenticationUC;
 import com.smartbarber.application.usecase.barbershop.BarbershopUpdateUC;
 import com.smartbarber.application.usecase.barbershop.FindBarbershopUC;
 import com.smartbarber.application.usecase.barbershop.CreateBarbershopUC;
@@ -32,7 +32,7 @@ public class BarbershopHandler {
     private final FindBarbershopUC findBarbershopUC;
     private final BarbershopUpdateUC barbershopUpdateUC;
     private final OnboardingBarberShopUc onboardingBarberShopUc;
-    private final Authentication authenticationUc;
+    private final AuthenticationUC authenticationUc;
 
     public Mono<ServerResponse> createBarbershop(ServerRequest request){
         return request.bodyToMono(BarbershopRqDto.class)

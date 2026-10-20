@@ -1,10 +1,9 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.user;
 
-import com.smartbarber.application.usecase.athentication.Authentication;
+import com.smartbarber.application.usecase.athentication.AuthenticationUC;
 import com.smartbarber.application.usecase.user.CreateUserUC;
 import com.smartbarber.application.usecase.user.SearchUserUC;
 import com.smartbarber.application.usecase.user.UpdateUserUC;
-import com.smartbarber.domain.port.FirebaseAuthPort;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.User.UserRqDto;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalExceptions;
 import com.smartbarber.infrastructure.entrypoint.reactiveweb.exception.TechnicalMessageExceptions;
@@ -28,7 +27,7 @@ public class UserHandler {
     private final validateRequest validateRequest;
     private final SearchUserUC searchUserUC;
     private final UpdateUserUC updateUserUC;
-    private final Authentication authenticationUc;
+    private final AuthenticationUC authenticationUc;
 
     public Mono<ServerResponse> createUser(ServerRequest request) {
         String authorization = request.headers()

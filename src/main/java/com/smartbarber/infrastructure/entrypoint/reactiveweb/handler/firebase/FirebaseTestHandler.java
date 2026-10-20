@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.firebase;
 
-import com.smartbarber.application.usecase.athentication.Authentication;
+import com.smartbarber.application.usecase.athentication.AuthenticationUC;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -12,21 +12,18 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class FirebaseTestHandler {
 
-    private final Authentication authentication;
+    private final AuthenticationUC authentication;
 
     public Mono<ServerResponse> verifyToken(ServerRequest request) {
 
         String authorization = request.headers()
                 .firstHeader(HttpHeaders.AUTHORIZATION);
 
-        return authentication.authorization(authorization)
+        return authentication.authorizationSession(authorization)
                 .flatMap(uid -> ServerResponse.ok()
                         .bodyValue(uid))
                /* .onErrorResume(error ->
                         ServerResponse.status(401)
-                                .bodyValue("Invalid Firebase ID token"))*/
-                .onErrorResume(errorr -> {
-                    errorr.printStackTrace();
-                    return Mono.error(() -> new RuntimeException("Invalid token"));});
+                                .bodyValue("Invalid Firebase ID token"))*/;
     }
 }

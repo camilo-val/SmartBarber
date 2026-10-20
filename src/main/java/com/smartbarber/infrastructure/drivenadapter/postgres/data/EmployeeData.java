@@ -12,5 +12,5 @@ public interface EmployeeData extends ReactiveCrudRepository<EmployeeEntity, UUI
     Mono<EmployeeEntity> findByDocument(String document);
     Mono<Boolean> existsByDocument(String document);
     Flux<EmployeeEntity> findAllByBarberiaId(UUID barberiaId);
-
+    Mono<EmployeeEntity> findByUserId(UUID userId);
 }

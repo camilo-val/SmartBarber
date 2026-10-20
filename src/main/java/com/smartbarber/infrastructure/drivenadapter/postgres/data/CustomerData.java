@@ -10,4 +10,5 @@ public interface CustomerData extends ReactiveCrudRepository<CustomerEntity, UUI
     Mono<CustomerEntity> findByName(String name);
     Mono<CustomerEntity> findByDocument(String document);
     Mono<Boolean> existsByDocument(String document);
+    Mono<CustomerEntity> findByUserId(UUID userId);
 }

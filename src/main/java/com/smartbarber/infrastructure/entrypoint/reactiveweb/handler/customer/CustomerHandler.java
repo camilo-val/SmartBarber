@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.customer;
 
-import com.smartbarber.application.usecase.athentication.Authentication;
+import com.smartbarber.application.usecase.athentication.AuthenticationUC;
 import com.smartbarber.application.usecase.customer.UpdateCustomerUC;
 import com.smartbarber.application.usecase.customer.CreateCustomerUC;
 import com.smartbarber.application.usecase.customer.SearchCustomerUC;
@@ -28,7 +28,7 @@ public class CustomerHandler {
     private final validateRequest validateRequest;
     private final UpdateCustomerUC updateCustomerUC;
     private final SearchCustomerUC searchCustomerUC;
-    private final Authentication authenticationUc;
+    private final AuthenticationUC authenticationUc;
     private final CustomerOnboardingEntryMapper  customerOnboardingEntryMapper;
 
     public Mono<ServerResponse> createCustomer(ServerRequest request){

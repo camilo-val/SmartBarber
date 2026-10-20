@@ -67,10 +67,15 @@ public class FirebaseAuthAdapter implements FirebaseAuthPort {
     private Mono<Map<String, Object>> getInstance(String idToken) {
         System.out.println("idToken: getInstance " + idToken);
             return Mono.fromCallable(() -> {
-                FirebaseToken decode = FirebaseAuth.getInstance().verifyIdToken(idToken);
-                        return decode.getClaims();
-                    })
-                    .doOnError(e -> e.printStackTrace())
-                    .subscribeOn(Schedulers.boundedElastic());
+
+                try {
+                    FirebaseToken decode = FirebaseAuth.getInstance().verifyIdToken(idToken);
+                    return decode.getClaims();
+                }catch (Exception e){
+                    throw new TechnicalExceptions(
+                        TechnicalMessageExceptions.THE_TOKEN_IS_EXPIRED);
+                }
+            })
+            .subscribeOn(Schedulers.boundedElastic());
     }
 }

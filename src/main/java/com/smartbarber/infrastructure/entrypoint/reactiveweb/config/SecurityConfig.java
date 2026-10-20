@@ -1,6 +1,5 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.config;
 
-import com.smartbarber.application.usecase.athentication.Authentication;
 import com.smartbarber.domain.enums.RoleType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

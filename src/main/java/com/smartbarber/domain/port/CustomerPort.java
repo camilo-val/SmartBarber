@@ -13,4 +13,5 @@ public interface CustomerPort {
     Mono<Customer> update(UUID id, Customer customer);
     Mono<Void> eliminarCliente(UUID id);
     Mono<Boolean> existsByDocument(String document);
+    Mono<Customer> findByUserId(UUID userId);
 }

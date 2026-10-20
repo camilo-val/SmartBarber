@@ -1,6 +1,6 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.employee;
 
-import com.smartbarber.application.usecase.athentication.Authentication;
+import com.smartbarber.application.usecase.athentication.AuthenticationUC;
 import com.smartbarber.application.usecase.employee.CreateEmployeeUC;
 import com.smartbarber.application.usecase.employee.SearchEmployeeUC;
 import com.smartbarber.application.usecase.employee.UpdateEmployeeUC;
@@ -32,7 +32,7 @@ public class EmployeeHandler {
     private final  validateRequest validateRequest;
     private final UpdateEmployeeUC updateEmployeeUC;
     private final SearchEmployeeUC searchEmployeeUC;
-    private final Authentication authenticationUc;
+    private final AuthenticationUC authenticationUc;
 
     public Mono<ServerResponse> createEmployee(ServerRequest request){
         return request.bodyToMono(EmployeeRqDto.class)
