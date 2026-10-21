@@ -5,6 +5,7 @@ import com.smartbarber.domain.enums.ReservationType;
 import lombok.Builder;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,12 +18,12 @@ public record ReservationCommand (
         List<Integer> reservationServiceId,
         ReservationType reservationType,
         ReservationStatus status,
-        Instant startTime,
-        Instant endTime,
+        OffsetDateTime startTime,
+        OffsetDateTime endTime,
         String notes,
-        Instant creationDate,
-        Instant updatedDate,
-        Instant queueEntryTime
+        OffsetDateTime creationDate,
+        OffsetDateTime updatedDate,
+        OffsetDateTime queueEntryTime
 ){
 
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Component
@@ -54,8 +54,8 @@ public class ReservationAdapter implements ReservationRepositoryPort {
     @Override
     public Mono<Boolean> existsByEmployeeAndRange(
             UUID employeeId,
-            Instant startTime,
-            Instant endTime
+            OffsetDateTime startTime,
+            OffsetDateTime endTime
     ) {
         return data.existsByEmployeeAndRange(
                 employeeId, startTime, endTime
@@ -65,8 +65,8 @@ public class ReservationAdapter implements ReservationRepositoryPort {
     @Override
     public Mono<Boolean> existsByCustomerAndRange(
             UUID customerId,
-            Instant startTime,
-            Instant endTime
+            OffsetDateTime startTime,
+            OffsetDateTime endTime
     ) {
         return data.existsByCustomerAndRange(
                 customerId, startTime, endTime
@@ -88,7 +88,7 @@ public class ReservationAdapter implements ReservationRepositoryPort {
     @Override
     public Mono<Long> countPreviousWaitingTurns(
             UUID employeeId,
-            Instant entryTime,
+            OffsetDateTime entryTime,
             UUID reservationId
     ) {
         return data.countPreviousWaitingTurns(
@@ -97,12 +97,12 @@ public class ReservationAdapter implements ReservationRepositoryPort {
     }
 
     @Override
-    public Mono<Instant> findNextScheduledReservationStart(UUID employeeId, Instant from) {
+    public Mono<OffsetDateTime> findNextScheduledReservationStart(UUID employeeId, OffsetDateTime from) {
         return data.findNextScheduledReservationStart(employeeId, from);
     }
 
     @Override
-    public Mono<Integer> calculateRemainingQueueDuration(UUID employeeId, Instant currentTime) {
+    public Mono<Integer> calculateRemainingQueueDuration(UUID employeeId, OffsetDateTime currentTime) {
         return data.calculateRemainingQueueDuration(employeeId, currentTime);
     }
 }

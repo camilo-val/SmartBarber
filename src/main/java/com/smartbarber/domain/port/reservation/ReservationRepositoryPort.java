@@ -5,7 +5,7 @@ import com.smartbarber.domain.model.reservation.Reservation;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public interface ReservationRepositoryPort {
@@ -24,14 +24,14 @@ public interface ReservationRepositoryPort {
 
     Mono<Boolean> existsByEmployeeAndRange(
             UUID employeeId,
-            Instant startTime,
-            Instant endTime
+            OffsetDateTime startTime,
+            OffsetDateTime endTime
     );
 
     Mono<Boolean> existsByCustomerAndRange(
             UUID customerId,
-            Instant startTime,
-            Instant endTime
+            OffsetDateTime startTime,
+            OffsetDateTime endTime
     );
 
     Flux<Reservation> findWaitingQueueByEmployeeId(UUID employeeId);
@@ -40,17 +40,17 @@ public interface ReservationRepositoryPort {
 
     Mono<Long> countPreviousWaitingTurns(
             UUID employeeId,
-            Instant entryTime,
+            OffsetDateTime entryTime,
             UUID reservationId
     );
 
-    Mono<Instant> findNextScheduledReservationStart(
+    Mono<OffsetDateTime> findNextScheduledReservationStart(
             UUID employeeId,
-            Instant from
+            OffsetDateTime from
     );
 
     Mono<Integer> calculateRemainingQueueDuration(
             UUID employeeId,
-            Instant currentTime
+            OffsetDateTime currentTime
     );
 }

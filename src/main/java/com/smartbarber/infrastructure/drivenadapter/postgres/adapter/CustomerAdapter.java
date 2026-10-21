@@ -63,7 +63,13 @@ public class CustomerAdapter implements CustomerPort {
 
     @Override
     public Mono<Customer> findByUserId(UUID userId) {
+        log.info("Buscando cliente por userId: {}", userId);
         return customerData.findByUserId(userId)
+                .doOnNext(e -> log.info("Data encontrada customer{}", e.toString()))
+                .doOnSuccess(entityEncontrada ->
+                        log.info("Proceso de búsqueda finalizado correctamente: {}", entityEncontrada))
+                .doOnError(error ->
+                        log.error("Error buscando cliente por userId", error))
                 .map(mapper::toDomain);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public interface ReservationData
@@ -58,7 +58,7 @@ public interface ReservationData
         """)
     Mono<Long> countPreviousWaitingTurns(
             @Param("employeeId") UUID employeeId,
-            @Param("entryTime") Instant entryTime,
+            @Param("entryTime") OffsetDateTime entryTime,
             @Param("reservationId") UUID reservationId
     );
 
@@ -73,8 +73,8 @@ public interface ReservationData
         """)
     Mono<Boolean> existsByEmployeeAndRange(
             @Param("employeeId") UUID employeeId,
-            @Param("startTime") Instant startTime,
-            @Param("endTime") Instant endTime
+            @Param("startTime") OffsetDateTime startTime,
+            @Param("endTime") OffsetDateTime endTime
     );
 
     @Query("""
@@ -88,8 +88,8 @@ public interface ReservationData
         """)
     Mono<Boolean> existsByCustomerAndRange(
             @Param("customerId") UUID customerId,
-            @Param("startTime") Instant startTime,
-            @Param("endTime") Instant endTime
+            @Param("startTime") OffsetDateTime startTime,
+            @Param("endTime") OffsetDateTime endTime
     );
 
     @Query("""
@@ -113,9 +113,9 @@ public interface ReservationData
             AND r.estado IN ('PENDING', 'CONFIRMED')
             AND rs.fecha_inicio_reserva > :from
             """)
-    Mono<Instant> findNextScheduledReservationStart(
+    Mono<OffsetDateTime> findNextScheduledReservationStart(
             @Param("employeeId") UUID employeeId,
-            @Param("from") Instant from
+            @Param("from") OffsetDateTime from
     );
 
     @Query("""
@@ -155,6 +155,6 @@ public interface ReservationData
    """)
     Mono<Integer> calculateRemainingQueueDuration(
             @Param("employeeId") UUID employeeId,
-            @Param("currentTime") Instant currentTime
+            @Param("currentTime") OffsetDateTime currentTime
     );
 }
