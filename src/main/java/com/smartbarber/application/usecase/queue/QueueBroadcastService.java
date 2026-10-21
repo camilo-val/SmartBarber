@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -113,7 +113,7 @@ public class QueueBroadcastService {
                             ),
                             currentTurn,
                             List.copyOf(turns),
-                            Instant.now()
+                            OffsetDateTime.now()
                     );
                 });
     }
@@ -129,7 +129,7 @@ public class QueueBroadcastService {
 
         long elapsed = Duration.between(
                 current.getStartTime(),
-                Instant.now()
+                OffsetDateTime.now()
         ).toMinutes();
 
         return Math.max(

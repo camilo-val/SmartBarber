@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Component
@@ -38,7 +38,7 @@ public class QueueAvailabilityService {
 
         return Mono.defer(() -> {
 
-            Instant now = Instant.now();
+            OffsetDateTime now = OffsetDateTime.now();
 
             Mono<Integer> queueDurationMono =
                     reservationRepositoryPort
@@ -48,7 +48,7 @@ public class QueueAvailabilityService {
                             )
                             .defaultIfEmpty(0);
 
-            Mono<Instant> nextReservationMono =
+            Mono<OffsetDateTime> nextReservationMono =
                     reservationRepositoryPort
                             .findNextScheduledReservationStart(
                                     employeeId,
@@ -57,14 +57,14 @@ public class QueueAvailabilityService {
 
             return Mono.zip(
                             queueDurationMono,
-                            nextReservationMono.defaultIfEmpty(Instant.MAX)
+                            nextReservationMono.defaultIfEmpty(OffsetDateTime.MAX)
                     )
                     .flatMap(tuple -> {
 
                         int pendingMinutes = tuple.getT1();
-                        Instant nextReservationStart = tuple.getT2();
+                        OffsetDateTime nextReservationStart = tuple.getT2();
 
-                        Instant estimatedFinish =
+                        OffsetDateTime estimatedFinish =
                                 now.plus(
                                         Duration.ofMinutes(
                                                 (long) pendingMinutes

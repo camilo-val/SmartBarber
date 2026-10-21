@@ -12,7 +12,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Builder
@@ -46,20 +46,20 @@ public class ReservationEntity {
     private Integer duration;
 
     @Column("fecha_ingreso_cola")
-    private Instant queueEntryTime;
+    private OffsetDateTime queueEntryTime;
 
     @Column("fecha_inicio_real")
-    private Instant startTime;
+    private OffsetDateTime startTime;
 
     @Column("fecha_fin_real")
-    private Instant endTime;
+    private OffsetDateTime endTime;
 
     @Column("motivo_cancelacion")
     private String notes;
 
     @Column("fecha_creacion")
-    private Instant creationDate;
+    private OffsetDateTime creationDate;
 
     @Column("fecha_modificacion")
-    private Instant updatedDate;
+    private OffsetDateTime updatedDate;
 }

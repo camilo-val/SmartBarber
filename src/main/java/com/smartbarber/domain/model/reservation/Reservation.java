@@ -6,7 +6,7 @@ import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.reservation.ReservationMessageExceptions;
 
 import java.time.Duration;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class Reservation {
@@ -17,12 +17,12 @@ public class Reservation {
     private final ReservationType reservationType;
     private final ReservationStatus status;
     private final Integer duration;
-    private final Instant startTime;
-    private final Instant endTime;
+    private final OffsetDateTime startTime;
+    private final OffsetDateTime endTime;
     private final String notes;
-    private final Instant creationDate;
-    private final Instant updatedDate;
-    private final Instant queueEntryTime;
+    private final OffsetDateTime creationDate;
+    private final OffsetDateTime updatedDate;
+    private final OffsetDateTime queueEntryTime;
 
     private Reservation(
             UUID id,
@@ -32,12 +32,12 @@ public class Reservation {
             ReservationType reservationType,
             ReservationStatus status,
             Integer duration,
-            Instant startTime,
-            Instant endTime,
+            OffsetDateTime startTime,
+            OffsetDateTime endTime,
             String notes,
-            Instant creationDate,
-            Instant updatedDate,
-            Instant queueEntryTime) {
+            OffsetDateTime creationDate,
+            OffsetDateTime updatedDate,
+            OffsetDateTime queueEntryTime) {
         this.id = id;
         this.customerId = customerId;
         this.barbershopId = barbershopId;
@@ -58,8 +58,8 @@ public class Reservation {
             UUID barbershopId,
             UUID employeeId,
             Integer duration,
-            Instant startTime,
-            Instant endTime,
+            OffsetDateTime startTime,
+            OffsetDateTime endTime,
             String notes) {
         dataValidate(barbershopId, customerId, employeeId, ReservationType.SERVICE_RESERVATION, startTime, endTime);
         hoursValidate(startTime, endTime);
@@ -75,7 +75,7 @@ public class Reservation {
                 startTime,
                 endTime,
                 notes,
-                Instant.now(),
+                OffsetDateTime.now(),
                 null,
                 null
         );
@@ -98,7 +98,7 @@ public class Reservation {
             );
         }
 
-        Instant now = Instant.now();
+        OffsetDateTime now = OffsetDateTime.now();
 
         return new Reservation(
                 null,
@@ -126,7 +126,7 @@ public class Reservation {
             );
         }
 
-        Instant now = Instant.now();
+        OffsetDateTime now = OffsetDateTime.now();
 
         return new Reservation(
                 this.id,
@@ -153,12 +153,12 @@ public class Reservation {
             ReservationType reservationType,
             ReservationStatus estado,
             Integer duration,
-            Instant startTime,
-            Instant endTime,
+            OffsetDateTime startTime,
+            OffsetDateTime endTime,
             String notes,
-            Instant creationDate,
-            Instant updatedDate,
-            Instant queueEntryTime
+            OffsetDateTime creationDate,
+            OffsetDateTime updatedDate,
+            OffsetDateTime queueEntryTime
     ) {
         dataValidate(
                 barbershopId,
@@ -217,8 +217,8 @@ public class Reservation {
             UUID employeeId,
             ReservationType reservationType,
             Integer duration,
-            Instant startTime,
-            Instant endTime,
+            OffsetDateTime startTime,
+            OffsetDateTime endTime,
             String notes) {
         dataValidate(barbershopId,customerId, employeeId, reservationType, startTime, endTime);
         hoursValidate(startTime, endTime);
@@ -235,7 +235,7 @@ public class Reservation {
                 endTime,
                 notes,
                 this.creationDate,
-                Instant.now(),
+                OffsetDateTime.now(),
                 this.queueEntryTime
         );
     }
@@ -256,7 +256,7 @@ public class Reservation {
                 this.endTime,
                 this.notes,
                 this.creationDate,
-                Instant.now(),
+                OffsetDateTime.now(),
                 this.queueEntryTime
         );
     }
@@ -277,7 +277,7 @@ public class Reservation {
                 this.endTime,
                 this.notes,
                 this.creationDate,
-                Instant.now(),
+                OffsetDateTime.now(),
                 this.queueEntryTime
         );
     }
@@ -298,7 +298,7 @@ public class Reservation {
                 this.endTime,
                 this.notes,
                 this.creationDate,
-                Instant.now(),
+                OffsetDateTime.now(),
                 this.queueEntryTime
         );
     }
@@ -317,11 +317,11 @@ public class Reservation {
                 this.duration,
                 this.startTime,
                 this.reservationType == ReservationType.VIRTUAL_QUEUE
-                        ? Instant.now()
+                        ? OffsetDateTime.now()
                         : this.endTime,
                 this.notes,
                 this.creationDate,
-                Instant.now(),
+                OffsetDateTime.now(),
                 this.queueEntryTime
         );
     }
@@ -342,7 +342,7 @@ public class Reservation {
                 this.endTime,
                 this.notes,
                 this.creationDate,
-                Instant.now(),
+                OffsetDateTime.now(),
                 this.queueEntryTime
         );
     }
@@ -353,8 +353,8 @@ public class Reservation {
             UUID customerId,
             UUID employeeId,
             ReservationType reservationType,
-            Instant startTime,
-            Instant endTime
+            OffsetDateTime startTime,
+            OffsetDateTime endTime
     ) {
         if (barbershopId == null
                 || customerId == null
@@ -394,7 +394,7 @@ public class Reservation {
     }
 
 
-    private static void hoursValidate(Instant startTime, Instant endTime) {
+    private static void hoursValidate(OffsetDateTime startTime, OffsetDateTime endTime) {
         if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
                 throw new BusinessExceptions(ReservationMessageExceptions.RESERVATION_DATE_INVALID);
         }
@@ -420,11 +420,11 @@ public class Reservation {
         return status;
     }
 
-    public Instant getStartTime() {
+    public OffsetDateTime getStartTime() {
         return startTime;
     }
 
-    public Instant getEndTime() {
+    public OffsetDateTime getEndTime() {
         return endTime;
     }
 
@@ -432,11 +432,11 @@ public class Reservation {
         return notes;
     }
 
-    public Instant getCreationDate() {
+    public OffsetDateTime getCreationDate() {
         return creationDate;
     }
 
-    public Instant getUpdatedDate() {
+    public OffsetDateTime getUpdatedDate() {
         return updatedDate;
     }
 
@@ -448,7 +448,7 @@ public class Reservation {
         return barbershopId;
     }
 
-    public Instant getQueueEntryTime() {
+    public OffsetDateTime getQueueEntryTime() {
         return queueEntryTime;
     }
 

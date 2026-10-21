@@ -1,7 +1,7 @@
 
 package com.smartbarber.domain.model.queue;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,7 +10,7 @@ public record QueueSnapshot(
         boolean acceptingClients,
         QueueTurn currentTurn,
         List<QueueTurn> waitingTurns,
-        Instant updatedAt
+        OffsetDateTime updatedAt
 ) {
     public record QueueTurn(
             UUID reservationId,

@@ -5,7 +5,7 @@ import com.smartbarber.domain.enums.ReservationType;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.reservation.ReservationMessageExceptions;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,12 +16,12 @@ public class ReservationResponse {
     private final ReservationType reservationType;
     private final ReservationStatus status;
     private final Integer duration;
-    private final Instant startTime;
-    private final Instant endTime;
+    private final OffsetDateTime startTime;
+    private final OffsetDateTime endTime;
     private final String notes;
-    private final Instant creationDate;
-    private final Instant updatedDate;
-    private final Instant queueEntryTime;
+    private final OffsetDateTime creationDate;
+    private final OffsetDateTime updatedDate;
+    private final OffsetDateTime queueEntryTime;
     private final List<ServiceReservationResponse> serviceReservations;
 
     private ReservationResponse(Reservation reservation, List<ServiceReservationResponse> serviceReservations) {
@@ -71,11 +71,11 @@ public class ReservationResponse {
         return duration;
     }
 
-    public Instant getStartTime() {
+    public OffsetDateTime getStartTime() {
         return startTime;
     }
 
-    public Instant getEndTime() {
+    public OffsetDateTime getEndTime() {
         return endTime;
     }
 
@@ -83,15 +83,15 @@ public class ReservationResponse {
         return notes;
     }
 
-    public Instant getCreationDate() {
+    public OffsetDateTime getCreationDate() {
         return creationDate;
     }
 
-    public Instant getUpdatedDate() {
+    public OffsetDateTime getUpdatedDate() {
         return updatedDate;
     }
 
-    public Instant getQueueEntryTime() {
+    public OffsetDateTime getQueueEntryTime() {
         return queueEntryTime;
     }
 
