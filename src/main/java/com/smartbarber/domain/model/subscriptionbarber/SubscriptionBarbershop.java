@@ -51,8 +51,8 @@ public class SubscriptionBarbershop {
         return new SubscriptionBarbershop(null, barberId, subscriptionId, SubscriptionBarberStatus.PENDING, duration, subscriptionPrice, subscriptionDiscount, automaticRenew, now,null,null,null);
     }
 
-    public static SubscriptionBarbershop notSubscription(){
-        return new SubscriptionBarbershop(null, null, null, SubscriptionBarberStatus.NOT_SUBSCRIPTION, null, null,
+    public static SubscriptionBarbershop getSubscription(SubscriptionBarberStatus status){
+        return new SubscriptionBarbershop(null, null, null, status, null, null,
                 null, null, null,null,null,null);
 
     }

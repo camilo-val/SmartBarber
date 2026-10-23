@@ -1,7 +1,7 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.barbershop;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.subscriptionbarber.SubscriptionBarbershopRsDto;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.subscriptionbarber.SubscriptionBarbershopAuthRsDto;
 import lombok.Builder;
 
 import java.util.UUID;
@@ -13,7 +13,7 @@ public record BarbershopSubscriptionRsDto (
         String name,
         String location,
         String phone,
-        SubscriptionBarbershopRsDto subscription
+        SubscriptionBarbershopAuthRsDto subscription
 ){
 
 }

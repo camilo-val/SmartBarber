@@ -97,14 +97,13 @@ AuthenticationUC {
     private Mono<Authentication> buildEmployeeResponse(User user){
         return employeePort.findByUserId(user.getId())
                 .flatMap(employee -> {
-                    subscriptionRepositoryPort.findByBarberIdAndStatus(employee.getBarberiaId(), SubscriptionBarberStatus.ACTIVE);
                     return Mono.zip(
                                     barberShopRepositoryPort.findById(employee.getBarberiaId()),
-                                    Mono.empty().defaultIfEmpty(SubscriptionBarbershop.notSubscription()))
+                                    subscriptionRepositoryPort.findByBarberIdAndStatus(employee.getBarberiaId(), SubscriptionBarberStatus.ACTIVE)
+                                            .defaultIfEmpty(SubscriptionBarbershop.getSubscription(SubscriptionBarberStatus.NOT_SUBSCRIPTION)))
                             .map(tuple -> {
-                                SubscriptionBarbershop subscription;
                                 Barbershop barbershop =  tuple.getT1();
-                                SubscriptionBarbershop subscriptionBarber = (SubscriptionBarbershop) tuple.getT2();
+                                SubscriptionBarbershop subscriptionBarber = SubscriptionBarbershop.getSubscription(tuple.getT2().getStatus());
                                 return Authentication.mapEmployee(buildBarber(barbershop,subscriptionBarber ),employee,user);
 
                             });
