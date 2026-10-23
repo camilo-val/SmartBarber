@@ -9,10 +9,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public interface SubscriptionBarbershopData extends ReactiveCrudRepository<SubscriptionBarbershopEntity, UUID> {
-    Flux<SubscriptionBarbershopEntity> findByBarberIdAndStatus(UUID barberId, SubscriptionBarberStatus status);
+    Mono<SubscriptionBarbershopEntity> findByBarberIdAndStatus(UUID barberId, SubscriptionBarberStatus status);
     Flux<SubscriptionBarbershopEntity> findByBarberId(UUID barberId);
     @Query("""
             SELECT COUNT(*) >= 1
@@ -57,6 +58,16 @@ public interface SubscriptionBarbershopData extends ReactiveCrudRepository<Subsc
             and estado in ('APPROVED','PENDING');
             """)
     Mono<Boolean> existsSubscriptionsPendingOrApproved(@Param("barberId") UUID barberId);
+
+    @Query("""
+            SELECT *
+            FROM suscripcion_barberia sb
+            WHERE fecha_creacion = (
+                SELECT MAX(fecha_creacion)
+                FROM suscripcion_barberia sb
+            ) and sb.id_barberia = :barbershopId;
+            """)
+    Mono<SubscriptionBarbershopEntity> findActualSubscription(@Param("barbershopId") UUID barbershopId);
 
 
 }

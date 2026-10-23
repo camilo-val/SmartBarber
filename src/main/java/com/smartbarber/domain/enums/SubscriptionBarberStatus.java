@@ -6,6 +6,7 @@ public enum SubscriptionBarberStatus {
     APPROVED,
     PENDING,
     DECLINED,
+    NOT_SUBSCRIPTION,
     EXPIRED;
 
     public static SubscriptionBarberStatus mapStatus(

@@ -1,18 +1,19 @@
 package com.smartbarber.domain.model;
 
 import com.smartbarber.domain.model.barbershop.Barbershop;
+import com.smartbarber.domain.model.barbershop.BarbershopResponse;
 import com.smartbarber.domain.model.customer.Customer;
 import com.smartbarber.domain.model.employee.Employee;
 import com.smartbarber.domain.model.user.User;
 
 
 public class Authentication {
-    private final Barbershop barbershop;
+    private final BarbershopResponse barbershop;
     private final Employee employee;
     private final Customer customer;
     private final User user;
 
-    public Authentication(Barbershop barbershop, Employee employee, Customer customer, User user) {
+    public Authentication(BarbershopResponse barbershop, Employee employee, Customer customer, User user) {
         this.barbershop = barbershop;
         this.employee = employee;
         this.customer = customer;
@@ -23,11 +24,11 @@ public class Authentication {
         return new Authentication(null, null, customer, user);
     }
 
-    public static Authentication mapEmployee(Barbershop barbershop, Employee employee, User user){
+    public static Authentication mapEmployee(BarbershopResponse barbershop, Employee employee, User user){
         return new Authentication(barbershop, employee, null, user);
     }
 
-    public Barbershop getBarbershop() {
+    public BarbershopResponse getBarbershop() {
         return barbershop;
     }
 

@@ -61,6 +61,7 @@ public interface BarberOnboardingEntryMapper {
         }
 
         return BarbershopOnBoardingRsDto.builder()
+                .id(domain.getBarbershop().id())
                 .name(domain.getBarbershop().name())
                 .description(domain.getBarbershop().description())
                 .location(domain.getBarbershop().location())
@@ -70,6 +71,7 @@ public interface BarberOnboardingEntryMapper {
                 .companyName(domain.getBarbershop().companyName())
                 .employee(
                         EmployeeOnboardingRsDto.builder()
+                                .id(domain.getEmployee().id())
                                 .name(domain.getEmployee().name())
                                 .document(domain.getEmployee().document())
                                 .documentType(domain.getEmployee().documentType())

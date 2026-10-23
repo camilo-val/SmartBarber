@@ -32,7 +32,7 @@ public class SubscriptionBarbershopAdapter implements SubscriptionBarbershopRepo
     }
 
     @Override
-    public Flux<SubscriptionBarbershop> findByBarberIdAndStatus(UUID barberId, SubscriptionBarberStatus status) {
+    public Mono<SubscriptionBarbershop> findByBarberIdAndStatus(UUID barberId, SubscriptionBarberStatus status) {
         return data.findByBarberIdAndStatus(barberId, status)
                 .map(mapper::toDomain);
     }
@@ -82,6 +82,12 @@ public class SubscriptionBarbershopAdapter implements SubscriptionBarbershopRepo
         return data.findByStatusAndAutomaticRenew(initialDate, finalDate, automaticRenew)
                 .doOnNext(subscription -> log.info("Found subscription: {}", subscription))
                 .doOnError(error -> log.error("Error finding subscriptions: {}", error.getMessage(), error))
+                .map(mapper::toDomain);
+    }
+
+    @Override
+    public Mono<SubscriptionBarbershop> findActualSubscription(UUID barbershopId) {
+        return data.findActualSubscription(barbershopId)
                 .map(mapper::toDomain);
     }
 }

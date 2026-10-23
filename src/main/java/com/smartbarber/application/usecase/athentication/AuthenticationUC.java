@@ -1,11 +1,20 @@
 package com.smartbarber.application.usecase.athentication;
 
 import com.smartbarber.domain.enums.RoleType;
+import com.smartbarber.domain.enums.SubscriptionBarberStatus;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.authorization.AuthorizationMessageExceptions;
+import com.smartbarber.domain.exceptions.barbershop.BarberShopMessageExceptions;
 import com.smartbarber.domain.model.Authentication;
+import com.smartbarber.domain.model.barbershop.Barbershop;
+import com.smartbarber.domain.model.barbershop.BarbershopResponse;
 import com.smartbarber.domain.model.role.Role;
+import com.smartbarber.domain.model.subscriptionbarber.SubscriptionBarbershop;
+import com.smartbarber.domain.model.suscription.Subscription;
+import com.smartbarber.domain.model.user.User;
 import com.smartbarber.domain.port.*;
+import com.smartbarber.domain.port.subscription.SubscriptionRepositoryPort;
+import com.smartbarber.domain.port.subscriptionbarbershop.SubscriptionBarbershopRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
@@ -14,13 +23,15 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @Component
 @Log4j2
-public class AuthenticationUC {
+public class
+AuthenticationUC {
     private final FirebaseAuthPort firebaseAuthPort;
     private final UserPort userPort;
     private final BarberShopRepositoryPort barberShopRepositoryPort;
     private final EmployeePort employeePort;
     private final CustomerPort customerPort;
     private final RolePort rolePort;
+    private final SubscriptionBarbershopRepositoryPort subscriptionRepositoryPort;
 
     public Mono<RoleType> authorization(String idToken){
         System.out.println("Authentication.authorization: " + idToken);
@@ -50,30 +61,52 @@ public class AuthenticationUC {
         System.out.println("ENTREASASS");
         return authorization(idToken)
                 .doOnNext(roleType -> log.info("roleTypeSSS: {}" ,roleType))
-                .flatMap(roleType -> roleType != RoleType.CUSTOMER
-                        ? getUserUid(idToken)
-                          .doOnNext(uid -> log.info("uid: {}" ,uid))
-                            .flatMap(uid ->
-                                userPort.findByFirebaseId(uid)
-                                    .flatMap(user -> employeePort.findByUserId(user.getId())
-                                        .flatMap(employee -> barberShopRepositoryPort.findById(employee.getBarberiaId())
-                                            .map(barberShop -> Authentication.mapEmployee(barberShop,employee,user))
-                                        )))
+                .map(roleType -> roleType == RoleType.CUSTOMER)
+                .flatMap(isCustomer -> getUserUid(idToken)
+                        .flatMap(userPort::findByFirebaseId)
+                        .flatMap(user -> Boolean.TRUE.equals(isCustomer)
+                                    ? buildCustomerResponse(user)
+                                    : buildEmployeeResponse(user)
+                        )
 
-                        : getUserUid(idToken)
-                            .doOnNext(uid -> log.info("uidssss: {}" ,uid))
-                                .flatMap(uid ->
-                                    userPort.findByFirebaseId(uid)
-                                    .doOnNext(user -> log.info("user: {}" ,user))
-                                        .flatMap(user -> customerPort.findByUserId(user.getId())
-                                                         .doOnNext(customer -> log.info("customer: {}" ,customer))
-                                                .map(customer -> Authentication.mapCustomer(customer,user))
-                                        ))
-                            );
+                );
     }
     public Mono<String> getUserUid(String idToken){
         System.out.println("Authentication.getUserUid: " + idToken);
         return firebaseAuthPort.isValidToken(idToken).
                 flatMap(mapClaims -> firebaseAuthPort.getUid(idToken));
+    }
+
+    private BarbershopResponse buildBarber(Barbershop barbershop, SubscriptionBarbershop subscription){
+        return BarbershopResponse.builder().
+                id(barbershop.getId()).
+                name(barbershop.getName()).
+                location(barbershop.getLocation()).
+                phone(barbershop.getPhone()).
+                companyName(barbershop.getCompanyName()).
+                subscription(subscription).
+                build();
+    }
+
+    private Mono<Authentication> buildCustomerResponse(User user){
+        return customerPort.findByUserId(user.getId())
+                .doOnNext(customer -> log.info("customer: {}" ,customer))
+                .map(customer -> Authentication.mapCustomer(customer,user));
+    }
+
+    private Mono<Authentication> buildEmployeeResponse(User user){
+        return employeePort.findByUserId(user.getId())
+                .flatMap(employee -> {
+                    return Mono.zip(
+                                    barberShopRepositoryPort.findById(employee.getBarberiaId()),
+                                    subscriptionRepositoryPort.findByBarberIdAndStatus(employee.getBarberiaId(), SubscriptionBarberStatus.ACTIVE)
+                                            .defaultIfEmpty(SubscriptionBarbershop.getSubscription(SubscriptionBarberStatus.NOT_SUBSCRIPTION)))
+                            .map(tuple -> {
+                                Barbershop barbershop =  tuple.getT1();
+                                SubscriptionBarbershop subscriptionBarber = SubscriptionBarbershop.getSubscription(tuple.getT2().getStatus());
+                                return Authentication.mapEmployee(buildBarber(barbershop,subscriptionBarber ),employee,user);
+
+                            });
+                });
     }
 }

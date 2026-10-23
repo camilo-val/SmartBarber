@@ -2,6 +2,7 @@ package com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.authorization;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.smartbarber.domain.enums.RoleType;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.barbershop.BarbershopSubscriptionRsDto;
 
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ public record AuthorizationRsDto (
         RoleType role,
         UUID userId,
         UUID employeeId,
-        UUID barbershopId,
+        BarbershopSubscriptionRsDto barbershop,
         UUID customerId
 
 ){

@@ -30,6 +30,18 @@ public class QueueBroadcastService {
     public Mono<QueueSnapshot> getSnapshot(UUID employeeId) {
         return barberQueuePort.findByEmployeeId(employeeId)
                 .switchIfEmpty(Mono.error(
+                    new IllegalStateException(
+                            "La cola del barbero no está configurada"
+                    )
+                ))
+                .flatMap(queue -> Boolean.TRUE.equals(queue.getAcceptingClients())
+                        ? this.buildSnapshot(queue)
+                        : Mono.error(() -> new IllegalStateException("La cola del barbero no está aceptando clientes")));
+    }
+
+    private Mono<QueueSnapshot> getSnapshots(UUID employeeId) {
+        return barberQueuePort.findByEmployeeId(employeeId)
+                .switchIfEmpty(Mono.error(
                         new IllegalStateException(
                                 "La cola del barbero no está configurada"
                         )
@@ -38,7 +50,7 @@ public class QueueBroadcastService {
     }
 
     public Mono<Void> publish(UUID employeeId, String eventType) {
-        return getSnapshot(employeeId)
+        return getSnapshots(employeeId)
                 .doOnNext(snapshot ->
                         userEventPublisherPort.publish(
                                 employeeId.toString(),

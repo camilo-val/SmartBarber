@@ -12,7 +12,7 @@ public interface AuthorizationEntryMapper {
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "employeeId", source = "employee.id")
     @Mapping(target = "customerId", source = "customer.id")
-    @Mapping(target = "barbershopId", source = "barbershop.id")
+    @Mapping(target = "barbershop", source = "barbershop")
     @Mapping(target = "role", source = "user.roleId")
     AuthorizationRsDto toResponse(Authentication domain);
 

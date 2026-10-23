@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface SubscriptionBarbershopRepositoryPort {
     Flux<SubscriptionBarbershop> findByBarberId(UUID barberId);
-    Flux<SubscriptionBarbershop> findByBarberIdAndStatus(UUID barberId, SubscriptionBarberStatus status);
+    Mono<SubscriptionBarbershop> findByBarberIdAndStatus(UUID barberId, SubscriptionBarberStatus status);
     Mono<SubscriptionBarbershop> findById(UUID subscriptionId);
     Flux<SubscriptionBarbershop> findByExpirationDate(Instant expirationDate);
     Mono<SubscriptionBarbershop> save(SubscriptionBarbershop subscriptionBarbershop);
@@ -19,4 +19,6 @@ public interface SubscriptionBarbershopRepositoryPort {
     Mono<Boolean> countActiveSubscriptionsByBarberId(UUID barberId);
     Flux<SubscriptionBarbershop> findByStatusAndAutomaticRenew(Instant initialDate, Instant finalDate,
                                                                Boolean automaticRenew);
+
+    Mono<SubscriptionBarbershop> findActualSubscription(UUID barbershopId);
 }
