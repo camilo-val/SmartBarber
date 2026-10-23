@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 public interface SubscriptionBarbershopData extends ReactiveCrudRepository<SubscriptionBarbershopEntity, UUID> {
-    Flux<SubscriptionBarbershopEntity> findByBarberIdAndStatus(UUID barberId, SubscriptionBarberStatus status);
+    Mono<SubscriptionBarbershopEntity> findByBarberIdAndStatus(UUID barberId, SubscriptionBarberStatus status);
     Flux<SubscriptionBarbershopEntity> findByBarberId(UUID barberId);
     @Query("""
             SELECT COUNT(*) >= 1

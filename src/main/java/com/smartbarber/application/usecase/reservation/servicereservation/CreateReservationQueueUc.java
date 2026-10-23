@@ -1,13 +1,18 @@
-
 package com.smartbarber.application.usecase.reservation.servicereservation;
 
 import com.smartbarber.application.command.in.reservation.ReservationCommand;
 import com.smartbarber.application.usecase.queue.QueueBroadcastService;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
+import com.smartbarber.domain.exceptions.reservation.ReservationMessageExceptions;
 import com.smartbarber.domain.exceptions.service.ServiceMessageExceptions;
+import com.smartbarber.domain.model.customer.Customer;
+import com.smartbarber.domain.model.customer.CustomerResponse;
 import com.smartbarber.domain.model.reservation.Reservation;
+import com.smartbarber.domain.model.reservation.ReservationResponse;
 import com.smartbarber.domain.model.reservation.ServiceReservation;
+import com.smartbarber.domain.model.reservation.ServiceReservationResponse;
 import com.smartbarber.domain.model.service.Service;
+import com.smartbarber.domain.port.CustomerPort;
 import com.smartbarber.domain.port.ServicePort;
 import com.smartbarber.domain.port.queue.BarberQueuePort;
 import com.smartbarber.domain.port.reservation.ReservationRepositoryPort;
@@ -35,11 +40,12 @@ public class CreateReservationQueueUc {
     private final BarberQueuePort barberQueuePort;
     private final QueueBroadcastService queueBroadcastService;
     private final TransactionalOperator transactionalOperator;
+    private final CustomerPort customerPort;
 
-    public Mono<Reservation> createReservation(ReservationCommand command) {
+    public Mono<ReservationResponse> createReservation(ReservationCommand command) {
         validateCommand(command);
 
-        Mono<Reservation> operation = barberQueuePort
+        Mono<ReservationResponse> operation = barberQueuePort
                 .findByEmployeeIdForUpdate(command.employeeId())
                 .switchIfEmpty(Mono.error(new IllegalStateException(
                         "El barbero no tiene una cola configurada. Debe abrirla primero."
@@ -65,10 +71,33 @@ public class CreateReservationQueueUc {
 
                             return reservationRepositoryPort.save(reservation)
                                     .flatMap(saved ->
-                                            createServiceReservations(saved, services)
-                                                    .thenReturn(saved)
-                                    );
-                        }));
+                                        createServiceReservations(saved, services)
+                                                .doOnNext(serviceReservation -> log.info(
+                                                        "Servicio agregado a reserva. serviceReservationId={}, reservationId={}",
+                                                        serviceReservation.getId(),
+                                                        saved.getId()
+                                                ))
+                                            .flatMap(serviceReservation -> servicePort.findById(serviceReservation.getServiceId())
+                                                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(ServiceMessageExceptions.SERVICE_NOT_FOUND)))
+                                                .map(service -> ServiceReservationResponse
+                                                        .rebuild(serviceReservation.getId(),
+                                                                service.getName(),
+                                                                serviceReservation.getDuration()
+                                                        ))
+                                            ).collectList()
+                                            .flatMap(serviceReservationResponses ->
+                                                customerPort.findById(reservation.getCustomerId())
+                                                    .switchIfEmpty(Mono.error(() ->
+                                                            new BusinessExceptions(ReservationMessageExceptions.CUSTOMER_NOT_FOUND)))
+                                                    .map(customer -> ReservationResponse.of(
+                                                            reservation,
+                                                            serviceReservationResponses,
+                                                            buildCustomer(customer)
+                                                    ))
+                                            )
+                                );
+                        })
+                );
 
         return operation.as(transactionalOperator::transactional)
                 .flatMap(saved ->
@@ -158,7 +187,7 @@ public class CreateReservationQueueUc {
         }
     }
 
-    private Mono<Void> createServiceReservations(
+    private Flux<ServiceReservation> createServiceReservations(
             Reservation reservation,
             List<Service> services
     ) {
@@ -170,14 +199,24 @@ public class CreateReservationQueueUc {
                                         service.getId(),
                                         service.getDuration()
                                 )
-                        )
-                )
-                .then();
+                          ).doOnNext(serviceReservation -> log.info("AAAServicio agregado a reserva. serviceReservationId={}, reservationId={}",
+                                serviceReservation.getId(),
+                                reservation.getId()
+                        ))
+                );
     }
 
     private int getDuration(List<Service> services) {
         return services.stream()
                 .map(Service::getDuration)
                 .reduce(0, Integer::sum);
+    }
+
+    private CustomerResponse buildCustomer(Customer customer){
+        return CustomerResponse.builder()
+                .id(customer.getId())
+                .name(customer.getName())
+                .phone(customer.getCell())
+                .build();
     }
 }

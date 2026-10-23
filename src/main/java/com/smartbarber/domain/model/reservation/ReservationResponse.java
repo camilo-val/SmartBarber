@@ -4,6 +4,7 @@ import com.smartbarber.domain.enums.ReservationStatus;
 import com.smartbarber.domain.enums.ReservationType;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.reservation.ReservationMessageExceptions;
+import com.smartbarber.domain.model.customer.CustomerResponse;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 public class ReservationResponse {
     private final UUID id;
-    private final UUID customerId;
+    private final CustomerResponse customer;
     private final UUID employeeId;
     private final ReservationType reservationType;
     private final ReservationStatus status;
@@ -24,9 +25,9 @@ public class ReservationResponse {
     private final OffsetDateTime queueEntryTime;
     private final List<ServiceReservationResponse> serviceReservations;
 
-    private ReservationResponse(Reservation reservation, List<ServiceReservationResponse> serviceReservations) {
+    private ReservationResponse(Reservation reservation, List<ServiceReservationResponse> serviceReservations,CustomerResponse customer) {
         this.id = reservation.getId();
-        this.customerId = reservation.getCustomerId();
+        this.customer = customer;
         this.employeeId = reservation.getEmployeeId();
         this.reservationType = reservation.getReservationType();
         this.status = reservation.getStatus();
@@ -40,19 +41,19 @@ public class ReservationResponse {
         this.serviceReservations = serviceReservations;
     }
 
-    public static ReservationResponse of(Reservation reservation, List<ServiceReservationResponse> serviceReservations) {
+    public static ReservationResponse of(Reservation reservation, List<ServiceReservationResponse> serviceReservations, CustomerResponse customer) {
         if(reservation == null || serviceReservations == null || serviceReservations.isEmpty()) {
             throw new BusinessExceptions(ReservationMessageExceptions.RESERVATION_DATE_INVALID);
         }
-        return new ReservationResponse(reservation, serviceReservations);
+        return new ReservationResponse(reservation, serviceReservations,customer);
     }
 
     public UUID getId() {
         return id;
     }
 
-    public UUID getCustomerId() {
-        return customerId;
+    public CustomerResponse getCustomer() {
+        return customer;
     }
 
     public UUID getEmployeeId() {

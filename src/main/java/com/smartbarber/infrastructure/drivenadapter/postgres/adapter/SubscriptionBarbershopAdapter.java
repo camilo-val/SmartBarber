@@ -32,7 +32,7 @@ public class SubscriptionBarbershopAdapter implements SubscriptionBarbershopRepo
     }
 
     @Override
-    public Flux<SubscriptionBarbershop> findByBarberIdAndStatus(UUID barberId, SubscriptionBarberStatus status) {
+    public Mono<SubscriptionBarbershop> findByBarberIdAndStatus(UUID barberId, SubscriptionBarberStatus status) {
         return data.findByBarberIdAndStatus(barberId, status)
                 .map(mapper::toDomain);
     }
