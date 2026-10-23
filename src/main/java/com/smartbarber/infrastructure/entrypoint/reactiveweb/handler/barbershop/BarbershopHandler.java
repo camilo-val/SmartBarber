@@ -51,7 +51,7 @@ public class BarbershopHandler {
                         -> authenticationUc.getUserUid(request.headers().header(AUTHORIZATION).getFirst())
                 .map(uid -> barberOnboardingMapper.toCommand(body, uid)))
                 .flatMap(onboardingBarberShopUc::execute)
-                .doOnNext(response -> log.info("onBoardingBarberUc.execute: {}", response))
+                .doOnNext(response -> log.info("onBoardingBarberUc.execute: 1111{}", response))
                 .map(barberOnboardingMapper::toResponse)
                 .flatMap(response -> ServerResponse.created(request.uri()).bodyValue(response))
                 .switchIfEmpty(Mono.error(new TechnicalExceptions(TechnicalMessageExceptions.BAD_REQUEST)) );

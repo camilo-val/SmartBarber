@@ -9,6 +9,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public interface SubscriptionBarbershopData extends ReactiveCrudRepository<SubscriptionBarbershopEntity, UUID> {
@@ -57,6 +58,15 @@ public interface SubscriptionBarbershopData extends ReactiveCrudRepository<Subsc
             and estado in ('APPROVED','PENDING');
             """)
     Mono<Boolean> existsSubscriptionsPendingOrApproved(@Param("barberId") UUID barberId);
+
+    @Query("""
+            SELECT *
+            FROM suscripcion_barberia
+            WHERE fecha_creacion <= :createAt
+            ORDER BY fecha_creacion DESC
+            LIMIT 1
+            """)
+    Mono<SubscriptionBarbershopEntity> findActualSubscription(@Param("createAt") OffsetDateTime createAt);
 
 
 }
