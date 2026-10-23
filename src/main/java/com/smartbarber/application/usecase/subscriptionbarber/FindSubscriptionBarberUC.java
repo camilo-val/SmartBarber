@@ -44,4 +44,9 @@ public class FindSubscriptionBarberUC {
         return port.findByStatusAndAutomaticRenew(Instant.now(), Instant.now().plusSeconds(31536000), false)
                 .filter(subscription -> subscription.getBarberId().equals(barberId) && subscription.getStatus() == status);
     }
+
+    public Mono<SubscriptionBarbershop> findActualSubscriptionByBarberId(UUID barberId) {
+        return port.findActualSubscription(barberId)
+                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(SubscriptionBarberMessageExceptions.SUBSCRIPTION_BARBER_NOT_FOUND)));
+    }
 }

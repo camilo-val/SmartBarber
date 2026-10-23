@@ -19,4 +19,6 @@ public interface SubscriptionBarbershopRepositoryPort {
     Mono<Boolean> countActiveSubscriptionsByBarberId(UUID barberId);
     Flux<SubscriptionBarbershop> findByStatusAndAutomaticRenew(Instant initialDate, Instant finalDate,
                                                                Boolean automaticRenew);
+
+    Mono<SubscriptionBarbershop> findActualSubscription(UUID barbershopId);
 }

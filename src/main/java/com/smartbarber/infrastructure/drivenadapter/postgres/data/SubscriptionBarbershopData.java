@@ -61,12 +61,13 @@ public interface SubscriptionBarbershopData extends ReactiveCrudRepository<Subsc
 
     @Query("""
             SELECT *
-            FROM suscripcion_barberia
-            WHERE fecha_creacion <= :createAt
-            ORDER BY fecha_creacion DESC
-            LIMIT 1
+            FROM suscripcion_barberia sb
+            WHERE fecha_creacion = (
+                SELECT MAX(fecha_creacion)
+                FROM suscripcion_barberia sb
+            ) and sb.id_barberia = :barbershopId;
             """)
-    Mono<SubscriptionBarbershopEntity> findActualSubscription(@Param("createAt") OffsetDateTime createAt);
+    Mono<SubscriptionBarbershopEntity> findActualSubscription(@Param("barbershopId") UUID barbershopId);
 
 
 }

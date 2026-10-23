@@ -84,4 +84,10 @@ public class SubscriptionBarbershopAdapter implements SubscriptionBarbershopRepo
                 .doOnError(error -> log.error("Error finding subscriptions: {}", error.getMessage(), error))
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public Mono<SubscriptionBarbershop> findActualSubscription(UUID barbershopId) {
+        return data.findActualSubscription(barbershopId)
+                .map(mapper::toDomain);
+    }
 }

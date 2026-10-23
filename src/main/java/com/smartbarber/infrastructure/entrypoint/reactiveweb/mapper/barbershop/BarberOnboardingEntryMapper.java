@@ -61,6 +61,7 @@ public interface BarberOnboardingEntryMapper {
         }
 
         return BarbershopOnBoardingRsDto.builder()
+                .id(domain.getBarbershop().id())
                 .name(domain.getBarbershop().name())
                 .description(domain.getBarbershop().description())
                 .location(domain.getBarbershop().location())
