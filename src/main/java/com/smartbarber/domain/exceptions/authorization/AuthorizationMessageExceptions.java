@@ -3,7 +3,8 @@ package com.smartbarber.domain.exceptions.authorization;
 import com.smartbarber.domain.exceptions.ErrorMessage;
 
 public enum AuthorizationMessageExceptions implements ErrorMessage {
-    THE_TOKEN_IS_EXPIRED("AT_001", "the token has expired");
+    THE_TOKEN_IS_EXPIRED("AT_001", "the token has expired"),
+    THE_USER_IS_NOT_ACTIVE("AT_002", "the user is not active");
 
     private final String code;
     private final String message;
