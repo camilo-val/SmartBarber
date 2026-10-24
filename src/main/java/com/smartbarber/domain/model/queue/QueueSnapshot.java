@@ -1,6 +1,8 @@
 
 package com.smartbarber.domain.model.queue;
 
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.customer.CustomerRsDto;
+
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +16,7 @@ public record QueueSnapshot(
 ) {
     public record QueueTurn(
             UUID reservationId,
-            UUID customerId,
+            CustomerRsDto customer,
             int position,
             int estimatedWaitMinutes,
             Integer durationMinutes,

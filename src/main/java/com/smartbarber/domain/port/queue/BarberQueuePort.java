@@ -23,4 +23,7 @@ public interface BarberQueuePort {
             UUID employeeId,
             boolean acceptingClients
     );
+
+    Mono<Boolean> existsByEmployeeIdAndBarbershopIdAndAcceptingClients(UUID employeeId, UUID barbershopId, boolean acceptingClients);
+
 }

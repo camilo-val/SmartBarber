@@ -1,15 +1,19 @@
-
 package com.smartbarber.application.usecase.queue;
 
+import com.smartbarber.domain.enums.NotificationType;
+import com.smartbarber.domain.model.customer.Customer;
 import com.smartbarber.domain.model.queue.QueueSnapshot;
-import com.smartbarber.domain.model.reservation.Reservation;
 import com.smartbarber.domain.model.queue.event.UserEvent;
+import com.smartbarber.domain.model.reservation.Reservation;
+import com.smartbarber.domain.port.CustomerPort;
 import com.smartbarber.domain.port.queue.BarberQueuePort;
 import com.smartbarber.domain.port.queue.UserEventPublisherPort;
 import com.smartbarber.domain.port.reservation.ReservationRepositoryPort;
 import com.smartbarber.infrastructure.drivenadapter.postgres.entity.BarberQueueEntity;
+import com.smartbarber.infrastructure.entrypoint.reactiveweb.dto.customer.CustomerRsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -25,18 +29,35 @@ public class QueueBroadcastService {
 
     private final BarberQueuePort barberQueuePort;
     private final ReservationRepositoryPort reservationRepositoryPort;
+    private final CustomerPort customerPort;
     private final UserEventPublisherPort userEventPublisherPort;
 
+    private record CurrentTurnData(
+            Reservation reservation,
+            Customer customer
+    ) {
+    }
+
     public Mono<QueueSnapshot> getSnapshot(UUID employeeId) {
+        System.out.println(
+                "QueueBroadcastService.getSnapshot: employeeId="
+                        + employeeId
+        );
         return barberQueuePort.findByEmployeeId(employeeId)
                 .switchIfEmpty(Mono.error(
-                    new IllegalStateException(
-                            "La cola del barbero no está configurada"
-                    )
+                        new IllegalStateException(
+                                "La cola del barbero no está configurada"
+                        )
                 ))
-                .flatMap(queue -> Boolean.TRUE.equals(queue.getAcceptingClients())
-                        ? this.buildSnapshot(queue)
-                        : Mono.error(() -> new IllegalStateException("La cola del barbero no está aceptando clientes")));
+                .flatMap(queue ->
+                        Boolean.TRUE.equals(queue.getAcceptingClients())
+                                ? buildSnapshot(queue)
+                                : Mono.error(
+                                new IllegalStateException(
+                                        "La cola del barbero no está aceptando clientes"
+                                )
+                        )
+                );
     }
 
     private Mono<QueueSnapshot> getSnapshots(UUID employeeId) {
@@ -49,13 +70,21 @@ public class QueueBroadcastService {
                 .flatMap(this::buildSnapshot);
     }
 
-    public Mono<Void> publish(UUID employeeId, String eventType) {
+    public Mono<Void> publish(UUID employeeId, NotificationType eventType) {
+
+        System.out.println(
+                "QueueBroadcastService.publish: employeeId="
+                        + employeeId
+                        + ", eventType="
+                        + eventType
+        );
+
         return getSnapshots(employeeId)
                 .doOnNext(snapshot ->
                         userEventPublisherPort.publish(
                                 employeeId.toString(),
                                 UserEvent.builder()
-                                        .type(eventType)
+                                        .type(eventType.name())
                                         .payload(snapshot)
                                         .build()
                         )
@@ -63,11 +92,26 @@ public class QueueBroadcastService {
                 .then();
     }
 
-    private Mono<QueueSnapshot> buildSnapshot(BarberQueueEntity queue) {
+    private Mono<QueueSnapshot> buildSnapshot(
+            BarberQueueEntity queue
+    ) {
+
         UUID employeeId = queue.getEmployeeId();
 
-        Mono<Optional<Reservation>> currentMono =
-                reservationRepositoryPort.findCurrentQueueTurn(employeeId)
+        Mono<Optional<CurrentTurnData>> currentTurnMono =
+                reservationRepositoryPort
+                        .findCurrentQueueTurn(employeeId)
+                        .flatMap(reservation ->
+                                customerPort.findById(
+                                                reservation.getCustomerId()
+                                        )
+                                        .map(customer ->
+                                                new CurrentTurnData(
+                                                        reservation,
+                                                        customer
+                                                )
+                                        )
+                        )
                         .map(Optional::of)
                         .defaultIfEmpty(Optional.empty());
 
@@ -76,62 +120,115 @@ public class QueueBroadcastService {
                         .findWaitingQueueByEmployeeId(employeeId)
                         .collectList();
 
-        return Mono.zip(currentMono, waitingMono)
-                .map(tuple -> {
-                    Reservation current = tuple.getT1().orElse(null);
-                    List<Reservation> waiting = tuple.getT2();
+        return Mono.zip(
+                        currentTurnMono,
+                        waitingMono
+                )
+                .flatMap(tuple -> {
+
+                    Optional<CurrentTurnData> currentOptional =
+                            tuple.getT1();
+
+                    List<Reservation> waiting =
+                            tuple.getT2();
+
+                    Reservation current =
+                            currentOptional
+                                    .map(CurrentTurnData::reservation)
+                                    .orElse(null);
+
+                    Customer currentCustomer =
+                            currentOptional
+                                    .map(CurrentTurnData::customer)
+                                    .orElse(null);
 
                     int remainingMinutes =
                             estimateRemainingMinutes(current);
 
-                    QueueSnapshot.QueueTurn currentTurn = current == null
-                            ? null
-                            : new QueueSnapshot.QueueTurn(
-                            current.getId(),
-                            current.getCustomerId(),
-                            0,
-                            0,
-                            current.getDuration(),
-                            current.getStatus().name()
-                    );
+                    QueueSnapshot.QueueTurn currentTurn =
+                            current == null
+                                    ? null
+                                    : new QueueSnapshot.QueueTurn(
+                                    current.getId(),
+                                    buildCustomer(currentCustomer),
+                                    0,
+                                    0,
+                                    current.getDuration(),
+                                    current.getStatus().name()
+                            );
 
-                    int accumulatedMinutes = remainingMinutes;
-
-                    List<QueueSnapshot.QueueTurn> turns =
+                    List<Mono<QueueSnapshot.QueueTurn>> waitingTurns =
                             new ArrayList<>();
 
-                    for (int i = 0; i < waiting.size(); i++) {
-                        Reservation reservation = waiting.get(i);
+                    int accumulatedMinutes =
+                            remainingMinutes;
 
-                        turns.add(new QueueSnapshot.QueueTurn(
-                                reservation.getId(),
-                                reservation.getCustomerId(),
-                                i + 1,
-                                accumulatedMinutes,
-                                reservation.getDuration(),
-                                reservation.getStatus().name()
-                        ));
+                    for (int i = 0; i < waiting.size(); i++) {
+
+                        Reservation reservation =
+                                waiting.get(i);
+
+                        int position = i + 1;
+
+                        int estimatedWait =
+                                accumulatedMinutes;
 
                         if (reservation.getDuration() != null) {
                             accumulatedMinutes +=
                                     reservation.getDuration();
                         }
+
+                        Mono<QueueSnapshot.QueueTurn> turnMono =
+                                customerPort
+                                        .findById(
+                                                reservation.getCustomerId()
+                                        )
+                                        .map(customer ->
+                                                new QueueSnapshot.QueueTurn(
+                                                        reservation.getId(),
+                                                        buildCustomer(customer),
+                                                        position,
+                                                        estimatedWait,
+                                                        reservation.getDuration(),
+                                                        reservation.getStatus().name()
+                                                )
+                                        )
+                                        .defaultIfEmpty(
+                                                new QueueSnapshot.QueueTurn(
+                                                        reservation.getId(),
+                                                        null,
+                                                        position,
+                                                        estimatedWait,
+                                                        reservation.getDuration(),
+                                                        reservation.getStatus().name()
+                                                )
+                                        );
+
+                        waitingTurns.add(turnMono);
                     }
 
-                    return new QueueSnapshot(
-                            employeeId,
-                            Boolean.TRUE.equals(
-                                    queue.getAcceptingClients()
-                            ),
-                            currentTurn,
-                            List.copyOf(turns),
-                            OffsetDateTime.now()
-                    );
+                    return Flux.mergeSequential(waitingTurns)
+                            .collectList()
+                            .map(turns ->
+                                    new QueueSnapshot(
+                                            employeeId,
+                                            Boolean.TRUE.equals(
+                                                    queue.getAcceptingClients()
+                                            ),
+                                            currentTurn,
+                                            List.copyOf(turns),
+                                            OffsetDateTime.now()
+                                    )
+                            );
                 });
     }
 
-    private int estimateRemainingMinutes(Reservation current) {
-        if (current == null || current.getDuration() == null) {
+    private int estimateRemainingMinutes(
+            Reservation current
+    ) {
+
+        if (current == null
+                || current.getDuration() == null) {
             return 0;
         }
 
@@ -148,5 +245,20 @@ public class QueueBroadcastService {
                 0,
                 current.getDuration() - (int) elapsed
         );
+    }
+
+    private CustomerRsDto buildCustomer(
+            Customer customer
+    ) {
+
+        if (customer == null) {
+            return null;
+        }
+
+        return CustomerRsDto.builder()
+                .id(customer.getId())
+                .name(customer.getName())
+                .cell(customer.getCell())
+                .build();
     }
 }

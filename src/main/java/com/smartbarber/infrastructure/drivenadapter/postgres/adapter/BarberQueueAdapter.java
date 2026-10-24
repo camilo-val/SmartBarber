@@ -46,4 +46,9 @@ public class BarberQueueAdapter implements BarberQueuePort {
                 acceptingClients
         );
     }
+
+    @Override
+    public Mono<Boolean> existsByEmployeeIdAndBarbershopIdAndAcceptingClients(UUID employeeId, UUID barbershopId, boolean acceptingClients) {
+        return data.existsByEmployeeIdAndBarbershopIdAndAcceptingClients(employeeId, barbershopId, acceptingClients);
+    }
 }

@@ -2,11 +2,7 @@
 package com.smartbarber.infrastructure.entrypoint.reactiveweb.handler.queue;
 
 import com.smartbarber.application.command.in.reservation.ReservationCommand;
-import com.smartbarber.application.usecase.queue.CloseQueueUC;
-import com.smartbarber.application.usecase.queue.CompleteCurrentTurnUC;
-import com.smartbarber.application.usecase.queue.NextCustomerUC;
-import com.smartbarber.application.usecase.queue.OpenQueueUC;
-import com.smartbarber.application.usecase.queue.QueueBroadcastService;
+import com.smartbarber.application.usecase.queue.*;
 import com.smartbarber.application.usecase.reservation.servicereservation.CreateReservationQueueUc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,6 +21,7 @@ public class VirtualQueueHandler {
     private final OpenQueueUC openQueueUC;
     private final NextCustomerUC nextCustomerUC;
     private final CloseQueueUC closeQueueUC;
+    private final ConsultStatusQueue consultStatusQueue;
     private final CreateReservationQueueUc createReservationQueueUc;
     private final QueueBroadcastService queueBroadcastService;
     private final CompleteCurrentTurnUC completeCurrentTurnUC;
@@ -102,6 +99,16 @@ public class VirtualQueueHandler {
         return queueBroadcastService.getSnapshot(employeeId)
                 .flatMap(snapshot ->
                         ServerResponse.ok().bodyValue(snapshot)
+                );
+    }
+    public Mono<ServerResponse> getQueueStatus(ServerRequest request) {
+        UUID employeeId = UUID.fromString(
+                request.pathVariable("employeeId")
+        );
+
+        return consultStatusQueue.currentStatusQueue(employeeId)
+                .flatMap(status ->
+                        ServerResponse.ok().bodyValue(status)
                 );
     }
 }

@@ -41,6 +41,10 @@ public class VirtualQueueRouter {
                         "/api/v1/queue/{employeeId}",
                         handler::getQueue
                 )
+                .GET(
+                        "/api/v1/queue/{employeeId}/status",
+                        handler::getQueueStatus
+                )
                 .build();
     }
 }

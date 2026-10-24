@@ -64,4 +64,10 @@ public interface BarberQueueData
             @Param("employeeId") UUID employeeId,
             @Param("acceptingClients") boolean acceptingClients
     );
+
+    Mono<Boolean> existsByEmployeeIdAndBarbershopIdAndAcceptingClients(
+            @Param("employeeId") UUID employeeId,
+            @Param("barbershopId") UUID barbershopId,
+            @Param("acceptingClients") boolean acceptingClients
+    );
 }

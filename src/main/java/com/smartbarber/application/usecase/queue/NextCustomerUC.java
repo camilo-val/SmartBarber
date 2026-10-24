@@ -1,6 +1,7 @@
 
 package com.smartbarber.application.usecase.queue;
 
+import com.smartbarber.domain.enums.NotificationType;
 import com.smartbarber.domain.model.reservation.Reservation;
 import com.smartbarber.domain.port.queue.BarberQueuePort;
 import com.smartbarber.domain.port.reservation.ReservationRepositoryPort;
@@ -63,7 +64,7 @@ public class NextCustomerUC {
                 .as(transactionalOperator::transactional)
                 .flatMap(reservation ->
                         queueBroadcastService
-                                .publish(employeeId, "QUEUE_UPDATED")
+                                .publish(employeeId, NotificationType.QUEUE_NEXT_CUSTOMER)
                                 .thenReturn(reservation)
                 );
     }

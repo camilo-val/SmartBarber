@@ -1,6 +1,7 @@
 package com.smartbarber.infrastructure.entrypoint.websocket.config;
 
 import com.smartbarber.infrastructure.entrypoint.websocket.handler.VirtualQueueWsHandler;
+import com.smartbarber.infrastructure.entrypoint.websocket.handler.notification.NotificationWebSocketHandler;
 import com.smartbarber.infrastructure.entrypoint.websocket.handler.subscription.SubscriptionBarbershopWsHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,12 +20,14 @@ public class WebsocketConfig {
 
     private final SubscriptionBarbershopWsHandler handler;
     private final VirtualQueueWsHandler virtualQueueWebSocketHandler;
+    private final NotificationWebSocketHandler notificationHandler;
 
     @Bean
     public HandlerMapping handlerMapping() {
         Map<String, WebSocketHandler> map = new HashMap<>();
         map.put("/ws/payment", handler);
         map.put("/ws/virtual-queue", virtualQueueWebSocketHandler);
+        map.put( "/ws/notifications", notificationHandler);
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
         mapping.setUrlMap(map);
         mapping.setOrder(1);

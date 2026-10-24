@@ -1,6 +1,7 @@
 
 package com.smartbarber.application.usecase.queue;
 
+import com.smartbarber.domain.enums.NotificationType;
 import com.smartbarber.domain.model.reservation.Reservation;
 import com.smartbarber.domain.port.queue.BarberQueuePort;
 import com.smartbarber.domain.port.reservation.ReservationRepositoryPort;
@@ -47,7 +48,7 @@ public class CompleteCurrentTurnUC {
                 .as(transactionalOperator::transactional)
                 .flatMap(saved ->
                         queueBroadcastService
-                                .publish(employeeId, "QUEUE_UPDATED")
+                                .publish(employeeId, NotificationType.QUEUE_COMPLETED_CURRENT_TURN)
                                 .thenReturn(saved)
                 );
     }

@@ -2,6 +2,7 @@ package com.smartbarber.application.usecase.reservation.servicereservation;
 
 import com.smartbarber.application.command.in.reservation.ReservationCommand;
 import com.smartbarber.application.usecase.queue.QueueBroadcastService;
+import com.smartbarber.domain.enums.NotificationType;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.reservation.ReservationMessageExceptions;
 import com.smartbarber.domain.exceptions.service.ServiceMessageExceptions;
@@ -102,7 +103,7 @@ public class CreateReservationQueueUc {
         return operation.as(transactionalOperator::transactional)
                 .flatMap(saved ->
                         queueBroadcastService
-                                .publish(command.employeeId(), "QUEUE_UPDATED")
+                                .publish(command.employeeId(), NotificationType.QUEUE_ADD_CUSTOMER)
                                 .thenReturn(saved)
                 )
                 .doOnSuccess(saved -> {
