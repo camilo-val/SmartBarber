@@ -104,14 +104,14 @@ public interface ReservationData
             @Param("barberId") UUID barberId
     );
     @Query("""
-            SELECT MIN(RS.fecha_inicio_reserva)
-            FORM public.reserva r 
+            SELECT MIN(r.fecha_inicio_real)
+            FROM public.reserva r 
             INNER JOIN public.reserva_servicio rs
             ON rs.id_reserva = r.id_reserva
             WHERE r.id_empleado = :employeeId
             AND r.tipo_reserva <> 'VRITUAL_QUEUE'
             AND r.estado IN ('PENDING', 'CONFIRMED')
-            AND rs.fecha_inicio_reserva > :from
+            AND r.fecha_inicio_real > :from
             """)
     Mono<OffsetDateTime> findNextScheduledReservationStart(
             @Param("employeeId") UUID employeeId,

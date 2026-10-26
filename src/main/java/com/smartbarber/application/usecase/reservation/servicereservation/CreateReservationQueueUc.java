@@ -1,6 +1,7 @@
 package com.smartbarber.application.usecase.reservation.servicereservation;
 
 import com.smartbarber.application.command.in.reservation.ReservationCommand;
+import com.smartbarber.application.usecase.queue.QueueAvailabilityService;
 import com.smartbarber.application.usecase.queue.QueueBroadcastService;
 import com.smartbarber.domain.enums.NotificationType;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
@@ -42,6 +43,8 @@ public class CreateReservationQueueUc {
     private final QueueBroadcastService queueBroadcastService;
     private final TransactionalOperator transactionalOperator;
     private final CustomerPort customerPort;
+    private final QueueAvailabilityService queueAvailabilityService;
+
 
     public Mono<ReservationResponse> createReservation(ReservationCommand command) {
         validateCommand(command);
@@ -54,6 +57,7 @@ public class CreateReservationQueueUc {
                 .flatMap(queue -> validateQueue(queue, command)
                         .then(loadServices(command.reservationServiceId()))
                         .flatMap(services -> {
+
                             validateServicesBelongToBarbershop(
                                     services,
                                     command.barbershopId()
@@ -61,42 +65,71 @@ public class CreateReservationQueueUc {
 
                             int duration = getDuration(services);
 
-                            Reservation reservation =
-                                    Reservation.createReservationQueue(
-                                            command.customerId(),
-                                            command.barbershopId(),
+                            return queueAvailabilityService
+                                    .validateAvailability(
                                             command.employeeId(),
-                                            duration,
-                                            command.notes()
-                                    );
+                                            duration
+                                    )
+                                    .then(Mono.defer(() -> {
 
-                            return reservationRepositoryPort.save(reservation)
-                                    .flatMap(saved ->
-                                        createServiceReservations(saved, services)
-                                                .doOnNext(serviceReservation -> log.info(
-                                                        "Servicio agregado a reserva. serviceReservationId={}, reservationId={}",
-                                                        serviceReservation.getId(),
-                                                        saved.getId()
-                                                ))
-                                            .flatMap(serviceReservation -> servicePort.findById(serviceReservation.getServiceId())
-                                                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(ServiceMessageExceptions.SERVICE_NOT_FOUND)))
-                                                .map(service -> ServiceReservationResponse
-                                                        .rebuild(serviceReservation.getId(),
-                                                                service.getName(),
-                                                                serviceReservation.getDuration()
-                                                        ))
-                                            ).collectList()
-                                            .flatMap(serviceReservationResponses ->
-                                                customerPort.findById(reservation.getCustomerId())
-                                                    .switchIfEmpty(Mono.error(() ->
-                                                            new BusinessExceptions(ReservationMessageExceptions.CUSTOMER_NOT_FOUND)))
-                                                    .map(customer -> ReservationResponse.of(
-                                                            reservation,
-                                                            serviceReservationResponses,
-                                                            buildCustomer(customer)
-                                                    ))
-                                            )
-                                );
+                                        Reservation reservation =
+                                                Reservation.createReservationQueue(
+                                                        command.customerId(),
+                                                        command.barbershopId(),
+                                                        command.employeeId(),
+                                                        duration,
+                                                        command.notes()
+                                                );
+
+                                        return reservationRepositoryPort.save(reservation)
+                                                .flatMap(saved ->
+                                                        createServiceReservations(saved, services)
+                                                                .doOnNext(serviceReservation -> log.info(
+                                                                        "Servicio agregado a reserva. serviceReservationId={}, reservationId={}",
+                                                                        serviceReservation.getId(),
+                                                                        saved.getId()
+                                                                ))
+                                                                .flatMap(serviceReservation ->
+                                                                        servicePort.findById(
+                                                                                        serviceReservation.getServiceId()
+                                                                                )
+                                                                                .switchIfEmpty(
+                                                                                        Mono.error(() ->
+                                                                                                new BusinessExceptions(
+                                                                                                        ServiceMessageExceptions.SERVICE_NOT_FOUND
+                                                                                                )
+                                                                                        )
+                                                                                )
+                                                                                .map(service ->
+                                                                                        ServiceReservationResponse.rebuild(
+                                                                                                serviceReservation.getId(),
+                                                                                                service.getName(),
+                                                                                                serviceReservation.getDuration()
+                                                                                        )
+                                                                                )
+                                                                )
+                                                                .collectList()
+                                                                .flatMap(serviceReservationResponses ->
+                                                                        customerPort.findById(
+                                                                                        reservation.getCustomerId()
+                                                                                )
+                                                                                .switchIfEmpty(
+                                                                                        Mono.error(() ->
+                                                                                                new BusinessExceptions(
+                                                                                                        ReservationMessageExceptions.CUSTOMER_NOT_FOUND
+                                                                                                )
+                                                                                        )
+                                                                                )
+                                                                                .map(customer ->
+                                                                                        ReservationResponse.of(
+                                                                                                reservation,
+                                                                                                serviceReservationResponses,
+                                                                                                buildCustomer(customer)
+                                                                                        )
+                                                                                )
+                                                                )
+                                                );
+                                    }));
                         })
                 );
 
@@ -136,8 +169,8 @@ public class CreateReservationQueueUc {
             ReservationCommand command
     ) {
         if (!Boolean.TRUE.equals(queue.getAcceptingClients())) {
-            return Mono.error(new IllegalStateException(
-                    "El barbero no está aceptando clientes"
+            return Mono.error(() -> new BusinessExceptions(
+                    ReservationMessageExceptions.QUEUE_NOT_ACCEPTING_CLIENTS
             ));
         }
 
