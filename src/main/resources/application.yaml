@@ -35,3 +35,6 @@ payment:
 
 server:
   port: ${PORT:8080}
+
+firebase:
+  credentials: ${FIREBASE_CREDENTIALS}
