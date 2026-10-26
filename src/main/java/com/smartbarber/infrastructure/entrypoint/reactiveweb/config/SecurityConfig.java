@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchange -> exchange
                         // Rutas públicas
                         .pathMatchers(
+                                "/ws/virtual-queue/**",
                                 "/ws/payment/**",
                                 "/auth/**",
                                 "/reservation-service/**",
