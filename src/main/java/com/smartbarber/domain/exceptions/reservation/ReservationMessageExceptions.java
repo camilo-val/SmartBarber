@@ -14,7 +14,8 @@ public enum ReservationMessageExceptions implements ErrorMessage {
     CANNOT_CANCEL_RESERVATION("RES_009", "No se puede cancelar una reserva en este estado"),
     RESERVATION_DATE_INVALID("RES_010", "La fecha de la reserva no es válida"),
     EMPLOYEE_NOT_AVAILABLE("RES_011", "El empleado no está disponible en este horario"),
-    CANNOT_CONFIRM_RESERVATION("RES_012", "No se puede confirmar una reserva en este estado");
+    CANNOT_CONFIRM_RESERVATION("RES_012", "No se puede confirmar una reserva en este estado"),
+    QUEUE_NOT_ACCEPTING_CLIENTS("RES_013", "Queue not accepting customers");
 
     private final String code;
     private final String message;

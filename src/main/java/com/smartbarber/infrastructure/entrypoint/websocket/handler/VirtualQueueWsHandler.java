@@ -27,6 +27,7 @@ public class VirtualQueueWsHandler implements WebSocketHandler {
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
+        System.out.printf("ENTREEEEEEASADSAD");
         final UUID employeeId;
 
         try {

@@ -2,6 +2,7 @@ package com.smartbarber.application.usecase.athentication;
 
 import com.smartbarber.domain.enums.RoleType;
 import com.smartbarber.domain.enums.SubscriptionBarberStatus;
+import com.smartbarber.domain.enums.UserStatus;
 import com.smartbarber.domain.exceptions.BusinessExceptions;
 import com.smartbarber.domain.exceptions.authorization.AuthorizationMessageExceptions;
 import com.smartbarber.domain.exceptions.barbershop.BarberShopMessageExceptions;
@@ -37,19 +38,23 @@ AuthenticationUC {
         System.out.println("Authentication.authorization: " + idToken);
         return firebaseAuthPort.isValidToken(idToken)
                 .flatMap(isValid ->{
-                    if (!isValid){
+                    if (Boolean.FALSE.equals(isValid)){
                         return Mono.error(()->new BusinessExceptions(AuthorizationMessageExceptions.THE_TOKEN_IS_EXPIRED));
                     }
                             return Mono.zip(firebaseAuthPort.isExpiredToken(idToken),firebaseAuthPort.getUid(idToken) )
                                     .map(tuple -> {
                                         Boolean isExpiredToken = tuple.getT1();
                                         String uidUser = tuple.getT2();
-                                        if(!isExpiredToken){
+                                        if(Boolean.FALSE.equals(isExpiredToken)){
                                             return uidUser;
                                         }
                                         throw new  BusinessExceptions(AuthorizationMessageExceptions.THE_TOKEN_IS_EXPIRED);
                                     }).flatMap(userPort::findByFirebaseId)
-                                    .flatMap(user -> rolePort.findById(user.getRoleId()))
+                                    .flatMap(user ->
+                                        !user.getStatus().equals(UserStatus.ACTIVE)
+                                                ? Mono.error(()->new BusinessExceptions(AuthorizationMessageExceptions.THE_USER_IS_NOT_ACTIVE))
+                                                : rolePort.findById(user.getRoleId())
+                                    )
                                     .doOnNext(role -> log.info("role: {}" ,role))
                                     .map(Role::getRoleType)
                                     .doOnNext(roleType -> log.info("roleType: {}" ,roleType));
@@ -58,7 +63,6 @@ AuthenticationUC {
     }
 
     public Mono<Authentication> authorizationSession (String idToken){
-        System.out.println("ENTREASASS");
         return authorization(idToken)
                 .doOnNext(roleType -> log.info("roleTypeSSS: {}" ,roleType))
                 .map(roleType -> roleType == RoleType.CUSTOMER)

@@ -16,7 +16,19 @@ public class CreateBarbershopUC {
 
     public Mono<Barbershop> createBarbershop(BarbershopCommand barbershop) {
         return existBarbershop(barbershop)
-                .flatMap(exist -> {
+                .filter(Boolean.FALSE::equals)
+                .flatMap(exists ->
+                        barberShopRepositoryPort.save(Barbershop.createBarbershop(barbershop.name(),
+                                        barbershop.description(),
+                                        barbershop.location(),
+                                        barbershop.phone(),
+                                        barbershop.document(),
+                                        barbershop.documentType(),
+                                        barbershop.companyName())
+                        )
+                )
+                .switchIfEmpty(Mono.error(() -> new BusinessExceptions(BarberShopMessageExceptions.BARBERSHOP_ALREADY_EXIST)));
+                /*.flatMap(exist -> {
                     if(Boolean.TRUE.equals(exist)){
                         return Mono.error(() -> new BusinessExceptions(BarberShopMessageExceptions.BARBERSHOP_ALREADY_EXIST));
                     }
@@ -27,8 +39,7 @@ public class CreateBarbershopUC {
                             barbershop.document(),
                             barbershop.documentType(),
                             barbershop.companyName()));
-                })
-                .flatMap(barberShopRepositoryPort::save);
+                })*/
     }
 
     private Mono<Boolean> existBarbershop(BarbershopCommand barbershop) {

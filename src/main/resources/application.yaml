@@ -32,3 +32,9 @@ logging:
 payment:
   key: ${PAYMENT_KEY}
   timeout: 15
+
+server:
+  port: ${PORT:8080}
+
+firebase:
+  credentials: ${FIREBASE_CREDENTIALS}
